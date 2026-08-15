@@ -1,0 +1,899 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sétima — Livraria &amp; Sala de Leitura, Lisboa</title>
+<meta name="description" content="A Sétima é uma livraria e sala de leitura em Lisboa que vende apenas sete títulos de cada vez, escolhidos a dedo e substituídos todos os meses.">
+<meta property="og:title" content="Sétima — Livraria & Sala de Leitura">
+<meta property="og:description" content="Sete livros. Um mês. Depois, silêncio. Uma livraria em Lisboa que só vende sete títulos de cada vez.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#14130F">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.css">
+
+<style>
+:root{
+  --ink:#14130F;
+  --ink-2:#3A362E;
+  --ink-3:#5c584c;
+  --paper:#F4F1EC;
+  --paper-2:#EDE8DE;
+  --paper-3:#E4DDCF;
+  --accent:#C4562E;
+  --accent-dim:#8B3A1E;
+  --accent-deep:#5B2A18;
+  --accent-soft:#D97B54;
+
+  --pad-x: clamp(1.25rem, 5vw, 4rem);
+
+  --f-display: "Fraunces", serif;
+  --f-body: "Instrument Sans", sans-serif;
+  --f-mono: "DM Mono", monospace;
+
+  --ease-out: cubic-bezier(.16,1,.3,1);
+  --ease-in-out: cubic-bezier(.65,0,.35,1);
+
+  --step-00: clamp(0.8125rem, 0.78rem + 0.15vw, 0.9375rem);
+  --step-0: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --step-1: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
+  --step-2: clamp(1.6rem, 1.4rem + 1vw, 2.1rem);
+  --step-3: clamp(2rem, 1.6rem + 2vw, 3.2rem);
+  --h2: clamp(2.2rem, 1.6rem + 3.2vw, 4.4rem);
+  --display: clamp(2.6rem, 1.4rem + 7vw, 8rem);
+  --display-lg: clamp(3.2rem, 1rem + 11vw, 11.5rem);
+}
+
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+html,body{overflow-x:clip;}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--f-body);
+  font-size:var(--step-0);
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+img,svg{display:block;max-width:100%;}
+a{color:inherit;}
+h1,h2,h3,p{margin:0;}
+ul{margin:0;padding:0;list-style:none;}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer;}
+input{font:inherit;}
+
+.skip-link{
+  position:absolute; left:1rem; top:-4rem; z-index:1000;
+  background:var(--ink); color:var(--paper); padding:.75rem 1.25rem;
+  font-family:var(--f-mono); font-size:var(--step-00); text-decoration:none;
+  transition:top .25s var(--ease-out);
+}
+.skip-link:focus{top:1rem;}
+
+:focus-visible{outline:2px solid var(--accent); outline-offset:3px;}
+
+/* grain */
+.grain{
+  position:fixed; inset:0; z-index:900; pointer-events:none;
+  opacity:.045; mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.eyebrow{
+  font-family:var(--f-mono);
+  font-size:var(--step-00);
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--accent-dim);
+}
+
+.reveal{opacity:0; transform:translateY(28px); will-change:transform,opacity;}
+
+/* ---------- header ---------- */
+.site-header{
+  position:fixed; inset:0 0 auto 0; z-index:500;
+  display:flex; justify-content:space-between; align-items:center;
+  padding:1.1rem var(--pad-x);
+  font-family:var(--f-mono); font-size:var(--step-00); letter-spacing:.04em;
+}
+.site-header::before{
+  content:""; position:absolute; inset:0 0 -1px 0;
+  background:rgba(244,241,236,.88);
+  backdrop-filter:blur(14px) saturate(1.3);
+  -webkit-backdrop-filter:blur(14px) saturate(1.3);
+  border-bottom:1px solid rgba(20,19,15,.08);
+  z-index:-1; opacity:0; transition:opacity .4s var(--ease-out);
+}
+.site-header.scrolled::before{opacity:1;}
+.site-header.on-dark{color:var(--paper);}
+.site-header.on-dark .nav-toggle .bar,
+.site-header.on-dark .nav-toggle .bar::before,
+.site-header.on-dark .nav-toggle .bar::after{background:var(--paper);}
+.site-header.on-dark.scrolled::before{background:rgba(20,19,15,.82);}
+.site-header.on-dark:not(.scrolled){color:var(--paper);}
+.logo{
+  font-family:var(--f-display); font-size:1.35rem; font-weight:600; font-style:italic;
+  text-decoration:none; letter-spacing:-.01em;
+}
+.nav-desktop{display:flex; gap:2rem;}
+.nav-desktop a{text-decoration:none; position:relative; padding:.4rem 0;}
+.nav-desktop a::after{
+  content:""; position:absolute; left:0; bottom:0; height:1px; width:100%;
+  background:currentColor; transform:scaleX(0); transform-origin:right;
+  transition:transform .35s var(--ease-out);
+}
+.nav-desktop a:hover::after, .nav-desktop a:focus-visible::after{transform:scaleX(1); transform-origin:left;}
+
+.nav-toggle{display:none; padding:.6rem .5rem; min-height:44px; align-items:center; gap:.5rem;}
+.nav-toggle .bar{width:22px; height:1px; background:var(--ink); position:relative; display:block;}
+.nav-toggle .bar::before,.nav-toggle .bar::after{content:"";position:absolute;left:0;width:100%;height:1px;background:var(--ink);transition:transform .3s var(--ease-out);}
+.nav-toggle .bar::before{top:-6px;}
+.nav-toggle .bar::after{top:6px;}
+
+.nav-mobile{
+  position:fixed; inset:0; z-index:600;
+  background:var(--ink); color:var(--paper);
+  display:flex; flex-direction:column; justify-content:center; gap:1.5rem;
+  padding:2rem var(--pad-x);
+  transform:translateY(-100%); transition:transform .5s var(--ease-in-out);
+}
+.nav-mobile[data-open="true"]{transform:translateY(0);}
+.nav-mobile a{
+  font-family:var(--f-display); font-size:clamp(2rem,10vw,3rem); font-style:italic;
+  text-decoration:none; border-bottom:1px solid rgba(244,241,236,.15); padding-bottom:.5rem;
+}
+.nav-mobile-close{
+  position:absolute; top:1.1rem; right:var(--pad-x);
+  font-family:var(--f-mono); font-size:var(--step-00); min-height:44px; padding:.5rem;
+}
+
+/* ---------- hero ---------- */
+.hero{
+  position:relative; min-height:100svh; display:flex; flex-direction:column;
+  justify-content:space-between; padding:6.5rem var(--pad-x) 2.5rem;
+  overflow:hidden;
+  background:
+    radial-gradient(ellipse 80% 60% at 85% 8%, rgba(196,86,46,.10), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 10% 95%, rgba(20,19,15,.06), transparent 60%),
+    var(--paper);
+}
+.hero-numeral{
+  position:absolute; right:2vw; top:6vh; z-index:0;
+  font-family:var(--f-display); font-weight:300; font-style:italic;
+  font-size:clamp(14rem, 45vw, 34rem); line-height:.8;
+  color:transparent; -webkit-text-stroke:1px rgba(20,19,15,.14);
+  user-select:none; pointer-events:none;
+}
+.hero-top{
+  position:relative; z-index:1;
+  display:flex; justify-content:space-between; align-items:flex-start; gap:1rem;
+}
+.hero-top .eyebrow{max-width:16rem;}
+.hero-edition{text-align:right; font-family:var(--f-mono); font-size:var(--step-00); color:var(--ink-2);}
+
+.hero-main{position:relative; z-index:1; margin-top:auto; padding-top:3rem;}
+.hero h1{
+  font-family:var(--f-display); font-weight:480; font-style:normal;
+  font-size:var(--display-lg); line-height:.92; letter-spacing:-.03em;
+  text-wrap:balance; max-width:20ch;
+}
+.hero h1 em{font-style:italic; font-weight:340; color:var(--accent);}
+.hero-sub{
+  margin-top:1.75rem; max-width:38ch; font-size:var(--step-1); color:var(--ink-2);
+  text-wrap:pretty; font-weight:400;
+}
+
+.hero-bottom{
+  position:relative; z-index:1;
+  display:flex; justify-content:space-between; align-items:flex-end; gap:1rem;
+  margin-top:3.5rem; padding-top:1.25rem; border-top:1px solid rgba(20,19,15,.14);
+  font-family:var(--f-mono); font-size:var(--step-00);
+}
+.hero-clock{color:var(--ink-2);}
+.hero-clock b{color:var(--ink); font-weight:500;}
+.scroll-cue{display:flex; align-items:center; gap:.6rem; color:var(--ink-2);}
+.scroll-cue .line{width:26px; height:1px; background:var(--ink-2); position:relative; overflow:hidden;}
+.scroll-cue .line::after{
+  content:""; position:absolute; inset:0; background:var(--accent);
+  animation:cue-sweep 1.8s var(--ease-in-out) infinite;
+}
+@keyframes cue-sweep{
+  0%{transform:translateX(-100%);}
+  50%{transform:translateX(0);}
+  100%{transform:translateX(100%);}
+}
+
+/* ---------- section shell ---------- */
+section{position:relative; padding:clamp(5rem,12vw,9rem) var(--pad-x);}
+.section-head{
+  display:flex; justify-content:space-between; align-items:flex-end; gap:1rem;
+  margin-bottom:clamp(2.5rem,6vw,5rem); flex-wrap:wrap;
+}
+.section-head h2{
+  font-family:var(--f-display); font-weight:460; font-size:var(--h2);
+  letter-spacing:-.02em; line-height:.98; text-wrap:balance;
+}
+
+/* ---------- manifesto ---------- */
+.manifesto{background:var(--paper);}
+.manifesto blockquote{
+  font-family:var(--f-display); font-style:italic; font-weight:400;
+  font-size:var(--step-3); line-height:1.18; letter-spacing:-.015em;
+  max-width:26ch; text-wrap:balance; margin:0 0 0 clamp(0rem,4vw,6rem);
+}
+.manifesto blockquote span{color:var(--accent);}
+.manifesto cite{
+  display:block; margin-top:2.5rem; margin-left:clamp(0rem,4vw,6rem);
+  font-family:var(--f-mono); font-style:normal; font-size:var(--step-00);
+  color:var(--ink-3); letter-spacing:.05em;
+}
+
+/* ---------- shelf (signature) ---------- */
+.shelf-section{padding:0; background:var(--ink); color:var(--paper);}
+.shelf-pin{position:relative; height:100svh; overflow:hidden; display:flex; flex-direction:column;}
+.shelf-intro{
+  position:relative; z-index:2; display:flex; justify-content:space-between; align-items:flex-start;
+  padding:clamp(5.5rem,10vw,7rem) var(--pad-x) 1.5rem; gap:1rem; flex-wrap:wrap;
+}
+.shelf-intro h2{
+  font-family:var(--f-display); font-weight:460; font-size:var(--h2); letter-spacing:-.02em; line-height:1;
+}
+.shelf-intro .eyebrow{color:var(--accent-soft);}
+.shelf-counter{
+  font-family:var(--f-mono); font-size:var(--step-2); letter-spacing:-.02em; text-align:right;
+  font-variant-numeric:tabular-nums;
+}
+.shelf-counter small{display:block; font-size:var(--step-00); color:rgba(244,241,236,.55); font-weight:400; letter-spacing:.06em; margin-top:.35rem;}
+
+.shelf-track{
+  position:relative; z-index:1; flex:1; display:flex; align-items:stretch; gap:clamp(1.5rem,4vw,3rem);
+  padding:1rem clamp(1.25rem,5vw,4rem) 3rem; will-change:transform;
+}
+.book-card{
+  flex:0 0 auto; width:min(76vw,420px); display:flex; gap:1.1rem;
+  padding:1.75rem 1.5rem; border:1px solid rgba(244,241,236,.14);
+  background:rgba(244,241,236,.03);
+}
+.book-card .spine{width:6px; flex:0 0 6px; background:var(--spine, var(--accent)); align-self:stretch;}
+.book-card .book-body{display:flex; flex-direction:column; min-width:0;}
+.book-card .book-num{
+  font-family:var(--f-mono); font-size:var(--step-00); color:rgba(244,241,236,.45); letter-spacing:.08em;
+}
+.book-card h3{
+  font-family:var(--f-display); font-weight:500; font-size:var(--step-2); line-height:1.05; letter-spacing:-.015em;
+  margin-top:.6rem; text-wrap:balance;
+}
+.book-card .book-author{
+  font-family:var(--f-mono); font-size:var(--step-00); color:var(--accent-soft); margin-top:.5rem; letter-spacing:.02em;
+}
+.book-card .book-note{
+  font-size:.95rem; color:rgba(244,241,236,.72); margin-top:.9rem; line-height:1.55; text-wrap:pretty;
+}
+.book-card .book-meta{
+  margin-top:auto; padding-top:1.1rem; display:flex; gap:1rem; justify-content:space-between;
+  font-family:var(--f-mono); font-size:.72rem; letter-spacing:.06em; color:rgba(244,241,236,.4);
+  border-top:1px solid rgba(244,241,236,.1);
+}
+.book-card--ghost{
+  border-style:dashed; border-color:rgba(244,241,236,.2); background:transparent;
+}
+.book-card--ghost .spine{background:transparent; border:1px dashed rgba(244,241,236,.25);}
+.book-card--ghost h3{color:rgba(244,241,236,.35); font-style:italic; font-weight:400;}
+.book-card--ghost .book-note{color:rgba(244,241,236,.4);}
+
+.shelf-progress{position:relative; z-index:2; height:2px; background:rgba(244,241,236,.12); margin:0 var(--pad-x) 2.5rem;}
+.shelf-progress-bar{height:100%; width:0%; background:var(--accent); transform-origin:left;}
+
+/* mobile shelf = vertical */
+@media (max-width:899px){
+  .shelf-pin{height:auto; overflow:visible;}
+  .shelf-track{flex-direction:column; padding:0 var(--pad-x) 3rem;}
+  .book-card{width:100%;}
+  .shelf-progress{display:none;}
+}
+
+/* ---------- sala (room) ---------- */
+.sala{background:var(--paper-2);}
+.sala-grid{display:grid; grid-template-columns:.85fr 1.15fr; gap:clamp(2.5rem,6vw,6rem); align-items:start;}
+.sala-visual{
+  height:clamp(320px,42vw,520px); position:relative; overflow:hidden;
+  background:linear-gradient(180deg, var(--paper-3), var(--paper-2));
+  border:1px solid rgba(20,19,15,.1);
+}
+.sala-spines{position:absolute; inset:auto 0 0 0; display:flex; align-items:flex-end; height:100%; padding:0 6%; gap:3%;}
+.sala-spines i{
+  display:block; flex:1; border-radius:2px 2px 0 0;
+  background:var(--bar, var(--ink));
+  transform-origin:bottom; will-change:transform;
+}
+.sala-copy p{font-size:var(--step-1); color:var(--ink-2); max-width:46ch; text-wrap:pretty;}
+.sala-copy p + p{margin-top:1.2rem;}
+.ledger{margin-top:2.75rem; display:grid; gap:1.4rem;}
+.ledger > div{display:grid; grid-template-columns:8rem 1fr; gap:1rem; padding-top:1.1rem; border-top:1px solid rgba(20,19,15,.14);}
+.ledger dt{font-family:var(--f-mono); font-size:var(--step-00); color:var(--accent-dim); letter-spacing:.04em;}
+.ledger dd{margin:0; font-size:var(--step-0); color:var(--ink);}
+.ledger dd a{display:inline-block; padding:.5rem 0; margin:-.5rem 0; text-decoration:underline; text-underline-offset:.2em; text-decoration-color:rgba(20,19,15,.35);}
+
+/* ---------- rotação ---------- */
+.rotacao{background:var(--ink); color:var(--paper); overflow:hidden;}
+.rotacao-inner{display:grid; grid-template-columns:1.1fr .9fr; gap:clamp(2.5rem,6vw,5rem); align-items:end;}
+.rotacao h2{
+  font-family:var(--f-display); font-style:italic; font-weight:400; font-size:var(--display);
+  line-height:.94; letter-spacing:-.02em; text-wrap:balance;
+}
+.rotacao p{margin-top:2rem; font-size:var(--step-1); color:rgba(244,241,236,.68); max-width:42ch; text-wrap:pretty;}
+.countdown-box{
+  border:1px solid rgba(244,241,236,.18); padding:2rem; text-align:right;
+}
+.countdown-box .eyebrow{color:var(--accent-soft); text-align:right;}
+.countdown-value{
+  font-family:var(--f-mono); font-size:clamp(2.4rem,6vw,3.6rem); font-variant-numeric:tabular-nums;
+  margin-top:.75rem; letter-spacing:-.02em;
+}
+.countdown-box .cd-label{font-family:var(--f-mono); font-size:var(--step-00); color:rgba(244,241,236,.5); margin-top:.5rem;}
+
+.rules-row{
+  margin-top:clamp(3rem,7vw,5.5rem); display:grid; grid-template-columns:repeat(3,1fr); gap:2.5rem;
+  border-top:1px solid rgba(244,241,236,.16); padding-top:2.5rem;
+}
+.rules-row div{font-family:var(--f-mono); font-size:var(--step-00); letter-spacing:.03em; color:rgba(244,241,236,.55);}
+.rules-row strong{display:block; color:var(--paper); font-family:var(--f-body); font-size:var(--step-1); font-weight:600; margin-bottom:.5rem; letter-spacing:0;}
+
+/* ---------- visitar ---------- */
+.visitar{background:var(--paper);}
+.visitar-grid{display:grid; grid-template-columns:1fr 1fr; gap:clamp(2.5rem,6vw,6rem);}
+.newsletter-form{
+  margin-top:2rem; display:flex; gap:0; border-bottom:1px solid var(--ink); padding-bottom:.85rem; max-width:32rem;
+}
+.newsletter-form input{
+  flex:1; background:none; border:none; font-family:var(--f-body); font-size:var(--step-1); color:var(--ink);
+  padding:.4rem 0; min-width:0;
+}
+.newsletter-form input::placeholder{color:var(--ink-3);}
+.newsletter-form input:focus{outline:none;}
+.newsletter-form button{
+  font-family:var(--f-mono); font-size:var(--step-00); letter-spacing:.06em; text-transform:uppercase;
+  padding:.6rem 1.1rem; background:var(--accent); color:var(--paper); white-space:nowrap; min-height:44px;
+  transition:background .25s var(--ease-out), transform .25s var(--ease-out);
+}
+.newsletter-form button:hover{background:var(--accent-dim);}
+.newsletter-form.is-sent input,.newsletter-form.is-sent button{opacity:.45; pointer-events:none;}
+.newsletter-note{margin-top:1rem; font-size:var(--step-00); color:var(--ink-3); font-family:var(--f-mono); min-height:1.4em;}
+
+/* ---------- footer ---------- */
+footer{background:var(--ink); color:var(--paper); padding:clamp(4rem,9vw,6.5rem) var(--pad-x) 2rem;}
+.footer-top{display:flex; justify-content:space-between; align-items:flex-end; gap:2rem; flex-wrap:wrap; padding-bottom:clamp(2.5rem,6vw,4rem); border-bottom:1px solid rgba(244,241,236,.14);}
+.footer-word{
+  font-family:var(--f-display); font-style:italic; font-weight:340; font-size:clamp(3rem,11vw,8.5rem);
+  line-height:.85; letter-spacing:-.02em;
+}
+.footer-clock{font-family:var(--f-mono); font-size:var(--step-1); text-align:right; font-variant-numeric:tabular-nums;}
+.footer-clock small{display:block; font-family:var(--f-mono); font-size:var(--step-00); color:rgba(244,241,236,.5); margin-top:.4rem;}
+.footer-cols{display:grid; grid-template-columns:repeat(4,auto); gap:2rem; justify-content:space-between; padding:2.5rem 0; flex-wrap:wrap;}
+.footer-col h4{font-family:var(--f-mono); font-size:var(--step-00); letter-spacing:.06em; color:rgba(244,241,236,.45); margin-bottom:1rem; text-transform:uppercase;}
+.footer-col a,.footer-col span{display:block; text-decoration:none; padding:.3rem 0; color:rgba(244,241,236,.85); font-size:.95rem;}
+.footer-col a:hover{color:var(--accent-soft);}
+.footer-bottom{display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap; padding-top:1.75rem; font-family:var(--f-mono); font-size:.75rem; color:rgba(244,241,236,.42); letter-spacing:.03em;}
+.egg{cursor:default;}
+
+@media (max-width:899px){
+  .nav-desktop{display:none;}
+  .nav-toggle{display:flex;}
+  .sala-grid,.rotacao-inner,.visitar-grid{grid-template-columns:1fr;}
+  .rules-row{grid-template-columns:1fr; gap:1.5rem;}
+  .footer-cols{grid-template-columns:repeat(2,1fr);}
+  .manifesto blockquote,.manifesto cite{margin-left:0;}
+  .ledger > div{grid-template-columns:1fr; gap:.35rem;}
+}
+
+@media (max-width:520px){
+  .hero-numeral{font-size:14rem; top:2vh; right:-4vw;}
+  section{padding-left:1.25rem; padding-right:1.25rem;}
+  .footer-cols{grid-template-columns:1fr 1fr;}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important;}
+  .reveal{opacity:1 !important; transform:none !important;}
+  .scroll-cue .line::after{animation:none; transform:translateX(0);}
+}
+</style>
+</head>
+<body>
+
+<a href="#conteudo" class="skip-link">Saltar para o conteúdo</a>
+<div class="grain" aria-hidden="true"></div>
+
+<header class="site-header" id="siteHeader">
+  <a href="#top" class="logo">Sétima</a>
+  <nav class="nav-desktop" aria-label="Navegação principal">
+    <a href="#estante">Estante</a>
+    <a href="#sala">Sala</a>
+    <a href="#rotacao">Rotação</a>
+    <a href="#visitar">Visitar</a>
+  </nav>
+  <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navMobile">
+    <span class="bar"></span>
+    <span class="visually-label">Menu</span>
+  </button>
+</header>
+
+<nav class="nav-mobile" id="navMobile" data-open="false" aria-label="Navegação móvel">
+  <button class="nav-mobile-close" id="navClose" aria-label="Fechar menu">Fechar ✕</button>
+  <a href="#estante">Estante</a>
+  <a href="#sala">Sala</a>
+  <a href="#rotacao">Rotação</a>
+  <a href="#visitar">Visitar</a>
+</nav>
+
+<main id="conteudo">
+
+  <section class="hero" id="top">
+    <span class="hero-numeral" aria-hidden="true">VII</span>
+
+    <div class="hero-top">
+      <span class="eyebrow">Livraria &amp; sala de leitura — Lisboa</span>
+      <div class="hero-edition" id="heroEdition">Edição de agosto</div>
+    </div>
+
+    <div class="hero-main">
+      <h1>Sete livros. Um mês. <em>Depois, silêncio.</em></h1>
+      <p class="hero-sub">A Sétima vende apenas sete títulos de cada vez — lidos pela casa, defendidos um a um, substituídos no dia primeiro. Sem mais, sem menos.</p>
+    </div>
+
+    <div class="hero-bottom">
+      <div class="hero-clock">Lisboa, agora — <b id="heroClock">--:--:--</b></div>
+      <div class="scroll-cue"><span class="line"></span> role</div>
+    </div>
+  </section>
+
+  <section class="manifesto" id="manifesto">
+    <div class="section-head">
+      <span class="eyebrow">01 — Manifesto</span>
+    </div>
+    <blockquote class="reveal">Uma livraria não precisa de tudo. Precisa de <span>sete livros certos</span> — e da coragem de os deixar partir.</blockquote>
+    <cite class="reveal">— nota da casa, desde 2021</cite>
+  </section>
+
+  <section class="shelf-section" id="estante">
+    <div class="shelf-pin" id="shelfPin">
+      <div class="shelf-intro">
+        <div>
+          <span class="eyebrow">02 — A Estante</span>
+          <h2>Sete à venda.<br>Um lugar em branco.</h2>
+        </div>
+        <div class="shelf-counter">
+          <span id="shelfCount">01</span> <small id="shelfNote">de 07 — arraste ou role</small>
+        </div>
+      </div>
+
+      <div class="shelf-track" id="shelfTrack">
+
+        <article class="book-card" style="--spine:#14130F">
+          <div class="spine"></div>
+          <div class="book-body">
+            <span class="book-num">01</span>
+            <h3>Os Anéis de Saturno</h3>
+            <span class="book-author">W. G. Sebald — trad. José Alberto Oliveira</span>
+            <p class="book-note">Um passeio a pé pela costa de Suffolk que se transforma em vertigem. Leia-o devagar, de preferência sozinho.</p>
+            <div class="book-meta"><span>Cavalo de Ferro, 2021</span><span>296 pp — 18€</span></div>
+          </div>
+        </article>
+
+        <article class="book-card" style="--spine:#C4562E">
+          <div class="spine"></div>
+          <div class="book-body">
+            <span class="book-num">02</span>
+            <h3>Terra Sonâmbula</h3>
+            <span class="book-author">Mia Couto</span>
+            <p class="book-note">A guerra vista por um menino e um velho, e a estrada que os obriga a inventar o mundo de novo.</p>
+            <div class="book-meta"><span>Caminho, 1992</span><span>216 pp — 15€</span></div>
+          </div>
+        </article>
+
+        <article class="book-card" style="--spine:#5B2A18">
+          <div class="spine"></div>
+          <div class="book-body">
+            <span class="book-num">03</span>
+            <h3>O Ano da Morte de Ricardo Reis</h3>
+            <span class="book-author">José Saramago</span>
+            <p class="book-note">Lisboa, 1936. Um poeta imaginário à procura do homem que o inventou. Leitura de bairro, literalmente.</p>
+            <div class="book-meta"><span>Caminho, 1984</span><span>368 pp — 19€</span></div>
+          </div>
+        </article>
+
+        <article class="book-card" style="--spine:#3A362E">
+          <div class="spine"></div>
+          <div class="book-body">
+            <span class="book-num">04</span>
+            <h3>Klara e o Sol</h3>
+            <span class="book-author">Kazuo Ishiguro — trad. Ana Falcão Bastos</span>
+            <p class="book-note">Uma inteligência artificial observa o mundo à janela de uma loja como quem reza sem saber a quem.</p>
+            <div class="book-meta"><span>Casa das Letras, 2021</span><span>328 pp — 20€</span></div>
+          </div>
+        </article>
+
+        <article class="book-card" style="--spine:#D97B54">
+          <div class="spine"></div>
+          <div class="book-body">
+            <span class="book-num">05</span>
+            <h3>Diário de Um Ano Ruim</h3>
+            <span class="book-author">J. M. Coetzee — trad. José Lima</span>
+            <p class="book-note">Opinião e confissão lado a lado, em colunas separadas da mesma página. Discutível, de propósito.</p>
+            <div class="book-meta"><span>Editorial Presença, 2008</span><span>248 pp — 17€</span></div>
+          </div>
+        </article>
+
+        <article class="book-card" style="--spine:#8B3A1E">
+          <div class="spine"></div>
+          <div class="book-body">
+            <span class="book-num">06</span>
+            <h3>A Sibila</h3>
+            <span class="book-author">Agustina Bessa-Luís</span>
+            <p class="book-note">Uma família do Minho e a mulher que a governa em silêncio, geração após geração.</p>
+            <div class="book-meta"><span>Guimarães Editores, 1954</span><span>384 pp — 21€</span></div>
+          </div>
+        </article>
+
+        <article class="book-card" style="--spine:#403C33">
+          <div class="spine"></div>
+          <div class="book-body">
+            <span class="book-num">07</span>
+            <h3>Húmus</h3>
+            <span class="book-author">Raul Brandão</span>
+            <p class="book-note">Prosa modernista portuguesa, escrita antes de o modernismo ter nome. Ainda incomoda.</p>
+            <div class="book-meta"><span>Livros do Brasil, 1917</span><span>176 pp — 14€</span></div>
+          </div>
+        </article>
+
+        <article class="book-card book-card--ghost" aria-hidden="true">
+          <div class="spine"></div>
+          <div class="book-body">
+            <span class="book-num">08</span>
+            <h3>⸻</h3>
+            <p class="book-note">O oitavo lugar fica sempre vazio. Por decisão da casa — para o livro que ainda ninguém escreveu.</p>
+            <div class="book-meta"><span>por publicar</span><span>— pp — —€</span></div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+    <div class="shelf-progress"><div class="shelf-progress-bar" id="shelfProgressBar"></div></div>
+  </section>
+
+  <section class="sala" id="sala">
+    <div class="sala-grid">
+      <div class="sala-visual" aria-hidden="true">
+        <div class="sala-spines" id="salaSpines"></div>
+      </div>
+      <div>
+        <span class="eyebrow">03 — A Sala</span>
+        <div class="sala-copy" style="margin-top:1.5rem;">
+          <p class="reveal">Doze lugares, luz de tarde, e as sete capas do mês viradas para a rua. Não há wifi na sala — há café, silêncio e uma régua de latão onde se apoia o livro aberto.</p>
+          <p class="reveal">Vem-se ler, não passar o tempo. Quem chega sem livro escolhe um dos sete e devolve-o à saída, ou leva-o — nesse caso, a estante fica, por um dia, com um lugar a menos.</p>
+        </div>
+        <dl class="ledger reveal">
+          <div><dt>Morada</dt><dd>Rua de São Bento, 182 — Lisboa</dd></div>
+          <div><dt>Horário</dt><dd>Terça–Sexta, 11h–20h<br>Sábado, 10h–19h<br>Domingo e Segunda, fechado</dd></div>
+          <div><dt>Sala</dt><dd>12 lugares — por marcação depois das 17h</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="rotacao" id="rotacao">
+    <div class="rotacao-inner">
+      <div>
+        <span class="eyebrow">04 — Rotação</span>
+        <h2 class="reveal" style="margin-top:1.5rem;">No dia um, a estante volta a zero.</h2>
+        <p class="reveal">Os sete títulos saem — vendidos ou devolvidos ao fornecedor — e entram sete novos, escolhidos por leitura, não por lançamento. Sem best-sellers por obrigação. Sem algoritmo. Sem exceções, nem para amigos da casa.</p>
+      </div>
+      <div class="countdown-box reveal">
+        <span class="eyebrow">Próxima edição em</span>
+        <div class="countdown-value" id="countdownValue">—</div>
+        <div class="cd-label">estante zerada às 00h00, dia 1</div>
+      </div>
+    </div>
+    <div class="rules-row">
+      <div><strong>Escolha</strong>três leitores da casa, uma reunião, sete votos coincidentes.</div>
+      <div><strong>Duração</strong>um mês de calendário, sem prorrogação.</div>
+      <div><strong>Substituição</strong>nenhum título repete em doze edições seguidas.</div>
+    </div>
+  </section>
+
+  <section class="visitar" id="visitar">
+    <div class="visitar-grid">
+      <div>
+        <span class="eyebrow">05 — Visitar</span>
+        <h2 class="reveal" style="font-family:var(--f-display); font-weight:460; font-size:var(--h2); letter-spacing:-.02em; margin-top:1.5rem;">Reserve o dia um antes de todos.</h2>
+        <p class="reveal" style="margin-top:1.25rem; color:var(--ink-2); font-size:var(--step-1); max-width:36ch;">Um aviso por mês, no dia da troca, com os sete títulos e uma linha sobre cada um. Nada mais.</p>
+
+        <form class="newsletter-form reveal" id="newsletterForm">
+          <label for="nlEmail" class="visually-hidden" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Email</label>
+          <input type="email" id="nlEmail" placeholder="o-seu-email@exemplo.pt" required>
+          <button type="submit">Entrar na lista</button>
+        </form>
+        <p class="newsletter-note" id="newsletterNote"></p>
+      </div>
+
+      <dl class="ledger reveal" style="margin-top:0;">
+        <div><dt>Email</dt><dd><a href="mailto:ler@setima.pt">ler@setima.pt</a></dd></div>
+        <div><dt>Telefone</dt><dd>+351 21 000 00 00</dd></div>
+        <div><dt>Instagram</dt><dd>@setima.lisboa</dd></div>
+        <div><dt>Fundada</dt><dd>2021, por três leitores que discordavam sobre quase tudo, menos isto.</dd></div>
+      </dl>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-top">
+    <span class="footer-word">Sétima</span>
+    <div class="footer-clock">
+      <span id="footerClock">--:--:--</span>
+      <small>Lisboa, hora local</small>
+    </div>
+  </div>
+
+  <div class="footer-cols">
+    <div class="footer-col">
+      <h4>Loja</h4>
+      <a href="#estante">Estante</a>
+      <a href="#sala">Sala de leitura</a>
+      <a href="#rotacao">Rotação</a>
+    </div>
+    <div class="footer-col">
+      <h4>Casa</h4>
+      <a href="#visitar">Visitar</a>
+      <a href="mailto:ler@setima.pt">Contacto</a>
+      <span>@setima.lisboa</span>
+    </div>
+    <div class="footer-col">
+      <h4>Morada</h4>
+      <span>Rua de São Bento, 182</span>
+      <span>1200 Lisboa</span>
+    </div>
+    <div class="footer-col">
+      <h4>Nota</h4>
+      <span class="egg" title="há sempre um oitavo livro">Há sempre um oitavo livro. Nunca à venda.</span>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <span>© <span id="footerYear">2026</span> Sétima — livraria &amp; sala de leitura, Lisboa.</span>
+    <span>Feito à mão, sete títulos de cada vez.</span>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/SplitText.min.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  var hasGsap = typeof gsap !== "undefined";
+  if(hasGsap) gsap.registerPlugin(ScrollTrigger, typeof SplitText !== "undefined" ? SplitText : undefined);
+
+  /* ---------- header scroll state ---------- */
+  var header = document.getElementById("siteHeader");
+  function onScrollHeader(){
+    if(window.scrollY > 40) header.classList.add("scrolled");
+    else header.classList.remove("scrolled");
+  }
+  window.addEventListener("scroll", onScrollHeader, {passive:true});
+  onScrollHeader();
+
+  /* ---------- mobile nav ---------- */
+  var navToggle = document.getElementById("navToggle");
+  var navMobile = document.getElementById("navMobile");
+  var navClose = document.getElementById("navClose");
+  function openNav(){ navMobile.setAttribute("data-open","true"); navToggle.setAttribute("aria-expanded","true"); document.body.style.overflow="hidden"; }
+  function closeNav(){ navMobile.setAttribute("data-open","false"); navToggle.setAttribute("aria-expanded","false"); document.body.style.overflow=""; }
+  navToggle.addEventListener("click", openNav);
+  navClose.addEventListener("click", closeNav);
+  navMobile.querySelectorAll("a").forEach(function(a){ a.addEventListener("click", closeNav); });
+
+  /* ---------- clocks ---------- */
+  var heroClock = document.getElementById("heroClock");
+  var footerClock = document.getElementById("footerClock");
+  function updateClock(){
+    var t;
+    try{
+      t = new Date().toLocaleTimeString("pt-PT", {timeZone:"Europe/Lisbon", hour:"2-digit", minute:"2-digit", second:"2-digit"});
+    }catch(e){
+      t = new Date().toLocaleTimeString("pt-PT", {hour:"2-digit", minute:"2-digit", second:"2-digit"});
+    }
+    if(heroClock) heroClock.textContent = t;
+    if(footerClock) footerClock.textContent = t;
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  /* ---------- edition label ---------- */
+  var heroEdition = document.getElementById("heroEdition");
+  var footerYear = document.getElementById("footerYear");
+  (function(){
+    var now = new Date();
+    try{
+      var monthStr = now.toLocaleDateString("pt-PT", {month:"long", timeZone:"Europe/Lisbon"});
+      monthStr = monthStr.charAt(0).toUpperCase() + monthStr.slice(1);
+      if(heroEdition) heroEdition.textContent = "Edição de " + monthStr;
+    }catch(e){}
+    if(footerYear) footerYear.textContent = now.getFullYear();
+  })();
+
+  /* ---------- countdown to day 1 ---------- */
+  var countdownValue = document.getElementById("countdownValue");
+  function updateCountdown(){
+    var now = new Date();
+    var next = new Date(now.getFullYear(), now.getMonth()+1, 1, 0, 0, 0);
+    var diff = Math.max(0, next - now);
+    var d = Math.floor(diff/86400000);
+    var h = Math.floor((diff%86400000)/3600000);
+    var m = Math.floor((diff%3600000)/60000);
+    if(countdownValue){
+      countdownValue.textContent = String(d).padStart(2,"0") + "d " + String(h).padStart(2,"0") + "h " + String(m).padStart(2,"0") + "m";
+    }
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 30000);
+
+  /* ---------- newsletter fake submit ---------- */
+  var form = document.getElementById("newsletterForm");
+  var note = document.getElementById("newsletterNote");
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    if(form.classList.contains("is-sent")) return;
+    form.classList.add("is-sent");
+    note.textContent = "Reservado. O aviso chega no dia 1.";
+  });
+
+  /* ---------- sala spines (decorative bar chart) ---------- */
+  (function(){
+    var wrap = document.getElementById("salaSpines");
+    if(!wrap) return;
+    var heights = [62,88,45,100,70,55,92,38,80,60,48,75];
+    var tones = ["#14130F","#C4562E","#5B2A18","#3A362E","#8B3A1E","#403C33"];
+    heights.forEach(function(h, i){
+      var bar = document.createElement("i");
+      bar.style.setProperty("--bar", tones[i % tones.length]);
+      bar.style.height = h + "%";
+      wrap.appendChild(bar);
+    });
+  })();
+
+  /* ---------- reveal safety net (works even without gsap) ---------- */
+  function forceRevealAll(){
+    document.querySelectorAll(".reveal").forEach(function(el){
+      el.style.opacity = "1";
+      el.style.transform = "none";
+    });
+  }
+
+  if(!hasGsap){
+    forceRevealAll();
+    return;
+  }
+
+  document.fonts && document.fonts.ready ? document.fonts.ready.then(init) : init();
+
+  function init(){
+
+    /* headline split reveal */
+    var heroH1 = document.querySelector(".hero h1");
+    if(typeof SplitText !== "undefined" && heroH1){
+      try{
+        SplitText.create(heroH1, {
+          type:"lines", mask:"lines", autoSplit:true, aria:"auto",
+          onSplit:function(self){
+            return gsap.from(self.lines, {yPercent:110, opacity:0, duration:1.1, stagger:0.1, ease:"expo.out", delay:.15});
+          }
+        });
+      }catch(e){}
+    }
+
+    /* swap header contrast over dark sections */
+    document.querySelectorAll(".shelf-section, .rotacao").forEach(function(sec){
+      ScrollTrigger.create({
+        trigger:sec, start:"top top+=1", end:"bottom top+=1",
+        onToggle:function(self){ header.classList.toggle("on-dark", self.isActive); }
+      });
+    });
+
+    /* generic batch reveal */
+    ScrollTrigger.batch(".reveal", {
+      start:"top 87%",
+      once:true,
+      onEnter: function(batch){
+        gsap.to(batch, {autoAlpha:1, y:0, duration:0.9, stagger:0.09, ease:"power3.out", overwrite:true});
+      }
+    });
+
+    /* sala spine bars parallax-in */
+    gsap.set("#salaSpines i", {transform:"scaleY(0)"});
+    ScrollTrigger.create({
+      trigger:"#salaSpines", start:"top 80%", once:true,
+      onEnter:function(){
+        gsap.to("#salaSpines i", {scaleY:1, duration:1, ease:"power3.out", stagger:{amount:0.5, from:"start"}, transformOrigin:"bottom"});
+      }
+    });
+
+    /* shelf pinned scrub */
+    var mm = gsap.matchMedia();
+
+    mm.add({
+      isDesktop:"(min-width: 900px)",
+      isMobile:"(max-width: 899px)",
+      reduce:"(prefers-reduced-motion: reduce)"
+    }, function(context){
+      var conditions = context.conditions;
+
+      if(conditions.reduce){
+        forceRevealAll();
+        return;
+      }
+
+      var track = document.getElementById("shelfTrack");
+      var countEl = document.getElementById("shelfCount");
+      var noteEl = document.getElementById("shelfNote");
+      var progressBar = document.getElementById("shelfProgressBar");
+      var cards = track.querySelectorAll(".book-card");
+      var total = cards.length - 1; /* exclude ghost from the "de 07" count label, but include in scroll */
+
+      if(conditions.isDesktop){
+        var tween = gsap.to(track, {
+          x:function(){ return -(track.scrollWidth - window.innerWidth); },
+          ease:"none",
+          scrollTrigger:{
+            trigger:".shelf-section",
+            start:"top top",
+            end:function(){ return "+=" + Math.max(1, track.scrollWidth - window.innerWidth); },
+            pin:true,
+            scrub:1,
+            anticipatePin:1,
+            invalidateOnRefresh:true,
+            onUpdate:function(self){
+              var idx = Math.min(total, Math.floor(self.progress * total) + 1);
+              if(countEl) countEl.textContent = String(idx).padStart(2,"0");
+              if(noteEl) noteEl.textContent = self.progress > 0.97 ? "o oitavo lugar fica vazio" : "de 07 — arraste ou role";
+              if(progressBar) progressBar.style.width = (self.progress*100) + "%";
+            }
+          }
+        });
+
+        return function(){ tween.scrollTrigger && tween.scrollTrigger.kill(); tween.kill(); };
+      }
+    });
+
+    /* safety net: reveal anything still stuck invisible */
+    setTimeout(function(){
+      document.querySelectorAll(".reveal").forEach(function(el){
+        if(getComputedStyle(el).opacity === "0"){
+          gsap.to(el, {autoAlpha:1, y:0, duration:0.5});
+        }
+      });
+    }, 4000);
+
+    window.addEventListener("load", function(){ ScrollTrigger.refresh(); });
+  }
+
+  /* ---------- lenis smooth scroll (desktop, motion-ok only) ---------- */
+  if(!window.matchMedia("(prefers-reduced-motion: reduce)").matches && typeof Lenis !== "undefined"){
+    var lenis = new Lenis({lerp:0.09, smoothWheel:true, syncTouch:false, autoRaf:false, anchors:true});
+    lenis.on("scroll", ScrollTrigger.update);
+    gsap.ticker.add(function(t){ lenis.raf(t*1000); });
+    gsap.ticker.lagSmoothing(0);
+  }
+
+})();
+</script>
+</body>
+</html>

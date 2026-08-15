@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sétima — seven books at a time. Lisbon.</title>
+<meta name="description" content="Sétima is a bookshop and reading room on Rua do Poço dos Negros, Lisbon. We stock seven titles. On the 7th of every month we take all seven off the shelf and choose seven more.">
+<meta property="og:title" content="Sétima — seven books at a time. Lisbon.">
+<meta property="og:description" content="Seven titles. Thirty-one days. Then we empty the shelf.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#EDEAE3">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Schibsted+Grotesk:wght@400..800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ─────────────────────────────────────────────────────────────
+   SÉTIMA — Rua do Poço dos Negros 112, Lisboa
+   ink #14130F · paper #EDEAE3 · terracotta #C4562E
+   ───────────────────────────────────────────────────────────── */
+
+:root{
+  --ink:#14130F;
+  --paper:#EDEAE3;
+  --paper-2:#E4DFD5;
+  --terra:#C4562E;
+  --rule:rgba(20,19,15,.16);
+  --rule-soft:rgba(20,19,15,.09);
+  --ink-inv-rule:rgba(237,234,227,.18);
+
+  --display:"Fraunces",Georgia,"Times New Roman",serif;
+  --sans:"Schibsted Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"DM Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+
+  --s-0:clamp(0.98rem,0.94rem + 0.2vw,1.075rem);
+  --s-1:clamp(1.18rem,1.08rem + 0.45vw,1.42rem);
+  --s-2:clamp(1.5rem,1.3rem + 1vw,2.15rem);
+  --s-3:clamp(2rem,1.5rem + 2.4vw,3.4rem);
+  --label:clamp(0.63rem,0.6rem + 0.14vw,0.72rem);
+
+  --gut:clamp(1.15rem,4.4vw,3.6rem);
+  --ease:cubic-bezier(.16,1,.3,1);
+  --ease-io:cubic-bezier(.65,0,.35,1);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+html,body{overflow-x:clip;margin:0;padding:0}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:var(--s-0);
+  line-height:1.55;
+  font-synthesis-weight:none;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+img{max-width:100%;display:block}
+a{color:inherit}
+::selection{background:var(--terra);color:var(--paper)}
+
+/* grain — the cheapest upgrade there is */
+.grain{
+  position:fixed;inset:-6%;z-index:90;pointer-events:none;
+  opacity:.055;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='220' height='220' filter='url(%23n)'/></svg>");
+}
+
+/* ── focus ───────────────────────────────────────────────── */
+:focus{outline:none}
+:focus-visible{
+  outline:2px solid var(--terra);
+  outline-offset:3px;
+  border-radius:1px;
+}
+
+.skip{
+  position:absolute;left:var(--gut);top:-100px;z-index:200;
+  background:var(--ink);color:var(--paper);
+  padding:.7rem 1rem;font-family:var(--mono);font-size:var(--label);
+  letter-spacing:.1em;text-transform:uppercase;text-decoration:none;
+  transition:top .2s var(--ease);
+}
+.skip:focus-visible{top:1rem}
+
+/* ── shared type roles ───────────────────────────────────── */
+.lab{
+  font-family:var(--mono);
+  font-size:var(--label);
+  letter-spacing:.13em;
+  text-transform:uppercase;
+  font-weight:400;
+  font-feature-settings:"tnum" 1;
+}
+.num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+
+.disp{
+  font-family:var(--display);
+  font-weight:400;
+  font-variation-settings:"opsz" 120,"wght" 380,"SOFT" 0,"WONK" 1;
+  line-height:.9;
+  letter-spacing:-.035em;
+  text-wrap:balance;
+  margin:0;
+}
+
+p{text-wrap:pretty}
+
+/* ── chrome bar ──────────────────────────────────────────── */
+.bar{
+  position:fixed;inset:0 0 auto 0;z-index:80;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:1rem;
+  padding:.85rem var(--gut);
+  background:color-mix(in srgb,var(--paper) 82%,transparent);
+  backdrop-filter:saturate(140%) blur(7px);
+  border-bottom:1px solid var(--rule-soft);
+}
+.bar__mark{
+  font-family:var(--display);
+  font-variation-settings:"opsz" 24,"wght" 500,"WONK" 1;
+  font-size:1.02rem;letter-spacing:.03em;
+  text-decoration:none;
+  display:inline-flex;align-items:center;min-height:40px;padding-right:.5rem;
+}
+.bar__mid a{display:inline-flex;align-items:center;min-height:40px}
+.bar__mid{display:flex;gap:1.6rem;align-items:center}
+.bar__mid a{text-decoration:none;opacity:.62;transition:opacity .25s var(--ease)}
+.bar__mid a:hover{opacity:1}
+.bar__right{display:flex;gap:1.2rem;align-items:center}
+.dot{
+  width:6px;height:6px;border-radius:50%;background:var(--terra);
+  display:inline-block;margin-right:.45rem;vertical-align:middle;
+  animation:pulse 3.4s var(--ease-io) infinite;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+@media(max-width:860px){
+  .bar__mid{display:none}
+}
+
+/* ── masthead ────────────────────────────────────────────── */
+.mast{
+  min-height:100svh;
+  padding:clamp(5.5rem,11vh,8rem) var(--gut) clamp(1.4rem,3vh,2.4rem);
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  grid-template-rows:auto 1fr auto;
+  column-gap:clamp(.7rem,1.6vw,1.4rem);
+  row-gap:clamp(1.6rem,4vh,3rem);
+  position:relative;
+}
+.mast__meta{
+  grid-column:1/6;grid-row:1;
+  display:flex;flex-wrap:wrap;gap:.35rem 1.4rem;align-items:baseline;
+}
+.mast__theme{color:var(--terra)}
+.mast__count{
+  grid-column:9/13;grid-row:1;
+  text-align:right;
+  align-self:start;
+}
+.mast__count b{
+  display:block;
+  font-family:var(--display);
+  font-variation-settings:"opsz" 90,"wght" 350,"WONK" 1;
+  font-size:clamp(2.6rem,5.4vw,4.6rem);
+  line-height:.86;letter-spacing:-.04em;
+  font-variant-numeric:tabular-nums;
+  margin-top:.25rem;
+}
+
+h1.mast__line{
+  grid-column:2/13;grid-row:2;
+  align-self:center;
+  font-size:clamp(2.9rem,9.1vw,9.6rem);
+  letter-spacing:-.045em;
+  line-height:.9;
+  font-variation-settings:"opsz" 144,"wght" 360,"SOFT" 0,"WONK" 1;
+}
+h1.mast__line em{
+  font-style:italic;
+  font-variation-settings:"opsz" 144,"wght" 340,"WONK" 1;
+  color:var(--terra);
+}
+h1.mast__line .ln{display:block}
+
+.mast__foot{
+  grid-column:1/13;grid-row:3;
+  display:grid;
+  grid-template-columns:minmax(0,34ch) 1fr auto;
+  gap:clamp(1.2rem,4vw,3rem);
+  align-items:end;
+}
+.mast__foot p{margin:0;max-width:34ch;font-size:var(--s-1);line-height:1.45}
+.mast__foot p .op{opacity:.62}
+
+/* the shelf tick rule — 7 marks, one lit */
+.ticks{display:flex;gap:0;align-items:flex-end;height:34px;min-width:120px}
+.ticks i{
+  display:block;width:1px;height:12px;background:var(--rule);
+  margin-right:9px;transform-origin:bottom;
+}
+.ticks i:last-child{margin-right:0}
+.ticks i.on{height:30px;background:var(--terra);width:2px}
+
+.mast__cue{white-space:nowrap;align-self:end;text-align:right}
+
+@media(max-width:860px){
+  .mast{grid-template-columns:repeat(6,1fr);row-gap:1.5rem}
+  .mast__meta{grid-column:1/7}
+  .mast__count{grid-column:1/7;grid-row:auto;text-align:left;display:flex;align-items:baseline;gap:.8rem}
+  .mast__count b{font-size:2.5rem;margin-top:0}
+  h1.mast__line{grid-column:1/7;grid-row:auto;letter-spacing:-.035em}
+  .mast__foot{grid-column:1/7;grid-row:auto;grid-template-columns:1fr;gap:1.5rem;align-items:start}
+  .mast__cue{text-align:left}
+}
+
+/* ── section furniture ───────────────────────────────────── */
+.sec__head{
+  display:flex;align-items:baseline;gap:1rem;
+  padding:0 var(--gut);
+  border-top:1px solid var(--rule);
+  padding-top:.8rem;
+}
+.sec__no{
+  font-family:var(--display);
+  font-variation-settings:"opsz" 90,"wght" 320,"WONK" 1;
+  font-size:clamp(2.4rem,5vw,4.4rem);
+  line-height:.8;letter-spacing:-.05em;
+  color:transparent;
+  -webkit-text-stroke:1px var(--rule);
+  font-variant-numeric:tabular-nums;
+}
+
+/* ── 02 THE SHELF (signature) ────────────────────────────── */
+#shelf{position:relative}
+.shelf__stage{
+  height:100svh;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+.shelf__bar{
+  display:flex;justify-content:space-between;gap:1rem;align-items:baseline;
+  padding:.8rem var(--gut);
+  border-bottom:1px solid var(--rule);
+  flex:0 0 auto;
+}
+.shelf__prog{color:var(--terra)}
+.spines{
+  flex:1 1 auto;
+  display:flex;
+  align-items:stretch;
+  width:100%;
+  min-height:0;
+}
+.spine{
+  position:relative;
+  width:8%;
+  flex:0 0 auto;
+  border-left:1px solid var(--rule);
+  overflow:hidden;
+  background:var(--paper);
+  display:flex;
+  isolation:isolate;
+}
+.spine:last-child{border-right:1px solid var(--rule)}
+.spine:nth-child(even){background:var(--paper-2)}
+.spine.is-open{background:var(--ink);border-left-color:var(--ink)}
+
+.spine__rail{
+  position:relative;
+  flex:0 0 clamp(52px,7.4vw,98px);
+  display:flex;flex-direction:column;justify-content:space-between;align-items:center;
+  padding:1rem .4rem;
+  z-index:2;
+}
+.spine__no{
+  font-family:var(--mono);font-size:var(--label);letter-spacing:.1em;
+  font-variant-numeric:tabular-nums;opacity:.5;
+}
+.spine.is-open .spine__no{color:var(--paper);opacity:.55}
+.spine__vert{
+  writing-mode:vertical-rl;
+  transform:rotate(180deg);
+  font-family:var(--display);
+  font-variation-settings:"opsz" 40,"wght" 420,"WONK" 1;
+  font-size:clamp(.95rem,1.35vw,1.28rem);
+  letter-spacing:.008em;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:clip;
+  max-height:62vh;
+  line-height:1;
+}
+.spine.is-open .spine__vert{color:var(--paper)}
+.spine__dot{
+  width:5px;height:5px;border-radius:50%;background:var(--rule);
+}
+.spine.is-open .spine__dot{background:var(--terra)}
+
+/* the plate — one element, moved into the open spine */
+.plate{
+  position:relative;
+  flex:1 1 auto;
+  min-width:0;
+  color:var(--paper);
+  padding:clamp(1.2rem,2.6vh,2.2rem) clamp(1rem,2.4vw,2.6rem) clamp(1.2rem,2.6vh,2.2rem) 0;
+  display:flex;flex-direction:column;justify-content:space-between;
+  gap:1rem;
+  clip-path:inset(0 0 0 0);
+}
+.plate__ghost{
+  position:absolute;right:-.06em;top:-.13em;z-index:0;
+  font-family:var(--display);
+  font-variation-settings:"opsz" 144,"wght" 300,"WONK" 1;
+  font-size:clamp(7rem,17vw,15rem);
+  line-height:.8;letter-spacing:-.06em;
+  color:transparent;
+  -webkit-text-stroke:1px rgba(237,234,227,.15);
+  font-variant-numeric:tabular-nums;
+  pointer-events:none;user-select:none;
+}
+.plate > *:not(.plate__ghost){position:relative;z-index:1}
+.plate__top{display:flex;justify-content:space-between;gap:1rem;align-items:baseline;color:rgba(237,234,227,.6)}
+.plate__title{
+  font-family:var(--display);
+  font-variation-settings:"opsz" 144,"wght" 340,"SOFT" 0,"WONK" 1;
+  font-size:clamp(1.9rem,4.4vw,4.1rem);
+  line-height:.95;letter-spacing:-.035em;
+  margin:0;
+  text-wrap:balance;
+}
+.plate__by{
+  font-size:var(--s-1);
+  margin:.7rem 0 0;
+  color:rgba(237,234,227,.78);
+}
+.plate__by i{font-style:normal;color:var(--terra)}
+.plate__note{
+  margin:0;
+  max-width:46ch;
+  font-size:var(--s-0);
+  line-height:1.5;
+  color:rgba(237,234,227,.72);
+  border-left:1px solid var(--ink-inv-rule);
+  padding-left:1rem;
+}
+.plate__foot{
+  display:flex;flex-wrap:wrap;gap:.4rem 1.4rem;align-items:baseline;
+  color:rgba(237,234,227,.55);
+}
+.plate__foot .stock{color:var(--terra)}
+
+/* mobile / reduced-motion shelf: a designed stack, not a squeeze */
+.shelf__list{display:none;list-style:none;margin:0;padding:0}
+.book{
+  border-top:1px solid var(--rule);
+  padding:clamp(1.3rem,4.5vw,2rem) var(--gut);
+  display:grid;
+  grid-template-columns:2.6rem 1fr;
+  column-gap:.8rem;
+  row-gap:.45rem;
+}
+.book:last-child{border-bottom:1px solid var(--rule)}
+.book__no{
+  font-family:var(--mono);font-size:var(--label);letter-spacing:.1em;
+  opacity:.45;font-variant-numeric:tabular-nums;padding-top:.45rem;
+  grid-row:1/span 5;
+}
+/* the spine, kept: a bar as thick as the book is long */
+.book__no::after{
+  content:"";display:block;width:3px;
+  height:calc(var(--pp,300) * 0.135px);
+  background:var(--ink);opacity:.55;margin-top:.75rem;
+}
+.book:nth-child(7) .book__no::after{background:var(--terra);opacity:1}
+.book__title{
+  grid-column:2;
+  font-family:var(--display);
+  font-variation-settings:"opsz" 90,"wght" 380,"WONK" 1;
+  font-size:clamp(1.55rem,7.6vw,2.5rem);
+  line-height:.98;letter-spacing:-.03em;margin:0;
+}
+.book__by{grid-column:2;margin:0;opacity:.72;font-size:var(--s-0)}
+.book__by i{font-style:normal;color:var(--terra)}
+.book__note{grid-column:2;margin:.35rem 0 0;font-size:var(--s-0);line-height:1.5;opacity:.66;max-width:44ch}
+.book__meta{grid-column:2;margin-top:.5rem;display:flex;flex-wrap:wrap;gap:.3rem 1.1rem;opacity:.5}
+.book__meta .stock{color:var(--terra);opacity:1}
+
+/* ── 03 THE RULE ─────────────────────────────────────────── */
+.rule-sec{
+  padding:clamp(5rem,14vh,10rem) var(--gut) clamp(4rem,11vh,8rem);
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  column-gap:clamp(.7rem,1.6vw,1.4rem);
+  row-gap:2.2rem;
+}
+.rule-sec .lab{grid-column:1/3}
+.creed{
+  grid-column:3/12;
+  font-family:var(--display);
+  font-variation-settings:"opsz" 144,"wght" 330,"SOFT" 0,"WONK" 1;
+  font-size:clamp(1.65rem,4.7vw,4.05rem);
+  line-height:1.02;
+  letter-spacing:-.032em;
+  margin:0;
+  text-wrap:balance;
+}
+.creed em{font-style:italic;color:var(--terra);font-variation-settings:"opsz" 144,"wght" 320,"WONK" 1}
+.creed .word{display:inline-block}
+.sig{
+  grid-column:3/12;
+  display:flex;flex-wrap:wrap;gap:.4rem 1.6rem;align-items:baseline;
+  opacity:.6;
+}
+@media(max-width:860px){
+  .rule-sec{grid-template-columns:1fr}
+  .rule-sec .lab,.creed,.sig{grid-column:1}
+}
+
+/* ── 04 THE READING ROOM ─────────────────────────────────── */
+.room{
+  display:grid;
+  grid-template-columns:1fr 2.4fr;
+  align-items:stretch;
+  border-top:1px solid var(--rule);
+}
+.room__left{
+  padding:clamp(2rem,5vh,3.4rem) clamp(1rem,2.4vw,2rem) clamp(2rem,5vh,3.4rem) var(--gut);
+  border-right:1px solid var(--rule);
+}
+.room__facts{margin:1.6rem 0 0;padding:0;list-style:none}
+.room__facts li{
+  display:flex;justify-content:space-between;gap:1rem;align-items:baseline;
+  padding:.62rem 0;
+  border-top:1px solid var(--rule-soft);
+}
+.room__facts li:first-child{border-top:0}
+.room__facts b{font-weight:500;font-variant-numeric:tabular-nums}
+.room__facts span{opacity:.5}
+
+.room__right{
+  background:var(--ink);
+  color:var(--paper);
+  padding:clamp(2.4rem,7vh,5rem) var(--gut);
+  display:flex;flex-direction:column;justify-content:space-between;gap:clamp(2rem,5vh,3.4rem);
+}
+.room__right .lab{color:rgba(237,234,227,.5)}
+.house{margin:0;padding:0;list-style:none;counter-reset:h}
+.house li{
+  counter-increment:h;
+  display:grid;grid-template-columns:2.8rem 1fr;
+  gap:.9rem;
+  padding:clamp(.75rem,1.9vh,1.15rem) 0;
+  border-top:1px solid var(--ink-inv-rule);
+  font-family:var(--display);
+  font-variation-settings:"opsz" 90,"wght" 320,"WONK" 1;
+  font-size:clamp(1.1rem,2.35vw,1.95rem);
+  line-height:1.14;
+  letter-spacing:-.02em;
+}
+.house li::before{
+  content:counter(h,decimal-leading-zero);
+  font-family:var(--mono);font-size:var(--label);letter-spacing:.1em;
+  color:rgba(237,234,227,.42);
+  padding-top:.55em;
+  font-variant-numeric:tabular-nums;
+}
+.house li em{font-style:italic;color:var(--terra)}
+.room__addr{display:flex;flex-wrap:wrap;gap:.4rem 1.6rem;color:rgba(237,234,227,.55)}
+@media(max-width:860px){
+  .room{grid-template-columns:1fr}
+  .room__left{border-right:0;border-bottom:1px solid var(--rule);padding:clamp(2rem,6vw,3rem) var(--gut)}
+}
+
+/* ── 05 ARCHIVE ──────────────────────────────────────────── */
+.arch{padding:clamp(4rem,11vh,7.5rem) 0 clamp(3rem,8vh,5rem)}
+.arch__head{margin-bottom:2.2rem}
+.arch__rows{border-top:1px solid var(--rule)}
+.row{
+  display:grid;
+  grid-template-columns:5.6rem minmax(0,1fr) auto;
+  gap:1rem;
+  align-items:baseline;
+  padding:clamp(.85rem,2.4vh,1.35rem) var(--gut);
+  border-bottom:1px solid var(--rule-soft);
+  text-decoration:none;
+  color:inherit;
+  position:relative;
+  transition:background-color .3s var(--ease),color .3s var(--ease);
+}
+.row::after{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:0;
+  background:var(--terra);transition:width .45s var(--ease);
+}
+.row:hover,.row:focus-visible{background:var(--paper-2)}
+.row:hover::after,.row:focus-visible::after{width:3px}
+.row__no{font-family:var(--mono);font-size:var(--label);letter-spacing:.1em;opacity:.45;font-variant-numeric:tabular-nums}
+.row__name{
+  font-family:var(--display);
+  font-variation-settings:"opsz" 90,"wght" 360,"WONK" 1;
+  font-size:clamp(1.25rem,3.2vw,2.35rem);
+  line-height:1;letter-spacing:-.03em;
+  margin:0;
+}
+.row__name i{
+  font-style:normal;
+  background-image:linear-gradient(var(--terra),var(--terra));
+  background-repeat:no-repeat;
+  background-position:0 100%;
+  background-size:0% 1px;
+  transition:background-size .5s var(--ease);
+}
+.row:hover .row__name i,.row:focus-visible .row__name i{background-size:100% 1px}
+.row__date{font-family:var(--mono);font-size:var(--label);letter-spacing:.1em;opacity:.45;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+@media(max-width:640px){
+  .row{grid-template-columns:3.4rem minmax(0,1fr);row-gap:.35rem}
+  .row__date{grid-column:2;text-align:left}
+}
+
+/* ── 06 FOOTER ───────────────────────────────────────────── */
+.foot{
+  background:var(--ink);
+  color:var(--paper);
+  padding:clamp(3.4rem,9vh,6rem) var(--gut) 0;
+  overflow:hidden;
+  position:relative;
+}
+.foot__grid{
+  display:grid;
+  grid-template-columns:1.2fr 1fr;
+  gap:clamp(2rem,6vw,5rem);
+  align-items:start;
+  padding-bottom:clamp(2.6rem,7vh,4.5rem);
+}
+.foot .lab{color:rgba(237,234,227,.5)}
+.foot__pitch{
+  font-family:var(--display);
+  font-variation-settings:"opsz" 120,"wght" 330,"WONK" 1;
+  font-size:clamp(1.5rem,3.4vw,2.7rem);
+  line-height:1.06;letter-spacing:-.03em;
+  margin:.9rem 0 1.6rem;
+  max-width:20ch;
+}
+form.sub{display:flex;border-bottom:1px solid rgba(237,234,227,.35);max-width:30rem}
+form.sub input{
+  flex:1 1 auto;min-width:0;
+  background:transparent;border:0;color:var(--paper);
+  font-family:var(--sans);font-size:var(--s-0);
+  padding:.85rem .1rem;
+}
+form.sub input::placeholder{color:rgba(237,234,227,.42)}
+form.sub button{
+  flex:0 0 auto;
+  background:transparent;border:0;color:var(--terra);cursor:pointer;
+  font-family:var(--mono);font-size:var(--label);letter-spacing:.13em;text-transform:uppercase;
+  padding:.85rem .2rem .85rem 1rem;
+  min-height:44px;
+}
+.sub__ok{margin:.7rem 0 0;font-family:var(--mono);font-size:var(--label);letter-spacing:.1em;color:var(--terra);min-height:1.1em}
+
+.foot__cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.6rem}
+.foot__cols ul{list-style:none;margin:.9rem 0 0;padding:0}
+.foot__cols li{padding:0}
+.foot__cols a{
+  display:inline-block;min-height:40px;padding:.85rem 0 .55rem;line-height:1.2;
+  text-decoration:none;color:rgba(237,234,227,.8);
+  background-image:linear-gradient(var(--terra),var(--terra));
+  background-repeat:no-repeat;background-position:0 100%;background-size:0% 1px;
+  transition:background-size .45s var(--ease),color .3s var(--ease);
+}
+.foot__cols a:hover,.foot__cols a:focus-visible{color:var(--paper);background-size:100% 1px}
+
+.wordmark{
+  font-family:var(--display);
+  font-variation-settings:"opsz" 144,"wght" 400,"SOFT" 0,"WONK" 1;
+  font-size:clamp(4.6rem,26.5vw,26rem);
+  line-height:.72;
+  letter-spacing:-.055em;
+  margin:0;
+  color:transparent;
+  -webkit-text-stroke:1px rgba(237,234,227,.34);
+  transform:translateY(.13em);
+  user-select:none;
+  white-space:nowrap;
+}
+.foot__end{
+  display:flex;flex-wrap:wrap;justify-content:space-between;gap:.5rem 1.6rem;
+  padding:1.1rem 0 1.3rem;
+  border-top:1px solid var(--ink-inv-rule);
+  color:rgba(237,234,227,.45);
+  position:relative;z-index:2;
+  background:var(--ink);
+}
+@media(max-width:860px){
+  .foot__grid{grid-template-columns:1fr;gap:2.4rem}
+}
+
+/* ── reveal base state (CSS-defined, JS animates TO visible) ─ */
+.rv{opacity:0;transform:translateY(18px)}
+.no-js .rv,.is-ready .rv{opacity:1;transform:none}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms!important;animation-iteration-count:1!important;
+    transition-duration:.001ms!important;scroll-behavior:auto!important;
+  }
+  .rv{opacity:1!important;transform:none!important}
+}
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<a class="skip" href="#shelf">Skip to the seven</a>
+
+<header class="bar">
+  <a class="bar__mark" href="#top">Sétima</a>
+  <nav class="bar__mid lab" aria-label="Sections">
+    <a href="#shelf">The seven</a>
+    <a href="#room">Reading room</a>
+    <a href="#archive">Past rotations</a>
+  </nav>
+  <div class="bar__right lab">
+    <span><span class="dot" aria-hidden="true"></span>Open now</span>
+    <span class="num" id="clock" aria-label="Local time in Lisbon">--:--:--</span>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ── 01 MASTHEAD ───────────────────────────────────── -->
+  <section class="mast" aria-labelledby="h1">
+    <div class="mast__meta lab">
+      <span>Rotation Nº 47</span>
+      <span class="mast__theme">Casas Vazias / Empty Houses</span>
+      <span>Rua do Poço dos Negros 112, Lisboa</span>
+    </div>
+
+    <div class="mast__count lab">
+      <span>Days until the shelf is emptied</span>
+      <b class="num" id="days">12</b>
+    </div>
+
+    <h1 class="mast__line disp" id="h1">
+      <span class="ln">Seven books.</span>
+      <span class="ln">Thirty-one days.</span>
+      <span class="ln">Then we <em>empty</em> the shelf.</span>
+    </h1>
+
+    <div class="mast__foot">
+      <p class="rv">A bookshop with one shelf on it. <span class="op">We stock seven titles, we can defend all seven, and on the 7th of each month they go back in the boxes whether you got to them or not.</span></p>
+      <div class="ticks rv" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i class="on"></i>
+      </div>
+      <div class="mast__cue lab rv">01 — The shelf ↓</div>
+    </div>
+  </section>
+
+  <!-- ── 02 THE SHELF — the signature ──────────────────── -->
+  <section id="shelf" aria-labelledby="shelf-h">
+    <div class="shelf__stage">
+      <div class="shelf__bar">
+        <span class="lab" id="shelf-h">02 — The seven, August 2026</span>
+        <span class="lab shelf__prog num" id="shelfprog" aria-live="off">01 / 07</span>
+      </div>
+
+      <div class="spines" id="spines">
+        <article class="spine" data-i="0">
+          <div class="spine__rail"><span class="spine__no num">01</span><span class="spine__vert">Housekeeping</span><span class="spine__dot"></span></div>
+        </article>
+        <article class="spine" data-i="1">
+          <div class="spine__rail"><span class="spine__no num">02</span><span class="spine__vert">O Ano da Morte de Ricardo Reis</span><span class="spine__dot"></span></div>
+        </article>
+        <article class="spine" data-i="2">
+          <div class="spine__rail"><span class="spine__no num">03</span><span class="spine__vert">The Rings of Saturn</span><span class="spine__dot"></span></div>
+        </article>
+        <article class="spine" data-i="3">
+          <div class="spine__rail"><span class="spine__no num">04</span><span class="spine__vert">Aracoeli</span><span class="spine__dot"></span></div>
+        </article>
+        <article class="spine" data-i="4">
+          <div class="spine__rail"><span class="spine__no num">05</span><span class="spine__vert">A Ilustre Casa de Ramires</span><span class="spine__dot"></span></div>
+        </article>
+        <article class="spine" data-i="5">
+          <div class="spine__rail"><span class="spine__no num">06</span><span class="spine__vert">A Hora da Estrela</span><span class="spine__dot"></span></div>
+        </article>
+        <article class="spine" data-i="6">
+          <div class="spine__rail"><span class="spine__no num">07</span><span class="spine__vert">Speak, Memory</span><span class="spine__dot"></span></div>
+        </article>
+      </div>
+    </div>
+
+    <!-- source of truth for both the plate and the small-screen stack -->
+    <ol class="shelf__list" id="books">
+      <li class="book" id="b1" style="--pp:232">
+        <span class="book__no num">01</span>
+        <h3 class="book__title">Housekeeping</h3>
+        <p class="book__by">Marilynne Robinson · <i>1980</i></p>
+        <p class="book__note">A house in Idaho that never quite dries out, and two sisters who take opposite views on whether a roof is a good idea. The most beautiful book about neglect we know.</p>
+        <p class="book__meta lab"><span>Picador</span><span>232 pp</span><span>English</span><span class="stock">4 of 22 left</span></p>
+      </li>
+      <li class="book" id="b2" style="--pp:416">
+        <span class="book__no num">02</span>
+        <h3 class="book__title">O Ano da Morte de Ricardo Reis</h3>
+        <p class="book__by">José Saramago · <i>1984</i></p>
+        <p class="book__note">A dead poet comes back to a Lisbon of rain and hotel corridors and finds nobody has kept his room. Read it here, in the rain, at the window.</p>
+        <p class="book__meta lab"><span>Porto Editora</span><span>416 pp</span><span>Português</span><span class="stock">9 of 30 left</span></p>
+      </li>
+      <li class="book" id="b3" style="--pp:296">
+        <span class="book__no num">03</span>
+        <h3 class="book__title">The Rings of Saturn</h3>
+        <p class="book__by">W. G. Sebald · trans. Michael Hulse · <i>1995</i></p>
+        <p class="book__note">A walk along the Suffolk coast that keeps falling through the floor into silk, herring and burnt libraries. Nothing else on this shelf argues with it and wins.</p>
+        <p class="book__meta lab"><span>Vintage</span><span>296 pp</span><span>English</span><span class="stock">2 of 18 left</span></p>
+      </li>
+      <li class="book" id="b4" style="--pp:328">
+        <span class="book__no num">04</span>
+        <h3 class="book__title">Aracoeli</h3>
+        <p class="book__by">Elsa Morante · trans. William Weaver · <i>1982</i></p>
+        <p class="book__note">A son travels to a village in Andalusia to find his mother forty years too late. Morante's last novel and her least forgiving. Bring a free afternoon.</p>
+        <p class="book__meta lab"><span>Open Letter</span><span>328 pp</span><span>English</span><span class="stock">6 of 15 left</span></p>
+      </li>
+      <li class="book" id="b5" style="--pp:384">
+        <span class="book__no num">05</span>
+        <h3 class="book__title">A Ilustre Casa de Ramires</h3>
+        <p class="book__by">Eça de Queirós · <i>1900</i></p>
+        <p class="book__note">A man with nine hundred years of ancestors, one tower, no money and a novella he cannot finish. The funniest book ever written about a Portuguese house.</p>
+        <p class="book__meta lab"><span>Livros do Brasil</span><span>384 pp</span><span>Português</span><span class="stock">11 of 25 left</span></p>
+      </li>
+      <li class="book" id="b6" style="--pp:96">
+        <span class="book__no num">06</span>
+        <h3 class="book__title">A Hora da Estrela</h3>
+        <p class="book__by">Clarice Lispector · <i>1977</i></p>
+        <p class="book__note">Ninety pages, one rented room in Rio, and a narrator who keeps interrupting to say he is not up to the job. He is not. It is perfect.</p>
+        <p class="book__meta lab"><span>Relógio d'Água</span><span>96 pp</span><span>Português</span><span class="stock">7 of 24 left</span></p>
+      </li>
+      <li class="book" id="b7" style="--pp:320">
+        <span class="book__no num">07</span>
+        <h3 class="book__title">Speak, Memory</h3>
+        <p class="book__by">Vladimir Nabokov · <i>1951</i></p>
+        <p class="book__note">The house at Vyra, remembered so precisely it stops being a house and becomes a case for the defence. We put it seventh on purpose.</p>
+        <p class="book__meta lab"><span>Penguin Classics</span><span>320 pp</span><span>English</span><span class="stock">5 of 20 left</span></p>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ── 03 THE RULE ───────────────────────────────────── -->
+  <section class="rule-sec" aria-labelledby="rule-h">
+    <span class="lab" id="rule-h">03 — Why seven</span>
+    <p class="creed" id="creed">A shop with twelve thousand books is a warehouse holding opinions it will not say out loud. We keep seven, we have read all seven, and if you ask why the seventh is there we will <em>tell you at length</em>.</p>
+    <p class="sig lab rv"><span>Inês Mourão — she chooses them</span><span>Sétima, since March 2022</span><span>47 rotations, 329 books</span></p>
+  </section>
+
+  <!-- ── 04 THE READING ROOM ───────────────────────────── -->
+  <section class="room" id="room" aria-labelledby="room-h">
+    <div class="room__left">
+      <span class="lab" id="room-h">04 — The reading room</span>
+      <ul class="room__facts">
+        <li><span>Seats</span><b class="num">14</b></li>
+        <li><span>Tuesday–Saturday</span><b class="num">11:00 — 20:00</b></li>
+        <li><span>Sunday</span><b class="num">14:00 — 19:00</b></li>
+        <li><span>Monday</span><b>Closed. Inês reads.</b></li>
+        <li><span>Entry</span><b>Free</b></li>
+        <li><span>Reservations</span><b>No</b></li>
+      </ul>
+    </div>
+    <div class="room__right">
+      <div>
+        <span class="lab">The house rules, all of them</span>
+        <ol class="house">
+          <li>Sit as long as you like. <em>Nobody will come over.</em></li>
+          <li>No laptops after five. Notebooks always.</li>
+          <li>The coffee is free after six and it is not very good.</li>
+          <li>You may read a book you have not bought. That is the entire point.</li>
+          <li>Talk quietly, or take it to the courtyard, which is nicer anyway.</li>
+        </ol>
+      </div>
+      <p class="room__addr lab">
+        <span>Rua do Poço dos Negros 112</span><span>1200-337 Lisboa</span><span>+351 21 396 07 12</span><span>ola@setima.pt</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- ── 05 ARCHIVE ────────────────────────────────────── -->
+  <section class="arch" id="archive" aria-labelledby="arch-h">
+    <div class="sec__head arch__head">
+      <span class="sec__no num" aria-hidden="true">05</span>
+      <span class="lab" id="arch-h">Rotations we have already emptied</span>
+    </div>
+    <div class="arch__rows">
+      <a class="row" href="#archive"><span class="row__no num">Nº 46</span><h3 class="row__name"><i>Boats, and Excuses to Miss Them</i></h3><span class="row__date num">Jul 2026 · 7 titles · sold out in 19 days</span></a>
+      <a class="row" href="#archive"><span class="row__no num">Nº 45</span><h3 class="row__name"><i>Women Who Wrote at Night</i></h3><span class="row__date num">Jun 2026 · 7 titles · sold out in 8 days</span></a>
+      <a class="row" href="#archive"><span class="row__no num">Nº 44</span><h3 class="row__name"><i>The Portuguese Sentence</i></h3><span class="row__date num">May 2026 · 7 titles · 3 unsold</span></a>
+      <a class="row" href="#archive"><span class="row__no num">Nº 43</span><h3 class="row__name"><i>Books About Walking, Mostly Badly</i></h3><span class="row__date num">Apr 2026 · 7 titles · sold out in 26 days</span></a>
+      <a class="row" href="#archive"><span class="row__no num">Nº 42</span><h3 class="row__name"><i>Translated Twice</i></h3><span class="row__date num">Mar 2026 · 7 titles · 1 unsold</span></a>
+    </div>
+  </section>
+</main>
+
+<!-- ── 06 FOOTER ───────────────────────────────────────── -->
+<footer class="foot">
+  <div class="foot__grid">
+    <div>
+      <span class="lab">The seventh, every month</span>
+      <p class="foot__pitch">One email on the 7th. The next seven, and why.</p>
+      <form class="sub" id="sub" novalidate>
+        <label class="skip" for="email">Email address</label>
+        <input id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@somewhere.pt" required>
+        <button type="submit">Subscribe</button>
+      </form>
+      <p class="sub__ok lab" id="subok" role="status"></p>
+    </div>
+    <div class="foot__cols">
+      <div>
+        <span class="lab">Visit</span>
+        <ul class="lab">
+          <li><a href="#room">Rua do Poço dos Negros 112</a></li>
+          <li><a href="#room">Tue–Sat 11–20</a></li>
+          <li><a href="#archive">Past rotations</a></li>
+        </ul>
+      </div>
+      <div>
+        <span class="lab">Elsewhere</span>
+        <ul class="lab">
+          <li><a href="#top">Instagram</a></li>
+          <li><a href="#top">The reading list</a></li>
+          <li><a href="mailto:ola@setima.pt">ola@setima.pt</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <p class="wordmark" aria-hidden="true">Sétima</p>
+
+  <div class="foot__end lab">
+    <span>Sétima, Lisboa — independent since 2022</span>
+    <span class="num" id="clock2">--:--:-- WEST</span>
+    <span>Press <b>7</b></span>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/CustomEase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.css">
+
+<script>
+(function () {
+  "use strict";
+
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var hasGSAP = typeof window.gsap !== "undefined";
+
+  /* ── live Lisbon clock + days until the 7th ─────────────── */
+  var c1 = document.getElementById("clock"), c2 = document.getElementById("clock2");
+  function tick() {
+    var t = new Date().toLocaleTimeString("en-GB", { timeZone: "Europe/Lisbon", hour12: false });
+    if (c1) c1.textContent = t;
+    if (c2) c2.textContent = t + " WEST";
+  }
+  tick(); setInterval(tick, 1000);
+
+  var d = new Date(), nxt = new Date(d.getFullYear(), d.getMonth(), 7);
+  if (nxt <= d) nxt = new Date(d.getFullYear(), d.getMonth() + 1, 7);
+  var left = Math.max(1, Math.ceil((nxt - d) / 864e5));
+  var dEl = document.getElementById("days");
+  if (dEl) dEl.textContent = left < 10 ? "0" + left : String(left);
+
+  /* ── newsletter ─────────────────────────────────────────── */
+  var sub = document.getElementById("sub"), subok = document.getElementById("subok");
+  if (sub) sub.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var v = document.getElementById("email").value.trim();
+    subok.textContent = /.+@.+\..+/.test(v)
+      ? "Good. Next one goes out on the 7th."
+      : "That is not an email address.";
+  });
+
+  if (!hasGSAP) { document.body.classList.add("is-ready"); return; }
+
+  gsap.registerPlugin(ScrollTrigger, SplitText, CustomEase);
+  CustomEase.create("setima", "M0,0 C0.16,1 0.3,1 1,1");
+
+  /* ── smooth scroll ──────────────────────────────────────── */
+  if (!reduce && typeof window.Lenis !== "undefined") {
+    var lenis = new Lenis({ lerp: 0.09, smoothWheel: true, syncTouch: false, autoRaf: false, anchors: true });
+    lenis.on("scroll", ScrollTrigger.update);
+    gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  /* ── the plate: one element, moved into the open spine ──── */
+  var spines = gsap.utils.toArray("#spines .spine");
+  var books = gsap.utils.toArray("#books .book");
+  var prog = document.getElementById("shelfprog");
+
+  var plate = document.createElement("div");
+  plate.className = "plate";
+  plate.setAttribute("aria-hidden", "true");
+
+  function fill(i) {
+    var b = books[i];
+    if (!b) return;
+    plate.innerHTML =
+      '<span class="plate__ghost num">' + b.querySelector(".book__no").textContent + '</span>' +
+      '<div class="plate__top lab"><span class="num">' + b.querySelector(".book__no").textContent + ' / 07</span>' +
+      '<span>' + b.querySelector(".book__meta").children[2].textContent + '</span></div>' +
+      '<div><h3 class="plate__title">' + b.querySelector(".book__title").textContent + '</h3>' +
+      '<p class="plate__by">' + b.querySelector(".book__by").innerHTML + '</p></div>' +
+      '<p class="plate__note">' + b.querySelector(".book__note").textContent + '</p>' +
+      '<div class="plate__foot lab">' +
+        '<span>' + b.querySelector(".book__meta").children[0].textContent + '</span>' +
+        '<span class="num">' + b.querySelector(".book__meta").children[1].textContent + '</span>' +
+        '<span class="stock num">' + b.querySelector(".book__meta").children[3].textContent + '</span>' +
+      '</div>';
+  }
+
+  var open = -1;
+  var CLOSED = 7.6, OPEN = 100 - CLOSED * 6;
+
+  function setOpen(i, instant) {
+    if (i === open) return;
+    open = i;
+    fill(i);
+    spines[i].appendChild(plate);
+    spines.forEach(function (s, k) {
+      s.classList.toggle("is-open", k === i);
+      gsap.to(s, {
+        width: (k === i ? OPEN : CLOSED) + "%",
+        duration: instant ? 0 : 0.85,
+        ease: "setima",
+        overwrite: "auto"
+      });
+    });
+    gsap.fromTo(plate,
+      { clipPath: "inset(0 0 100% 0)" },
+      { clipPath: "inset(0 0 0% 0)", duration: instant ? 0 : 0.9, ease: "setima", overwrite: "auto" });
+    gsap.fromTo(plate.querySelectorAll(".plate__top, .plate__title, .plate__by, .plate__note, .plate__foot"),
+      { yPercent: 22, autoAlpha: 0 },
+      { yPercent: 0, autoAlpha: 1, duration: instant ? 0 : 0.7, stagger: 0.055, ease: "power3.out", overwrite: "auto" });
+    if (prog) prog.textContent = "0" + (i + 1) + " / 07";
+  }
+
+  var mm = gsap.matchMedia();
+
+  mm.add({
+    isDesktop: "(min-width: 861px) and (prefers-reduced-motion: no-preference)",
+    isStack: "(max-width: 860px), (prefers-reduced-motion: reduce)"
+  }, function (ctx) {
+    var stage = document.querySelector(".shelf__stage");
+    var list = document.getElementById("books");
+
+    if (ctx.conditions.isDesktop) {
+      stage.style.display = "flex";
+      list.style.display = "none";
+      setOpen(0, true);
+
+      var st = ScrollTrigger.create({
+        trigger: "#shelf",
+        start: "top top",
+        end: "+=520%",
+        pin: stage,
+        pinSpacing: true,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+        onUpdate: function (self) {
+          var i = Math.min(6, Math.floor(self.progress * 7.0001));
+          setOpen(i);
+        }
+      });
+
+      // easter egg: 7 sends you to the seventh spine
+      var key = function (e) {
+        if (e.key !== "7" || /input|textarea/i.test(document.activeElement.tagName)) return;
+        var y = st.start + (st.end - st.start) * 0.94;
+        window.scrollTo({ top: y, behavior: "smooth" });
+      };
+      window.addEventListener("keydown", key);
+      return function () { window.removeEventListener("keydown", key); };
+    }
+
+    /* the designed stack: mobile + reduced motion */
+    stage.style.display = "none";
+    list.style.display = "block";
+    if (plate.parentNode) plate.parentNode.removeChild(plate);
+  });
+
+  /* ── reveals ────────────────────────────────────────────── */
+  if (reduce) {
+    document.body.classList.add("is-ready");
+    gsap.set(".rv", { clearProps: "all" });
+  } else {
+    ScrollTrigger.batch(".rv", {
+      start: "clamp(top 88%)", once: true,
+      onEnter: function (b) {
+        gsap.to(b, { autoAlpha: 1, y: 0, duration: 0.9, stagger: 0.09, ease: "power3.out", overwrite: true });
+      }
+    });
+    gsap.set(".rv", { y: 18 });
+
+    document.fonts.ready.then(function () {
+      SplitText.create("#h1", {
+        type: "lines", mask: "lines", autoSplit: true, aria: "auto",
+        onSplit: function (self) {
+          return gsap.from(self.lines, {
+            yPercent: 108, duration: 1.25, stagger: 0.085, ease: "expo.out"
+          });
+        }
+      });
+
+      SplitText.create("#creed", {
+        type: "words", aria: "auto", wordsClass: "word",
+        onSplit: function (self) {
+          return gsap.from(self.words, {
+            yPercent: 40, autoAlpha: 0, duration: 0.8, stagger: 0.018, ease: "power3.out",
+            scrollTrigger: { trigger: "#creed", start: "clamp(top 78%)", once: true }
+          });
+        }
+      });
+
+      gsap.from(".house li", {
+        yPercent: 30, autoAlpha: 0, duration: 0.8, stagger: 0.08, ease: "power3.out",
+        scrollTrigger: { trigger: ".house", start: "clamp(top 82%)", once: true }
+      });
+
+      gsap.from(".ticks i", {
+        scaleY: 0, transformOrigin: "bottom", duration: 0.6, stagger: 0.05, ease: "power3.out", delay: 0.5
+      });
+
+      gsap.from(".wordmark", {
+        yPercent: 26, duration: 1.4, ease: "expo.out",
+        scrollTrigger: { trigger: ".foot", start: "top 80%", once: true }
+      });
+
+      ScrollTrigger.refresh();
+    });
+  }
+
+  /* ── safety nets ────────────────────────────────────────── */
+  window.addEventListener("load", function () {
+    document.body.classList.add("is-ready");
+    gsap.set(".rv", { autoAlpha: 1, y: 0, clearProps: "transform,opacity,visibility" });
+    ScrollTrigger.refresh();
+  });
+  setTimeout(function () {
+    document.body.classList.add("is-ready");
+    gsap.set(".rv", { autoAlpha: 1, y: 0 });
+  }, 2600);
+})();
+</script>
+</body>
+</html>

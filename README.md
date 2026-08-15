@@ -121,6 +121,45 @@ shader's `uLevel` uniform — the fire breathes with the pad it is playing.
 
 ---
 
+## 4 — Sétima, a bookshop in Lisbon
+
+A shop that stocks seven titles and empties the shelf every month. Both versions
+found the same terracotta (`#C4562E`) and the same Fraunces display face without
+being told to, and both invented an eighth book that is never for sale.
+
+### `v1` · The shelf opens like a book
+
+[![Sétima v1](screenshots/4-setima-v1.jpg)](4-setima-v1.html)
+
+Seven vertical spines fill the viewport, titles set in `writing-mode: vertical-rl`.
+Scrolling a pinned section drives one spine from 7.6% to 54.4% width while the
+rest compress, and a single detail panel is physically `appendChild`-ed into
+whichever spine is open — one element moved through the shelf rather than seven
+panels toggling. It wipes in on `clip-path` with the copy staggered behind it.
+
+- **Signature** — the accordion shelf, and the fact that only one plate exists in the DOM at any moment
+- **Fallback with an idea in it** — on mobile the shelf becomes a stack where each entry's rule is drawn from its real page count (`--pp: 232` → a bar 31px tall), so a short book looks short. The spine metaphor survives the breakpoint instead of being dropped.
+- **Palette** — `#14130F` ink, `#EDEAE3` paper, `#C4562E` terracotta
+- **Type** — Fraunces with `WONK 1` and `opsz` retuned per role (24 for the wordmark, 144 for the masthead), Schibsted Grotesk, DM Mono
+- **Craft** — a seven-tick rule in the masthead with only the last one lit; days-until-the-7th computed live; pressing `7` scrolls you to the seventh spine, and the footer just says `Press 7`
+
+### `v2` · Seven cards and a deliberate gap
+
+[![Sétima v2](screenshots/4-setima-v2.jpg)](4-setima-v2.html)
+
+Written in Portuguese, and warmer — an outlined `VII` sits behind the masthead
+and the shelf runs as a horizontal scrub through eight cards. The eighth is a
+dashed ghost that is permanently empty: *"O oitavo lugar fica sempre vazio — para
+o livro que ainda ninguém escreveu."* Scroll past 97% and the counter stops
+reading `de 07` and admits `o oitavo lugar fica vazio`.
+
+- **Signature** — the empty eighth card, which turns a shop constraint into the page's best line
+- **Palette** — `#F4F1EC` paper, `#14130F` ink, `#C4562E` accent, with per-book spine colours
+- **Type** — Fraunces italic for display, Instrument Sans for body, DM Mono for labels
+- **Craft** — the header detects when it is over a dark section and inverts; the edition label builds itself from the current month in `pt-PT`; a countdown runs to midnight on the 1st; the footer hides one more line — *Há sempre um oitavo livro. Nunca à venda.*
+
+---
+
 ## The v1 / v2 split
 
 The two versions of each brief were produced under different conditions — `v1`
@@ -135,12 +174,16 @@ looking at on their own, but the pairs are also a rough comparison:
 | `2-marrow-v2` | 63.4 KB | 1446 | 0 | — |
 | `3-hearth-v1` | 34.0 KB | 822 | 7 | Three.js, GSAP, Lenis |
 | `3-hearth-v2` | 44.2 KB | 1176 | 0 | Web Audio API |
+| `4-setima-v1` | 42.2 KB | 1057 | 6 | GSAP, Lenis |
+| `4-setima-v2` | 38.4 KB | 900 | 5 | GSAP, Lenis |
 
-Every `v1` is 22–30% shorter than its `v2` counterpart, and leans on GSAP and
-Lenis for motion. Every `v2` writes more of it by hand — two of them ship with
-no external JavaScript at all. Which trade you prefer is the interesting
-question; fewer dependencies is a real virtue, and so is not rewriting an easing
-library.
+For the first three briefs the pattern was clean: `v1` came out 22–30% shorter
+and leaned on GSAP and Lenis, while `v2` hand-rolled the same behaviour and
+twice shipped with no external JavaScript at all.
+
+Sétima breaks it. There `v1` is the *longer* of the two, and both versions reach
+for the same libraries. One inversion in four says more than the three that
+agreed — whichever way the trade tends to fall, it is a tendency and not a rule.
 
 ---
 
@@ -166,5 +209,7 @@ headless Chrome.
 [MIT](LICENSE) © 2026 Tomás Girão
 
 Every person and business on these pages is invented. Noor Abadi, Solenne Riva,
-Marrow and Hearth are not real, and the addresses, prices and credentials are
-fiction written to make the briefs concrete.
+Marrow, Hearth, Sétima and its bookseller Inês Mourão are not real, and the
+addresses, prices and credentials are fiction written to make the briefs
+concrete. The books on Sétima's shelf are real books; nothing else about the
+shop is.
