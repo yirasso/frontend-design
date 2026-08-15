@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hearth — generative audio, Lisbon</title>
+<meta name="description" content="Hearth composes continuous music from the acoustics of the room it is playing in. No stems, no crossfades, no track that comes back around.">
+<meta property="og:title" content="Hearth — generative audio, Lisbon">
+<meta property="og:description" content="Continuous music conditioned on the room it plays in. It burns; it does not loop.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0E0D0B">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Schibsted+Grotesk:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<script type="importmap">
+{"imports":{
+  "three":"https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.module.min.js",
+  "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.185.1/examples/jsm/"
+}}
+</script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.css">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js"></script>
+
+<style>
+/* ─────────────────────────────  tokens  ───────────────────────────── */
+:root{
+  --ink:#0E0D0B;
+  --ink-2:#161411;
+  --coal:#221B15;
+  --ash:#E8E4DC;
+  --ash-dim:#A8A29A;
+  --ash-faint:#837E75;
+  --ember:#FF4A1C;
+  --rule:rgba(232,228,220,.14);
+
+  --serif:"Instrument Serif",ui-serif,Georgia,serif;
+  --sans:"Schibsted Grotesk",ui-sans-serif,system-ui,-apple-system,"Helvetica Neue",sans-serif;
+  --mono:"DM Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+
+  --s-0:clamp(1rem,.95rem + .25vw,1.125rem);
+  --s-1:clamp(1.2rem,1.08rem + .55vw,1.5rem);
+  --s-2:clamp(1.5rem,1.28rem + 1.05vw,2.1rem);
+  --s-3:clamp(2rem,1.5rem + 2.3vw,3.4rem);
+  --s-4:clamp(2.6rem,1.6rem + 4.6vw,5.6rem);
+  --s-hero:clamp(3.1rem,1.1rem + 10.4vw,11rem);
+
+  --gut:clamp(1.25rem,4vw,3.5rem);
+  --maxw:1560px;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+html,body{overflow-x:clip}
+body{
+  margin:0;background:var(--ink);color:var(--ash);
+  font-family:var(--sans);font-size:var(--s-0);line-height:1.55;
+  font-synthesis-weight:none;-webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+::selection{background:var(--ember);color:#0E0D0B}
+
+a{color:inherit}
+img{max-width:100%;display:block}
+h1,h2,h3,p,figure,blockquote{margin:0}
+ul,ol{margin:0;padding:0;list-style:none}
+
+:focus-visible{
+  outline:2px solid var(--ember);outline-offset:4px;border-radius:2px;
+}
+
+.skip{
+  position:fixed;top:0;left:0;z-index:99;
+  transform:translateY(-120%);
+  background:var(--ember);color:#0E0D0B;
+  font:500 .8125rem/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;
+  padding:14px 20px;text-decoration:none;
+  transition:transform .25s var(--ease);
+}
+.skip:focus-visible{transform:none}
+
+.shell{
+  width:100%;max-width:var(--maxw);margin-inline:auto;
+  padding-inline:var(--gut);
+  display:grid;grid-template-columns:repeat(12,minmax(0,1fr));
+  column-gap:clamp(.75rem,1.6vw,1.5rem);
+}
+
+.lbl{
+  font:400 clamp(.6875rem,.66rem + .1vw,.78rem)/1.35 var(--mono);
+  letter-spacing:.13em;text-transform:uppercase;color:var(--ash-dim);
+}
+.num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+
+/* ─────────────────────────────  grain  ───────────────────────────── */
+.grain{
+  position:fixed;inset:-40px;z-index:60;pointer-events:none;
+  opacity:.055;mix-blend-mode:overlay;
+  background-image:var(--grain-src);background-size:220px 220px;
+}
+
+/* ─────────────────────────────  chrome  ───────────────────────────── */
+.top{
+  position:fixed;top:0;left:0;right:0;z-index:40;
+  padding-block:clamp(.9rem,1.6vw,1.4rem);
+  mix-blend-mode:difference;pointer-events:none;
+}
+.top .shell{align-items:baseline}
+.top a,.top .lbl{pointer-events:auto}
+.mark{
+  grid-column:1/span 4;
+  font:400 1.0625rem/1 var(--serif);letter-spacing:.02em;
+  text-decoration:none;display:inline-flex;align-items:center;gap:.55rem;
+  min-height:44px;
+}
+.mark .dot{
+  width:7px;height:7px;border-radius:50%;background:var(--ember);
+  flex:0 0 auto;box-shadow:0 0 12px rgba(255,74,28,.9);
+}
+.top nav{grid-column:9/span 4;display:flex;justify-content:flex-end;gap:clamp(1rem,2.4vw,2.4rem)}
+.top nav a{
+  text-decoration:none;min-height:44px;display:inline-flex;align-items:center;
+  font:400 .78rem/1 var(--mono);letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ash);opacity:.72;transition:opacity .2s var(--ease);
+}
+.top nav a:hover{opacity:1}
+@media(max-width:719px){.top nav a:nth-child(1),.top nav a:nth-child(2){display:none}}
+
+/* ─────────────────────────────  hero  ───────────────────────────── */
+.hero{
+  position:relative;min-height:100svh;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding-bottom:clamp(2rem,5vh,4.5rem);
+  isolation:isolate;
+}
+#ember{
+  position:absolute;inset:0;z-index:0;
+  width:100%;height:100%;display:block;pointer-events:none;
+}
+/* CSS fallback if WebGL is unavailable or a shader fails */
+.hero::before{
+  content:"";position:absolute;inset:0;z-index:0;opacity:0;
+  transition:opacity .6s linear;
+  background:
+    radial-gradient(58% 40% at 22% 108%,rgba(255,74,28,.62),transparent 68%),
+    radial-gradient(52% 34% at 74% 112%,rgba(196,86,46,.5),transparent 70%),
+    radial-gradient(90% 60% at 50% 128%,rgba(34,27,21,.95),transparent 72%);
+  filter:blur(52px);
+}
+.no-webgl .hero::before{opacity:1}
+.hero__veil{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(14,13,11,.94) 0%,rgba(14,13,11,.30) 30%,rgba(14,13,11,0) 52%),
+    linear-gradient(0deg,rgba(14,13,11,.74) 0%,rgba(14,13,11,.36) 14%,rgba(14,13,11,0) 40%);
+}
+.hero__inner{position:relative;z-index:2;width:100%}
+
+.hero__eyebrow{grid-column:1/span 12;display:flex;gap:.6rem;align-items:baseline;flex-wrap:wrap;
+  margin-bottom:clamp(1.6rem,7vh,4.5rem)}
+.hero__eyebrow .sep{color:var(--ash-faint)}
+
+h1{
+  grid-column:1/span 12;
+  font-family:var(--serif);font-weight:400;
+  font-size:var(--s-hero);line-height:.87;letter-spacing:-.035em;
+  text-wrap:balance;margin:0;
+}
+h1 em{font-style:italic;color:var(--ember)}
+@media(min-width:900px){h1{grid-column:1/span 9;letter-spacing:-.045em}}
+
+.hero__foot{
+  grid-column:1/span 12;
+  margin-top:clamp(1.6rem,4vh,2.6rem);
+  display:grid;grid-template-columns:subgrid;
+  border-top:1px solid var(--rule);padding-top:clamp(1rem,2vh,1.4rem);
+  row-gap:1.2rem;
+}
+@supports not (grid-template-columns:subgrid){.hero__foot{display:block}}
+.hero__lede{grid-column:1/span 12;max-width:46ch;color:var(--ash-dim);text-wrap:pretty}
+@media(min-width:900px){
+  .hero__lede{grid-column:1/span 5}
+  .hero__meta{grid-column:9/span 4;justify-self:end;text-align:right}
+}
+.hero__meta{grid-column:1/span 12}
+.hero__meta dl{display:grid;grid-template-columns:auto auto;gap:.35rem 1.4rem;margin:0;justify-content:start}
+@media(min-width:900px){.hero__meta dl{justify-content:end}}
+.hero__meta dt{font:400 .72rem/1.5 var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--ash-faint)}
+.hero__meta dd{margin:0;font:400 .95rem/1.5 var(--sans);color:var(--ash);font-variant-numeric:tabular-nums}
+
+/* reveal primitives */
+.rv{opacity:0;visibility:hidden;transform:translateY(14px)}
+.is-in .rv,.rv.is-in{opacity:1;visibility:visible;transform:none}
+
+/* ─────────────────────────  manifesto  ───────────────────────── */
+.manifesto{padding-block:clamp(6rem,20vh,15rem)}
+.manifesto blockquote{
+  grid-column:1/span 12;
+  font-family:var(--serif);font-weight:400;
+  font-size:var(--s-4);line-height:1.02;letter-spacing:-.028em;
+  text-wrap:balance;
+}
+@media(min-width:900px){.manifesto blockquote{grid-column:2/span 9}}
+.manifesto .body{
+  grid-column:1/span 12;margin-top:clamp(2.4rem,6vh,4.4rem);
+  display:grid;grid-template-columns:subgrid;row-gap:1.2rem;
+}
+@supports not (grid-template-columns:subgrid){.manifesto .body{display:block}}
+.manifesto .body p{grid-column:1/span 12;max-width:58ch;color:var(--ash-dim);font-size:var(--s-1);line-height:1.5;text-wrap:pretty}
+.manifesto .body .lbl{grid-column:1/span 12}
+@media(min-width:900px){
+  .manifesto .body .lbl{grid-column:2/span 2}
+  .manifesto .body p{grid-column:6/span 6}
+}
+
+/* ─────────────────────────  models table  ───────────────────────── */
+.models{padding-block:clamp(3rem,8vh,6rem)}
+.models__head{grid-column:1/span 12;display:flex;justify-content:space-between;align-items:baseline;gap:1rem;
+  border-bottom:1px solid var(--rule);padding-bottom:.9rem;flex-wrap:wrap}
+.models__head h2{font:400 var(--s-2)/1.1 var(--serif);letter-spacing:-.02em}
+.models ol{grid-column:1/span 12}
+.row{
+  display:grid;grid-template-columns:repeat(12,minmax(0,1fr));
+  column-gap:clamp(.75rem,1.6vw,1.5rem);row-gap:.35rem;
+  padding-block:clamp(1.5rem,3.4vh,2.4rem);
+  border-bottom:1px solid var(--rule);
+  position:relative;
+}
+.row::after{
+  content:"";position:absolute;left:0;bottom:-1px;height:1px;width:0;
+  background:var(--ember);transition:width .5s var(--ease);
+}
+.row:hover::after,.row:focus-within::after{width:100%}
+.row__id{grid-column:1/span 12;font:400 .72rem/1.6 var(--mono);letter-spacing:.13em;color:var(--ember)}
+.row__name{
+  grid-column:1/span 12;
+  font:400 var(--s-3)/1 var(--serif);letter-spacing:-.03em;
+}
+.row__desc{grid-column:1/span 12;color:var(--ash-dim);max-width:44ch;text-wrap:pretty}
+.row__spec{grid-column:1/span 12;display:flex;gap:1.4rem;flex-wrap:wrap;
+  font:400 .8rem/1.6 var(--mono);color:var(--ash-faint);font-variant-numeric:tabular-nums}
+@media(min-width:900px){
+  .row__id{grid-column:1/span 1}
+  .row__name{grid-column:2/span 4}
+  .row__desc{grid-column:6/span 4}
+  .row__spec{grid-column:10/span 3;justify-content:flex-end;text-align:right;flex-direction:column;gap:.15rem}
+}
+
+/* ─────────────────────────  process  ───────────────────────── */
+.process{padding-block:clamp(6rem,18vh,13rem)}
+.process h2{
+  grid-column:1/span 12;font:400 var(--s-3)/1.05 var(--serif);letter-spacing:-.03em;
+  margin-bottom:clamp(2.5rem,7vh,5rem);text-wrap:balance;
+}
+@media(min-width:900px){.process h2{grid-column:2/span 6}}
+.step{
+  grid-column:1/span 12;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));
+  column-gap:clamp(.75rem,1.6vw,1.5rem);align-items:start;
+  padding-block:clamp(2rem,5vh,3.4rem);
+}
+.step + .step{border-top:1px solid var(--rule)}
+.step__n{
+  grid-column:1/span 12;
+  font:400 clamp(3.4rem,9vw,7.5rem)/.8 var(--serif);
+  letter-spacing:-.05em;color:transparent;
+  -webkit-text-stroke:1px rgba(232,228,220,.26);
+  font-variant-numeric:tabular-nums;margin-bottom:.6rem;
+}
+.step__t{grid-column:1/span 12;font:400 var(--s-2)/1.15 var(--serif);letter-spacing:-.022em}
+.step__b{grid-column:1/span 12;color:var(--ash-dim);max-width:52ch;margin-top:.7rem;text-wrap:pretty}
+@media(min-width:900px){
+  .step__n{grid-column:1/span 2;margin-bottom:0}
+  .step__t{grid-column:3/span 4}
+  .step__b{grid-column:8/span 5;margin-top:0}
+  .step:nth-child(odd) .step__b{grid-column:8/span 4}
+}
+
+/* ─────────────────────────  rooms  ───────────────────────── */
+.rooms{padding-block:clamp(4rem,10vh,8rem);background:var(--ink-2)}
+.rooms__head{grid-column:1/span 12;margin-bottom:clamp(2rem,5vh,3.4rem)}
+.rooms__head h2{font:400 var(--s-3)/1.05 var(--serif);letter-spacing:-.03em;margin-top:.7rem;max-width:20ch;text-wrap:balance}
+.rooms ul{grid-column:1/span 12}
+.room{
+  display:grid;grid-template-columns:repeat(12,minmax(0,1fr));
+  column-gap:clamp(.75rem,1.6vw,1.5rem);
+  padding-block:1.15rem;border-top:1px solid var(--rule);
+  align-items:baseline;row-gap:.2rem;
+}
+.room:last-child{border-bottom:1px solid var(--rule)}
+.room__y{grid-column:1/span 3;font:400 .8rem/1.7 var(--mono);color:var(--ash-faint);font-variant-numeric:tabular-nums}
+.room__p{grid-column:4/span 9;font-size:var(--s-1);letter-spacing:-.01em}
+.room__c{grid-column:1/span 12;color:var(--ash-faint);font:400 .8rem/1.7 var(--mono);font-variant-numeric:tabular-nums}
+@media(min-width:900px){
+  .room__y{grid-column:1/span 1}
+  .room__p{grid-column:2/span 6}
+  .room__c{grid-column:9/span 4;text-align:right}
+}
+
+/* ─────────────────────────  footer  ───────────────────────── */
+.foot{padding-top:clamp(5rem,14vh,10rem);padding-bottom:clamp(2rem,5vh,3.2rem);position:relative}
+.foot__cta{grid-column:1/span 12;margin-bottom:clamp(3rem,9vh,6rem)}
+.foot__cta p{font-family:var(--serif);font-size:var(--s-4);line-height:1;letter-spacing:-.035em;max-width:14ch;text-wrap:balance}
+.foot__cta a.big{
+  display:inline-block;margin-top:clamp(1.6rem,4vh,2.6rem);
+  font:400 var(--s-2)/1.2 var(--serif);letter-spacing:-.02em;
+  color:var(--ash);text-decoration:none;padding-block:6px;
+  background-image:linear-gradient(var(--ember),var(--ember));
+  background-repeat:no-repeat;background-position:0 100%;background-size:100% 1px;
+  transition:background-size .45s var(--ease),color .3s var(--ease);
+}
+.foot__cta a.big:hover{color:var(--ember);background-size:100% 2px}
+
+.foot__grid{grid-column:1/span 12;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));
+  column-gap:clamp(.75rem,1.6vw,1.5rem);row-gap:2.2rem;
+  border-top:1px solid var(--rule);padding-top:1.4rem}
+.fcol{grid-column:span 6}
+@media(min-width:900px){.fcol{grid-column:span 3}}
+.fcol h3{margin-bottom:.7rem}
+.fcol li a{
+  text-decoration:none;color:var(--ash);opacity:.78;
+  display:inline-flex;align-items:center;min-height:44px;min-width:44px;
+  transition:opacity .2s var(--ease);
+}
+.fcol li a:hover{opacity:1;color:var(--ember)}
+.fcol p{color:var(--ash-dim);font-size:.95rem}
+.clock{font-variant-numeric:tabular-nums;font-family:var(--mono);color:var(--ash);font-size:.95rem}
+.colophon{grid-column:1/span 12;margin-top:clamp(3rem,8vh,5rem);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+
+/* ─────────────────────────  reduced motion  ───────────────────────── */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;scroll-behavior:auto !important;
+  }
+  .rv{opacity:1;visibility:visible;transform:none}
+  .row::after{display:none}
+}
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="top">
+  <div class="shell">
+    <a class="mark" href="#top"><span class="dot" aria-hidden="true"></span>Hearth</a>
+    <nav aria-label="Primary">
+      <a href="#models">Models</a>
+      <a href="#listening">Listening</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ───────────────  HERO  ─────────────── -->
+  <section class="hero" id="top">
+    <canvas id="ember" aria-hidden="true"></canvas>
+    <div class="hero__veil" aria-hidden="true"></div>
+
+    <div class="hero__inner">
+      <div class="shell">
+        <p class="hero__eyebrow lbl rv">
+          <span>Hearth</span><span class="sep">/</span><span>Generative audio</span>
+          <span class="sep">/</span><span>Lisbon, since 2023</span>
+        </p>
+
+        <h1>It burns.<br>It does not <em>loop</em>.</h1>
+
+        <div class="hero__foot">
+          <p class="hero__lede rv">
+            Hearth writes music in the room it is playing in — measuring the reverb, then
+            composing against it, forever, without ever arriving back at a bar it has
+            already played.
+          </p>
+          <div class="hero__meta rv">
+            <dl>
+              <dt>Longest unbroken render</dt><dd class="num">411 days</dd>
+              <dt>Output</dt><dd class="num">48 kHz / 24-bit, stereo or 7.1.4</dd>
+              <dt>Repeated bars to date</dt><dd class="num">0</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────────  MANIFESTO  ─────────────── -->
+  <section class="manifesto">
+    <div class="shell">
+      <blockquote>
+        A loop is a promise that nothing else is going to happen. We would rather not
+        make that promise.
+      </blockquote>
+      <div class="body">
+        <p class="lbl rv">On method</p>
+        <p class="rv">
+          Most “endless” music is eight bars and a crossfade. You hear the seam by minute
+          four and stop hearing the music by minute six. Hearth does not hold a library of
+          stems. It holds a model of a room — its impulse response, its floor noise, the
+          way a hard surface at three metres eats the top end — and it writes into that
+          room in real time, one bar ahead of the listener, at about 12 ms of latency.
+        </p>
+        <p class="rv">
+          The result is not ambient wallpaper. It has structure, it has arguments with
+          itself, and it will occasionally go quiet for ninety seconds because the room
+          got loud. We think that is the interesting part.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────────  MODELS  ─────────────── -->
+  <section class="models" id="models" aria-labelledby="models-h">
+    <div class="shell">
+      <div class="models__head">
+        <h2 id="models-h">Three models, one engine</h2>
+        <p class="lbl">Available under research licence</p>
+      </div>
+      <ol>
+        <li class="row rv">
+          <p class="row__id">01 / EMB</p>
+          <h3 class="row__name">Ember</h3>
+          <p class="row__desc">Long-form tonal writing. Conditioned on room geometry; drifts key roughly once an hour and never announces it.</p>
+          <p class="row__spec"><span>1.4 B params</span><span>12 ms latency</span><span>Runs on one A6000</span></p>
+        </li>
+        <li class="row rv">
+          <p class="row__id">02 / DRT</p>
+          <h3 class="row__name">Draught</h3>
+          <p class="row__desc">Percussion grown from field recordings you supply. Feed it forty minutes of a factory floor; it returns a rhythm section that belongs to that floor.</p>
+          <p class="row__spec"><span>620 M params</span><span>8 ms latency</span><span>Runs on a laptop GPU</span></p>
+        </li>
+        <li class="row rv">
+          <p class="row__id">03 / CND</p>
+          <h3 class="row__name">Cinder</h3>
+          <p class="row__desc">Formant synthesis at the edge of speech. Vowels without words. Used sparingly, it is the most human thing we make.</p>
+          <p class="row__spec"><span>310 M params</span><span>21 ms latency</span><span>CPU-viable</span></p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ───────────────  PROCESS  ─────────────── -->
+  <section class="process" id="listening" aria-labelledby="listening-h">
+    <div class="shell">
+      <h2 id="listening-h">How a room gets written into</h2>
+
+      <div class="step rv">
+        <p class="step__n num" aria-hidden="true">01</p>
+        <h3 class="step__t">Sweep</h3>
+        <p class="step__b">A twenty-second logarithmic sine sweep, once, at install. From the recording we take the impulse response, the noise floor, and the six frequencies the room refuses to give back.</p>
+      </div>
+      <div class="step rv">
+        <p class="step__n num" aria-hidden="true">02</p>
+        <h3 class="step__t">Bias</h3>
+        <p class="step__b">Those measurements become a bias on the model’s output distribution. A room that swallows 4 kHz gets writing that lives above it. Nothing is equalised after the fact.</p>
+      </div>
+      <div class="step rv">
+        <p class="step__n num" aria-hidden="true">03</p>
+        <h3 class="step__t">Burn</h3>
+        <p class="step__b">The engine runs one bar ahead and discards it if the room changes — a door opening, forty people arriving. Discarded bars are never re-used, which is the whole reason nothing repeats.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────────  ROOMS  ─────────────── -->
+  <section class="rooms" aria-labelledby="rooms-h">
+    <div class="shell">
+      <div class="rooms__head">
+        <p class="lbl">Currently burning</p>
+        <h2 id="rooms-h">Rooms it is running in this week</h2>
+      </div>
+      <ul>
+        <li class="room rv"><p class="room__y num">2026</p><p class="room__p">Teatro Cinza, Lisbon — main stage, dark hours</p><p class="room__c num">Ember · 214 days unbroken</p></li>
+        <li class="room rv"><p class="room__y num">2026</p><p class="room__p">Nordlys Pavilion, Tromsø — winter installation</p><p class="room__c num">Ember + Cinder · 96 days</p></li>
+        <li class="room rv"><p class="room__y num">2025</p><p class="room__p">The Long Room, Sheffield — former cutlery works</p><p class="room__c num">Draught · 411 days</p></li>
+        <li class="room rv"><p class="room__y num">2025</p><p class="room__p">Casa da Bruma, Sintra — twelve-speaker dome</p><p class="room__c num">Ember · 338 days</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ───────────────  FOOTER CTA  ─────────────── -->
+  <footer class="foot" id="contact">
+    <div class="shell">
+      <div class="foot__cta">
+        <p>Bring us a difficult room.</p>
+        <a class="big" href="mailto:rooms@hearth.audio">rooms@hearth.audio</a>
+      </div>
+
+      <div class="foot__grid">
+        <div class="fcol">
+          <h3 class="lbl">Studio</h3>
+          <p>Rua da Bica 41, 1200-401 Lisbon<br>
+          <span class="clock"><span id="clock" class="num">--:--:--</span> WEST</span></p>
+        </div>
+        <div class="fcol">
+          <h3 class="lbl">Index</h3>
+          <ul>
+            <li><a href="#models">Models</a></li>
+            <li><a href="#listening">Listening</a></li>
+            <li><a href="#top">Top</a></li>
+          </ul>
+        </div>
+        <div class="fcol">
+          <h3 class="lbl">Elsewhere</h3>
+          <ul>
+            <li><a href="#contact">Research log</a></li>
+            <li><a href="#contact">Licence terms</a></li>
+            <li><a href="#contact">Press kit</a></li>
+          </ul>
+        </div>
+        <div class="fcol">
+          <h3 class="lbl">Who</h3>
+          <p>Inês Salgueiro, Matias Roeder<br>and four other people.</p>
+        </div>
+      </div>
+
+      <div class="colophon">
+        <p class="lbl">Hearth Audio Lda. — Lisbon</p>
+        <p class="lbl">Nothing on this page repeats either</p>
+      </div>
+    </div>
+  </footer>
+</main>
+
+<div class="grain" aria-hidden="true"></div>
+
+<script>
+/* grain: generated locally so there is no external asset to fail */
+(function(){
+  var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="220" height="220">' +
+            '<filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.82" numOctaves="3" stitchTiles="stitch"/>' +
+            '<feColorMatrix type="saturate" values="0"/></filter>' +
+            '<rect width="220" height="220" filter="url(#n)"/></svg>';
+  document.documentElement.style.setProperty('--grain-src',
+    'url("data:image/svg+xml;base64,' + btoa(svg) + '")');
+})();
+
+/* live Lisbon clock */
+(function(){
+  var el = document.getElementById('clock');
+  if(!el) return;
+  var fmt = new Intl.DateTimeFormat('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit',
+            hour12:false,timeZone:'Europe/Lisbon'});
+  function tick(){ el.textContent = fmt.format(new Date()); }
+  tick(); setInterval(tick, 1000);
+})();
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const coarse = matchMedia('(pointer: coarse)').matches;
+const lowEnd = (navigator.deviceMemory ?? 8) <= 4 || (navigator.hardwareConcurrency ?? 8) <= 4;
+
+/* ───────────────────────  1. the ember field  ─────────────────────── */
+const state = { scroll: 0 };
+
+function initEmber(){
+  const canvas = document.getElementById('ember');
+  if(!canvas) return null;
+
+  let renderer;
+  try{
+    renderer = new THREE.WebGLRenderer({ canvas, antialias:false, alpha:false,
+                                         powerPreference:'high-performance' });
+  }catch(e){ return null; }
+  if(!renderer.getContext()) return null;
+
+  const scene  = new THREE.Scene();
+  const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+  const u = {
+    uTime:       { value: 0 },
+    uResolution: { value: new THREE.Vector2(1,1) },
+    uMouse:      { value: new THREE.Vector2(0,0) },
+    uScroll:     { value: 0 },
+    uIntro:      { value: 0 },
+    uInk:        { value: new THREE.Color('#0E0D0B') },
+    uCoal:       { value: new THREE.Color('#2A1B14') },
+    uEmber:      { value: new THREE.Color('#C4562E') },
+    uFlare:      { value: new THREE.Color('#FF4A1C') }
+  };
+
+  const vert = `
+    varying vec2 vUv;
+    void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }
+  `;
+
+  const frag = `
+    precision highp float;
+    uniform vec2  uResolution;
+    uniform vec2  uMouse;
+    uniform float uTime;
+    uniform float uScroll;
+    uniform float uIntro;
+    uniform vec3  uInk, uCoal, uEmber, uFlare;
+
+    vec3 mod289(vec3 x){ return x - floor(x * (1.0/289.0)) * 289.0; }
+    vec2 mod289(vec2 x){ return x - floor(x * (1.0/289.0)) * 289.0; }
+    vec3 permute(vec3 x){ return mod289(((x*34.0)+1.0)*x); }
+    float snoise(vec2 v){
+      const vec4 C = vec4(0.211324865405187,0.366025403784439,
+                         -0.577350269189626,0.024390243902439);
+      vec2 i  = floor(v + dot(v, C.yy));
+      vec2 x0 = v - i + dot(i, C.xx);
+      vec2 i1 = (x0.x > x0.y) ? vec2(1.0,0.0) : vec2(0.0,1.0);
+      vec4 x12 = x0.xyxy + C.xxzz; x12.xy -= i1;
+      i = mod289(i);
+      vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0)) + i.x + vec3(0.0, i1.x, 1.0));
+      vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
+      m = m*m; m = m*m;
+      vec3 x = 2.0 * fract(p * C.www) - 1.0;
+      vec3 h = abs(x) - 0.5;
+      vec3 ox = floor(x + 0.5);
+      vec3 a0 = x - ox;
+      m *= 1.79284291400159 - 0.85373472095314 * (a0*a0 + h*h);
+      vec3 g;
+      g.x  = a0.x * x0.x + h.x * x0.y;
+      g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+      return 130.0 * dot(m, g);
+    }
+    float fbm(vec2 p){
+      float s = 0.0, a = 0.5;
+      for(int i = 0; i < OCTAVES; i++){ s += a * snoise(p); p *= 2.03; a *= 0.5; }
+      return s;
+    }
+
+    void main(){
+      vec2 frag = gl_FragCoord.xy;
+      vec2 uv   = (frag - 0.5 * uResolution) / uResolution.y;
+      vec2 sn   = frag / uResolution;                 // 0..1 screen space
+
+      float t = uTime;
+
+      /* stretched horizontally so the field reads as drifting spectral strata,
+         not as flame licks */
+      vec2 q = uv * vec2(0.58, 2.30);
+      q.y += uScroll * 1.05;                          // scroll sinks the fire
+      q.x += uMouse.x * 0.14;
+      q.y -= uMouse.y * 0.06;
+
+      float warp = fbm(q * 1.05 + vec2(t * 0.028, -t * 0.055));
+      float n    = fbm(q * 1.55 + vec2(warp, -warp) * 0.55 + vec2(t * 0.014, -t * 0.075));
+
+      /* only the very bottom of the frame carries heat */
+      float base = smoothstep(0.46, -0.55, uv.y);
+      base = pow(base, 1.45);
+
+      float heat = base * (0.42 + 0.60 * n);
+
+      /* spectral striations — a fire that is also a spectrogram */
+      float bands = 0.5 + 0.5 * sin(sn.y * 148.0 + warp * 4.5 - t * 0.35);
+      heat *= mix(1.0, 0.66 + 0.34 * bands, 0.85 * base);
+
+      /* a soft blown coal under the pointer */
+      vec2 m = uMouse * vec2(uResolution.x / uResolution.y, 1.0) * 0.5;
+      float breath = exp(-dot(uv - m, uv - m) * 7.0) * 0.16 * base;
+      heat += breath;
+
+      heat *= (1.0 - uScroll * 0.9);
+      heat *= uIntro;
+
+      vec3 col = uInk;
+      col = mix(col, uCoal,  smoothstep(0.005, 0.20, heat));
+      col = mix(col, uEmber, smoothstep(0.30, 0.66, heat));
+      col = mix(col, uFlare, smoothstep(0.72, 0.96, heat));
+
+      /* vignette + horizon fade so type always sits on near-black */
+      float vig = smoothstep(1.30, 0.18, length(uv * vec2(0.66, 1.0)));
+      col *= mix(0.70, 1.0, vig);
+      col = mix(uInk, col, smoothstep(0.72, 0.02, uv.y));
+
+      /* dither: kills banding in the dark ramp */
+      col += (fract(sin(dot(frag, vec2(12.9898, 78.233))) * 43758.5453) - 0.5) * 0.020;
+
+      gl_FragColor = vec4(col, 1.0);
+    }
+  `;
+
+  const material = new THREE.ShaderMaterial({
+    vertexShader: vert, fragmentShader: frag, uniforms: u,
+    defines: { OCTAVES: (coarse || lowEnd) ? 3 : 5 }
+  });
+  scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2), material));
+
+  const hero = document.querySelector('.hero');
+  function resize(){
+    const w = hero.clientWidth, h = hero.clientHeight;
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, (coarse || lowEnd) ? 1.5 : 2));
+    renderer.setSize(w, h, false);
+    u.uResolution.value.set(w * renderer.getPixelRatio(), h * renderer.getPixelRatio());
+  }
+  resize();
+  addEventListener('resize', resize, { passive:true });
+
+  const target = new THREE.Vector2(0, 0);
+  if(!coarse){
+    addEventListener('pointermove', (e) => {
+      target.set((e.clientX / innerWidth) * 2 - 1, -((e.clientY / innerHeight) * 2 - 1));
+    }, { passive:true });
+  }
+
+  let last = performance.now();
+  function tick(now){
+    const dt = Math.min((now - last) / 1000, 0.05); last = now;
+    u.uTime.value += dt;
+    u.uScroll.value = state.scroll;
+    if(coarse) target.set(state.scroll * 0.6 - 0.3, -state.scroll * 0.4);
+    const k = 1 - Math.pow(0.0015, dt);
+    u.uMouse.value.lerp(target, k);
+    u.uIntro.value = Math.min(1, u.uIntro.value + dt * 0.9);
+    renderer.render(scene, camera);
+  }
+
+  if(reduce){
+    u.uTime.value = 21.0; u.uIntro.value = 1;
+    renderer.render(scene, camera);           // one frame, no loop
+  }else{
+    let visible = true, onScreen = true;
+    const sync = () => renderer.setAnimationLoop(
+      (visible && onScreen) ? (n) => tick(n) : null
+    );
+    document.addEventListener('visibilitychange', () => { visible = !document.hidden; last = performance.now(); sync(); });
+    new IntersectionObserver(([e]) => { onScreen = e.isIntersecting; last = performance.now(); sync(); },
+                             { threshold: 0 }).observe(canvas);
+    sync();
+  }
+  return renderer;
+}
+
+let emberOk = false;
+try{ emberOk = !!initEmber(); }catch(e){ emberOk = false; }
+if(!emberOk) document.documentElement.classList.add('no-webgl');
+
+/* ───────────────────────  2. motion  ─────────────────────── */
+const { gsap, ScrollTrigger, SplitText, Lenis } = window;
+
+if(gsap && ScrollTrigger){
+  gsap.registerPlugin(ScrollTrigger);
+  if(SplitText) gsap.registerPlugin(SplitText);
+
+  /* smooth scroll, desktop pointers only, never under reduced motion */
+  if(Lenis && !reduce && !coarse){
+    const lenis = new Lenis({ lerp:0.09, smoothWheel:true, syncTouch:false, autoRaf:false, anchors:true });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(t => lenis.raf(t * 1000));
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  /* scroll progress across the hero → cools and sinks the fire */
+  ScrollTrigger.create({
+    trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true,
+    onUpdate: (self) => { state.scroll = self.progress; }
+  });
+
+  const mm = gsap.matchMedia();
+  mm.add({ reduce:'(prefers-reduced-motion: reduce)', motion:'(prefers-reduced-motion: no-preference)' }, (ctx) => {
+    if(ctx.conditions.reduce){
+      gsap.set('.rv', { autoAlpha:1, y:0, clearProps:'transform' });
+      return;
+    }
+
+    /* hero: line-masked headline, then the supporting matter */
+    const intro = gsap.timeline({ defaults:{ ease:'expo.out' } });
+
+    document.fonts.ready.then(() => {
+      if(SplitText){
+        SplitText.create('h1', {
+          type:'lines', mask:'lines', autoSplit:true, aria:'auto',
+          onSplit(self){
+            return gsap.from(self.lines, {
+              yPercent:112, duration:1.5, stagger:0.11, ease:'expo.out', delay:0.15
+            });
+          }
+        });
+      }
+      ScrollTrigger.refresh();
+    });
+
+    intro.to('.hero__eyebrow', { autoAlpha:1, y:0, duration:1.0 }, 0.1)
+         .to('.hero__lede',    { autoAlpha:1, y:0, duration:1.1 }, 0.75)
+         .to('.hero__meta',    { autoAlpha:1, y:0, duration:1.1 }, 0.86);
+
+    /* everything else: one quiet batched reveal, real stagger */
+    ScrollTrigger.batch('.rv:not(.hero__eyebrow):not(.hero__lede):not(.hero__meta)', {
+      start: 'clamp(top 86%)', once: true,
+      onEnter: (batch) => gsap.to(batch, {
+        autoAlpha:1, y:0, duration:0.95, stagger:0.085, ease:'power3.out', overwrite:true
+      })
+    });
+
+    return () => {};
+  });
+
+  addEventListener('load', () => {
+    ScrollTrigger.refresh();
+    /* safety net: nothing may stay invisible */
+    gsap.utils.toArray('.rv').forEach((el) => {
+      if(getComputedStyle(el).visibility === 'hidden' &&
+         el.getBoundingClientRect().top < innerHeight) {
+        gsap.set(el, { autoAlpha:1, y:0 });
+      }
+    });
+  });
+}else{
+  document.querySelectorAll('.rv').forEach(el => {
+    el.style.opacity = 1; el.style.visibility = 'visible'; el.style.transform = 'none';
+  });
+}
+</script>
+</body>
+</html>

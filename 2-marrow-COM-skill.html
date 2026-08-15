@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Marrow — speciality coffee roastery, Porto</title>
+<meta name="description" content="Marrow is a two-person speciality roastery on Rua do Bonjardim in Porto. Three single origins at a time, roasted Monday on a six-kilo drum, posted Tuesday. Subscriptions that follow the harvest.">
+<meta name="theme-color" content="#EAE3D4">
+<meta property="og:title" content="Marrow — speciality coffee roastery, Porto">
+<meta property="og:description" content="Three single origins at a time. Roasted Monday, posted Tuesday, delivered by bicycle inside Porto.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_GB">
+<meta property="og:site_name" content="Marrow">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Schibsted+Grotesk:wght@400;500;600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.css">
+
+<style>
+/* ─────────────────────────────────────────────  tokens  ── */
+:root{
+  --paper:#EAE3D4;
+  --tone:#EAE3D4;   /* live roast tone, written by JS */
+  --ink:#17110C;
+  --ember:#FF4A1C;
+  --ember-ink:#C4341A;
+
+  --pad: clamp(20px, 5.2vw, 92px);
+  --gutter: clamp(14px, 1.6vw, 28px);
+
+  --d1: clamp(3.4rem, 10.6vw, 11.5rem);
+  --d2: clamp(2.5rem, 6.6vw, 6rem);
+  --d3: clamp(2.15rem, 4.6vw, 4.4rem);
+  --d4: clamp(1.35rem, 2.1vw, 2rem);
+  --d5: clamp(1.7rem, 3.1vw, 2.9rem);
+  --lede: clamp(1.12rem, 0.92rem + 0.85vw, 1.85rem);
+  --body: clamp(1rem, 0.95rem + 0.28vw, 1.14rem);
+  --small: clamp(0.86rem, 0.83rem + 0.14vw, 0.95rem);
+  --mono: clamp(0.68rem, 0.63rem + 0.16vw, 0.775rem);
+
+  --serif: "Instrument Serif", "Iowan Old Style", Georgia, serif;
+  --sans: "Schibsted Grotesk", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --code: "DM Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+html.roasted{ --ink:#EFE7D8; --ember-ink:#FF6A3D; }
+
+*,*::before,*::after{ box-sizing:border-box; }
+html,body{ overflow-x:clip; }
+html{ -webkit-text-size-adjust:100%; scroll-behavior:auto; }
+body{
+  margin:0;
+  background-color:var(--paper);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:var(--body);
+  line-height:1.5;
+  font-weight:400;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  transition:color .38s ease;
+  font-variant-numeric:normal;
+}
+img{ max-width:100%; display:block; }
+h1,h2,h3,p,figure,blockquote,dl,dd{ margin:0; }
+ul,ol{ margin:0; padding:0; list-style:none; }
+a{ color:inherit; text-decoration:none; }
+button{ font:inherit; color:inherit; background:none; border:0; cursor:pointer; }
+::selection{ background:var(--ember); color:#FFF3EC; }
+
+:focus-visible{
+  outline:2px solid var(--ember);
+  outline-offset:4px;
+  border-radius:1px;
+}
+
+.skip{
+  position:fixed; left:12px; top:-100px; z-index:200;
+  background:var(--ember); color:#fff;
+  padding:12px 18px; font-family:var(--code); font-size:var(--mono);
+  letter-spacing:.1em; text-transform:uppercase;
+  transition:top .25s cubic-bezier(.16,1,.3,1);
+}
+.skip:focus{ top:12px; }
+
+/* ─────────────────────────────────────────────  utilities  ── */
+.mono{
+  font-family:var(--code);
+  font-size:var(--mono);
+  font-weight:400;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+  font-variant-numeric:tabular-nums;
+}
+.serif{ font-family:var(--serif); font-weight:400; }
+.muted{ opacity:.62; }
+.num{ font-variant-numeric:tabular-nums; }
+.rule{ height:1px; background:currentColor; opacity:.17; width:100%; }
+.wrap{ padding-inline:var(--pad); }
+.grid{
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  column-gap:var(--gutter);
+}
+
+/* link with underline sweep */
+.sweep{
+  position:relative;
+  display:inline-block;
+  padding-block:2px;
+}
+.sweep::after{
+  content:""; position:absolute; left:0; bottom:0;
+  width:100%; height:1px; background:currentColor;
+  transform:scaleX(0); transform-origin:right center;
+  transition:transform .34s cubic-bezier(.65,0,.35,1);
+}
+.sweep:hover::after,.sweep:focus-visible::after{
+  transform:scaleX(1); transform-origin:left center;
+}
+
+/* reveals */
+.reveal{ opacity:0; transform:translate3d(0,26px,0); }
+.r-line{ display:block; }
+
+/* ─────────────────────────────────────────────  fixed layers  ── */
+.roastbg{
+  position:fixed; inset:0; z-index:0;
+  pointer-events:none;
+  background-color:var(--paper);
+  transform:translateZ(0);
+}
+.grain{
+  position:fixed; inset:0; z-index:70;
+  /* grey feTurbulence darkens the bone half and lifts the roasted half, so it
+     reads as paper tooth without a full-screen blend the compositor has to
+     redo every frame while the roast tone is moving */
+  pointer-events:none; opacity:.075;
+  transform:translateZ(0);
+  contain:strict;
+}
+.roastline{
+  position:fixed; inset:0; z-index:1;
+  pointer-events:none;
+  width:100%; height:100%;
+  transform:translateZ(0);
+}
+.roastline svg{ width:100%; height:100%; display:block; }
+.roastline .curve{
+  fill:none; stroke:var(--ember); stroke-width:1.4;
+  vector-effect:non-scaling-stroke; opacity:.42;
+}
+.roastline .ghost{
+  fill:none; stroke:currentColor; stroke-width:1;
+  vector-effect:non-scaling-stroke; opacity:.09;
+  stroke-dasharray:2 7;
+}
+.roastline .head{ fill:var(--ember); }
+.roastline .mark{ fill:none; stroke:var(--ember); stroke-width:1.2; vector-effect:non-scaling-stroke; opacity:.5; }
+
+/* HUD */
+.hud{
+  position:fixed; z-index:80;
+  right:var(--pad); bottom:clamp(16px,3vw,34px);
+  display:flex; align-items:baseline; gap:clamp(10px,1.4vw,20px);
+  padding:10px 2px;
+  font-family:var(--code); font-size:var(--mono);
+  letter-spacing:.11em; text-transform:uppercase;
+  font-variant-numeric:tabular-nums;
+  cursor:pointer;
+  min-height:44px;
+  transition:color .38s ease;
+}
+.hud__dot{
+  width:6px; height:6px; border-radius:50%;
+  background:var(--ember); align-self:center;
+  transition:transform .3s cubic-bezier(.16,1,.3,1), box-shadow .3s ease;
+}
+.hud.is-crack .hud__dot{ transform:scale(2); box-shadow:0 0 0 6px rgba(255,74,28,.18); }
+.hud.is-crack .hud__phase{ color:var(--ember); }
+.hud__temp{ min-width:5.4em; }
+.hud__time{ opacity:.5; }
+.hud__phase{ opacity:.75; min-width:11em; transition:color .3s ease; }
+@media (max-width:560px){
+  .hud{ gap:9px; left:var(--pad); justify-content:flex-end; }
+  .hud__time{ display:none; }
+  .hud__temp{ min-width:4.6em; }
+  .hud__phase{ min-width:0; }
+}
+
+/* ─────────────────────────────────────────────  masthead  ── */
+.masthead{
+  position:fixed; top:0; left:0; right:0; z-index:90;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:clamp(16px,2vw,26px) var(--pad);
+  transition:color .38s ease, transform .5s cubic-bezier(.65,0,.35,1);
+}
+.masthead.is-hidden{ transform:translateY(-120%); }
+.masthead:focus-within{ transform:none; }
+/* the page slides under the fixed chrome — fade it out instead of colliding */
+/* solid fill + a static mask: the tone changes every frame, so the gradient
+   itself must not be re-rasterised with it */
+.masthead::before{
+  content:""; position:absolute; left:0; right:0; top:0; height:118%;
+  background-color:var(--tone);
+  -webkit-mask-image:linear-gradient(to bottom, #000 58%, transparent);
+  mask-image:linear-gradient(to bottom, #000 58%, transparent);
+  pointer-events:none; z-index:-1;
+}
+.scrim-b{
+  position:fixed; left:0; right:0; bottom:0; z-index:79;
+  height:clamp(62px,8vh,86px);
+  background-color:var(--tone);
+  -webkit-mask-image:linear-gradient(to top, #000 42%, transparent);
+  mask-image:linear-gradient(to top, #000 42%, transparent);
+  pointer-events:none;
+}
+.masthead__logo{
+  font-family:var(--code); font-size:var(--mono);
+  letter-spacing:.34em; text-transform:uppercase; font-weight:500;
+  padding:10px 0;
+}
+.masthead nav{ display:flex; gap:clamp(14px,2vw,32px); align-items:center; }
+.masthead nav a{
+  font-family:var(--code); font-size:var(--mono);
+  letter-spacing:.13em; text-transform:uppercase;
+  padding:12px 0; min-height:44px; display:inline-flex; align-items:center;
+}
+.masthead nav a:nth-child(1),.masthead nav a:nth-child(2){ opacity:.62; }
+@media (max-width:620px){
+  .masthead nav a:nth-child(1){ display:none; }
+}
+
+/* ─────────────────────────────────────────────  hero  ── */
+.hero{
+  position:relative; z-index:2;
+  min-height:100svh;
+  display:flex; flex-direction:column; justify-content:flex-end;
+  padding-block:clamp(96px,14vh,150px) clamp(78px,11vh,104px);
+}
+.hero__meta{
+  display:flex; flex-wrap:wrap; gap:.2em 1.4em;
+  margin-bottom:clamp(22px,4vh,44px);
+}
+.hero h1{
+  font-family:var(--serif); font-weight:400;
+  font-size:var(--d1); line-height:.855; letter-spacing:-.042em;
+  max-width:16ch;
+  text-wrap:balance;
+}
+.hero h1 em{ font-style:italic; }
+.hero__foot{
+  margin-top:clamp(34px,7vh,80px);
+  display:grid; grid-template-columns:1fr; gap:clamp(20px,3vw,40px);
+  align-items:end;
+}
+@media (min-width:860px){
+  .hero__foot{ grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); }
+}
+.hero__lede{
+  font-size:var(--lede); line-height:1.32; letter-spacing:-.012em;
+  max-width:38ch; text-wrap:pretty;
+}
+.hero__shelf{ display:flex; flex-direction:column; gap:0; }
+.hero__shelf .rule{ margin-bottom:10px; }
+.shelf-row{
+  display:flex; justify-content:space-between; align-items:baseline;
+  gap:1em; padding-block:9px;
+  position:relative;
+}
+.shelf-row + .shelf-row::before{
+  content:""; position:absolute; inset-inline:0; top:0;
+  height:1px; background:currentColor; opacity:.13;
+}
+.shelf-row b{ font-weight:400; letter-spacing:.16em; }
+.shelf-row span{ opacity:.55; text-transform:none; letter-spacing:.02em; font-family:var(--sans); font-size:var(--small); text-align:right; }
+.scrollcue{
+  margin-top:clamp(28px,5vh,52px);
+  display:flex; align-items:center; gap:.8em;
+}
+.scrollcue__line{
+  width:clamp(40px,7vw,96px); height:1px; background:var(--ember);
+  transform-origin:left center;
+}
+
+/* ─────────────────────────────────────────────  manifesto  ── */
+.section{ position:relative; z-index:2; }
+.sechead{
+  display:flex; align-items:baseline; gap:1.2em;
+  margin-bottom:clamp(26px,4vh,52px);
+}
+.sechead .numeral{
+  font-family:var(--serif); font-size:clamp(2.4rem,5vw,4.6rem);
+  line-height:.8; opacity:.16; letter-spacing:-.03em;
+}
+
+.manifesto{ padding-block:clamp(90px,17vh,210px); }
+.manifesto__claim{
+  font-family:var(--serif); font-weight:400;
+  font-size:var(--d2); line-height:.95; letter-spacing:-.035em;
+  max-width:20ch; text-wrap:balance;
+  grid-column:1 / -1;
+}
+.manifesto__body{
+  grid-column:1 / -1;
+  margin-top:clamp(26px,4vw,54px);
+  max-width:56ch;
+  font-size:var(--body); line-height:1.62; text-wrap:pretty;
+}
+@media (min-width:900px){
+  .manifesto__claim{ grid-column:2 / 9; }
+  .manifesto__body{ grid-column:7 / 12; margin-top:clamp(40px,5vw,90px); }
+}
+.manifesto__body p + p{ margin-top:1.1em; }
+
+/* ─────────────────────────────────────────────  origins  ── */
+.origins{ padding-block:clamp(60px,9vh,120px) clamp(40px,7vh,90px); }
+.origin{
+  padding-block:clamp(42px,6vh,78px);
+  position:relative;
+}
+.origin::before{
+  content:""; position:absolute; inset-inline:0; top:0;
+  height:1px; background:currentColor; opacity:.17;
+}
+.origin__idx{ grid-column:1 / -1; margin-bottom:14px; display:flex; justify-content:space-between; }
+.origin__name{
+  grid-column:1 / -1;
+  font-family:var(--serif); font-weight:400;
+  font-size:var(--d3); line-height:.94; letter-spacing:-.026em;
+}
+.origin__where{ display:block; font-family:var(--sans); font-size:var(--small); letter-spacing:.01em; opacity:.55; margin-top:.7em; }
+.origin__notes{
+  grid-column:1 / -1;
+  font-family:var(--serif); font-style:italic;
+  font-size:var(--d4); line-height:1.16; letter-spacing:-.015em;
+  margin-top:clamp(18px,2.4vw,30px);
+  max-width:22ch;
+}
+.origin__data{
+  grid-column:1 / -1;
+  margin-top:clamp(24px,3vw,36px);
+  display:grid; grid-template-columns:auto 1fr; gap:0;
+}
+.origin__data dt,.origin__data dd{
+  padding-block:8px;
+  font-family:var(--code); font-size:var(--mono);
+  letter-spacing:.09em; text-transform:uppercase;
+  font-variant-numeric:tabular-nums;
+  position:relative;
+}
+.origin__data dt{ opacity:.45; padding-right:2em; }
+.origin__data dd{ text-align:right; }
+.origin__data dt::before,.origin__data dd::before{
+  content:""; position:absolute; left:0; right:0; top:0; height:1px;
+  background:currentColor; opacity:.11;
+}
+.origin__data dt:first-of-type::before,.origin__data dd:first-of-type::before{ display:none; }
+.origin__foot{
+  grid-column:1 / -1; margin-top:clamp(22px,3vw,34px);
+  display:flex; flex-direction:column; gap:14px;
+}
+.ruler{ display:flex; flex-direction:column; gap:7px; }
+.ruler__bar{ position:relative; height:1px; background:currentColor; opacity:.25; }
+.ruler__tick{
+  position:absolute; top:-5px; width:1px; height:11px; background:var(--ember);
+}
+.ruler__tick::after{
+  content:""; position:absolute; left:-2.5px; top:-2.5px;
+  width:6px; height:6px; border-radius:50%; background:var(--ember);
+}
+.ruler__labels{ display:flex; justify-content:space-between; }
+.stock{ display:flex; flex-direction:column; gap:7px; }
+.stock__bar{ height:3px; background:currentColor; opacity:.14; position:relative; }
+.stock__fill{ position:absolute; inset:0 auto 0 0; background:var(--ember); opacity:1; }
+.stock__meta{ display:flex; justify-content:space-between; }
+
+@media (min-width:900px){
+  .origin__idx{ grid-column:1 / -1; }
+  .origin__name{ grid-column:1 / 6; }
+  .origin__notes{ grid-column:7 / 11; margin-top:0; }
+  .origin__data{ grid-column:1 / 6; }
+  .origin__foot{ grid-column:7 / 13; margin-top:clamp(28px,3vw,44px); gap:28px; }
+  /* deliberate variation so the three rows are not one block repeated */
+  .origin--ii .origin__name{ grid-column:2 / 7; }
+  .origin--ii .origin__notes{ grid-column:8 / 12; }
+  .origin--ii .origin__data{ grid-column:2 / 7; }
+  .origin--ii .origin__foot{ grid-column:8 / 13; }
+  .origin--iii .origin__name{ grid-column:1 / 5; }
+  .origin--iii .origin__notes{ grid-column:6 / 10; }
+  .origin--iii .origin__data{ grid-column:6 / 10; }
+  .origin--iii .origin__foot{ grid-column:10 / 13; }
+}
+
+/* ─────────────────────────────────────────────  marquee  ── */
+.marquee{
+  position:relative; z-index:2;
+  overflow:hidden; padding-block:clamp(18px,2.6vh,30px);
+  margin-block:clamp(30px,6vh,80px);
+}
+.marquee::before,.marquee::after{
+  content:""; position:absolute; inset-inline:0; height:1px;
+  background:currentColor; opacity:.17;
+}
+.marquee::before{ top:0; } .marquee::after{ bottom:0; }
+.marquee__track{ display:flex; width:max-content; will-change:transform; }
+.marquee__group{ display:flex; flex:0 0 auto; }
+.marquee__group span{
+  font-family:var(--serif); font-style:italic;
+  font-size:clamp(1.1rem,2.1vw,1.9rem); line-height:1;
+  padding-inline:.55em; white-space:nowrap;
+}
+.marquee__group span::after{ content:"·"; padding-left:1.1em; opacity:.4; font-style:normal; }
+
+/* ─────────────────────────────────────────────  crack  ── */
+.crack{
+  min-height:100svh;
+  display:flex; flex-direction:column; justify-content:center;
+  padding-block:clamp(64px,9vh,108px);
+  position:relative; z-index:2;
+}
+.crack__temp{ margin-bottom:clamp(18px,3vh,34px); display:flex; gap:1.6em; }
+.crack__word{
+  font-family:var(--serif); font-weight:400;
+  font-size:clamp(4.6rem, 11.4vw, 12rem); line-height:.85; letter-spacing:-.05em;
+  margin:0;
+}
+.crack__word .w{ display:block; overflow:hidden; }
+.crack__word .w i{ display:block; font-style:normal; }
+.crack__word .em{ color:var(--ember); }
+.crack__body{
+  margin-top:clamp(28px,4.4vh,54px);
+  display:grid; gap:clamp(20px,3vw,40px);
+}
+@media (min-width:900px){
+  .crack__body{ grid-template-columns:repeat(12,1fr); column-gap:var(--gutter); }
+  .crack__body p{ grid-column:7 / 12; }
+  .crack__body .crack__stats{ grid-column:1 / 5; }
+}
+.crack__body p{ font-size:var(--lede); line-height:1.34; letter-spacing:-.012em; max-width:34ch; text-wrap:pretty; }
+.crack__stats{ display:flex; flex-direction:column; gap:12px; align-self:end; }
+.crack__stat{ display:flex; justify-content:space-between; padding-block:9px; position:relative; }
+.crack__stat::before{ content:""; position:absolute; inset-inline:0; top:0; height:1px; background:currentColor; opacity:.15; }
+
+/* ─────────────────────────────────────────────  plans  ── */
+.plans{ padding-block:clamp(80px,14vh,180px) clamp(70px,11vh,150px); position:relative; z-index:2; }
+.plan{
+  display:block; position:relative;
+  padding:clamp(24px,3.4vw,44px) 0;
+  transition:padding-inline .5s cubic-bezier(.16,1,.3,1);
+}
+.plan::before{
+  content:""; position:absolute; inset-inline:0; top:0; height:1px;
+  background:currentColor; opacity:.17;
+}
+.plan__inner{
+  display:grid; gap:12px clamp(14px,2vw,32px);
+  grid-template-columns:1fr auto; align-items:baseline;
+  position:relative; z-index:2;
+}
+.plan__name{
+  font-family:var(--serif); font-size:var(--d5); line-height:.95;
+  letter-spacing:-.024em; grid-column:1;
+}
+.plan__price{
+  font-family:var(--serif); font-size:var(--d5); line-height:.95;
+  letter-spacing:-.024em; grid-column:2; text-align:right;
+  font-variant-numeric:tabular-nums; white-space:nowrap;
+}
+.plan__price small{ display:block; font-family:var(--code); font-size:var(--mono); letter-spacing:.12em; text-transform:uppercase; opacity:.5; margin-top:.7em; }
+.plan__what{ grid-column:1 / -1; max-width:44ch; font-size:var(--body); line-height:1.55; opacity:.72; text-wrap:pretty; }
+@media (min-width:900px){
+  .plan__inner{ grid-template-columns:9ch minmax(0,1fr) auto; }
+  .plan__idx{ grid-column:1; }
+  .plan__name{ grid-column:2; }
+  .plan__price{ grid-column:3; }
+  .plan__what{ grid-column:2 / 3; max-width:46ch; }
+}
+.plan__idx{ opacity:.45; }
+.plan__fill{
+  position:absolute; inset:0 calc(var(--pad) * -1);
+  background:var(--ember);
+  transform:scaleY(0); transform-origin:bottom center;
+  transition:transform .5s cubic-bezier(.65,0,.35,1);
+  z-index:1;
+}
+@media (hover:hover) and (pointer:fine){
+  .plan:hover .plan__fill,.plan:focus-visible .plan__fill{ transform:scaleY(1); transform-origin:top center; }
+  .plan:hover,.plan:focus-visible{ color:#FFF3EC; }
+  .plan:hover .plan__what,.plan:focus-visible .plan__what{ opacity:.85; }
+}
+.plans__foot{
+  margin-top:clamp(36px,6vh,72px);
+  display:grid; gap:clamp(22px,3vw,44px);
+}
+@media (min-width:900px){
+  .plans__foot{ grid-template-columns:repeat(12,1fr); column-gap:var(--gutter); align-items:start; }
+  .plans__foot .cta{ grid-column:1 / 4; justify-self:start; }
+  .plans__foot p{ grid-column:6 / 11; }
+}
+.plans__foot p{ font-size:var(--small); line-height:1.6; opacity:.6; max-width:44ch; text-wrap:pretty; }
+.cta{
+  display:inline-flex; align-items:center; gap:1em;
+  padding:clamp(16px,1.6vw,22px) clamp(24px,2.6vw,38px);
+  min-height:52px;
+  background:var(--ember); color:#FFF3EC;
+  font-family:var(--code); font-size:var(--mono);
+  letter-spacing:.16em; text-transform:uppercase;
+  will-change:transform;
+}
+.cta__arrow{ transition:transform .4s cubic-bezier(.16,1,.3,1); }
+.cta:hover .cta__arrow{ transform:translateX(6px); }
+
+/* ─────────────────────────────────────────────  footer  ── */
+.site-foot{
+  position:relative; z-index:2;
+  padding-top:clamp(60px,10vh,130px);
+  overflow:hidden;
+}
+.foot__cols{
+  display:grid; gap:clamp(28px,4vw,44px);
+  padding-bottom:clamp(50px,9vh,110px);
+}
+@media (min-width:760px){
+  .foot__cols{ grid-template-columns:repeat(12,1fr); column-gap:var(--gutter); }
+  .foot__cols > div:nth-child(1){ grid-column:1 / 5; }
+  .foot__cols > div:nth-child(2){ grid-column:5 / 9; }
+  .foot__cols > div:nth-child(3){ grid-column:9 / 13; }
+}
+.foot__col h3{ font:inherit; }
+.foot__col .mono{ display:block; opacity:.45; margin-bottom:14px; }
+.foot__col p,.foot__col li{ font-size:var(--small); line-height:1.65; }
+.foot__col li + li{ margin-top:2px; }
+.foot__col a{ display:inline-block; min-height:34px; }
+.foot__wordmark{
+  display:block; width:100%; height:auto;
+  margin-bottom:clamp(16px,2.6vh,32px);
+}
+.foot__wordmark text{
+  font-family:var(--serif); font-size:100px; letter-spacing:-.045em;
+  fill:currentColor;
+}
+.foot__legal{
+  display:flex; flex-wrap:wrap; justify-content:space-between; gap:.6em 1.6em;
+  padding-block:18px clamp(70px,9vh,86px);
+  position:relative;
+}
+.foot__legal::before{ content:""; position:absolute; inset-inline:0; top:0; height:1px; background:currentColor; opacity:.17; }
+
+/* ─────────────────────────────────────────────  reduced motion  ── */
+@media (prefers-reduced-motion: reduce){
+  .reveal,.r-line{ opacity:1 !important; transform:none !important; }
+  .marquee__track{ transform:none !important; }
+  *,*::before,*::after{ transition-duration:.01ms !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; }
+}
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="roastbg" id="roastbg" aria-hidden="true"></div>
+<div class="scrim-b" aria-hidden="true"></div>
+
+<!-- grain -->
+<svg class="grain" aria-hidden="true" focusable="false">
+  <filter id="grainFilter">
+    <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/>
+    <feColorMatrix type="saturate" values="0"/>
+  </filter>
+  <rect width="100%" height="100%" filter="url(#grainFilter)"/>
+</svg>
+
+<!-- the roast curve, fixed across the viewport, drawn by scroll -->
+<div class="roastline" aria-hidden="true">
+  <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+    <path class="ghost" id="roastGhost" d="M-60,905 C 250,905 330,610 540,505 C 780,385 1010,330 1500,168"/>
+    <path class="curve" id="roastPath" d="M-60,905 C 250,905 330,610 540,505 C 780,385 1010,330 1500,168"/>
+    <circle class="mark" id="crackMark" r="9" cx="-100" cy="-100"/>
+    <circle class="head" id="roastHead" r="4" cx="-100" cy="-100"/>
+  </svg>
+</div>
+
+<header class="masthead">
+  <a class="masthead__logo" href="#top">Marrow</a>
+  <nav aria-label="Primary">
+    <a class="sweep" href="#origens">Origens</a>
+    <a class="sweep" href="#assinatura">Assinatura</a>
+    <a class="sweep" href="#contactos">Contactos</a>
+  </nav>
+</header>
+
+<!-- roast HUD -->
+<button class="hud" id="hud" type="button" aria-live="off" title="Switch units">
+  <span class="hud__dot" aria-hidden="true"></span>
+  <span class="hud__temp" id="hudTemp">24 °C</span>
+  <span class="hud__time" id="hudTime">00:00</span>
+  <span class="hud__phase" id="hudPhase">Secagem</span>
+</button>
+
+<main id="main">
+
+  <!-- ── hero ───────────────────────────────────────── -->
+  <section class="hero wrap" id="top">
+    <div class="hero__meta mono">
+      <span>Lote 27</span>
+      <span class="muted">Torrado 11.08.2026</span>
+      <span class="muted">Rua do Bonjardim, Porto</span>
+    </div>
+
+    <h1 id="heroTitle">Three coffees. Roasted Monday. <em>Gone when they’re gone.</em></h1>
+
+    <div class="hero__foot">
+      <p class="hero__lede reveal">Marrow is a two-person roastery in Porto. One six-kilo drum, three single origins, and a subscription that follows the harvest instead of a catalogue.</p>
+
+      <div class="hero__shelf reveal">
+        <div class="rule"></div>
+        <div class="shelf-row mono"><b>I — Kirundo</b><span>Burundi · blackcurrant, rooibos</span></div>
+        <div class="shelf-row mono"><b>II — Bombe</b><span>Ethiopia · peach skin, jasmine</span></div>
+        <div class="shelf-row mono"><b>III — El Rosal</b><span>Colombia · lychee, bergamot</span></div>
+      </div>
+    </div>
+
+    <div class="scrollcue mono reveal">
+      <span class="scrollcue__line" aria-hidden="true"></span>
+      <span>Scroll to roast</span>
+    </div>
+  </section>
+
+  <!-- ── manifesto ──────────────────────────────────── -->
+  <section class="section manifesto wrap" aria-labelledby="manifestoClaim">
+    <div class="sechead">
+      <span class="numeral serif" aria-hidden="true">01</span>
+      <span class="mono muted">Why three</span>
+    </div>
+    <div class="grid">
+      <h2 class="manifesto__claim" id="manifestoClaim">A roastery with forty coffees is a warehouse.</h2>
+      <div class="manifesto__body reveal">
+        <p>We buy two or three bags at a time, from importers who will tell us what the producer was actually paid. Three lots fit on the shelf and in our heads. When one runs out we don’t reorder it — the next harvest isn’t the same coffee, and pretending otherwise is how everything on a shelf ends up tasting like chocolate and nuts.</p>
+        <p>So the list changes because the year changed. Sometimes that means the coffee you liked in March is not coming back. We think that is the interesting part.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── origins ────────────────────────────────────── -->
+  <section class="section origins wrap" id="origens" aria-labelledby="originsHead">
+    <div class="sechead">
+      <span class="numeral serif" aria-hidden="true">02</span>
+      <h2 class="mono muted" id="originsHead">On the drum — August</h2>
+    </div>
+
+    <article class="origin origin--i grid reveal">
+      <div class="origin__idx mono"><span>I</span><span class="muted">250 g — €13,50</span></div>
+      <h3 class="origin__name">Kirundo<span class="origin__where">Burundi · Kayanza · Gatare washing station</span></h3>
+      <p class="origin__notes">Blackcurrant, rooibos, brown sugar.</p>
+      <dl class="origin__data">
+        <dt>Producer</dt><dd>Ndayishimiye family</dd>
+        <dt>Variety</dt><dd>Red Bourbon</dd>
+        <dt>Process</dt><dd>Washed, 18 h</dd>
+        <dt>Altitude</dt><dd>1 780 m</dd>
+        <dt>Lot</dt><dd>60 kg</dd>
+      </dl>
+      <div class="origin__foot">
+        <div class="ruler">
+          <div class="ruler__bar"><span class="ruler__tick" style="left:20%"></span></div>
+          <div class="ruler__labels mono"><span class="muted">Filtro</span><span class="muted">Espresso</span></div>
+        </div>
+        <div class="stock">
+          <div class="stock__bar"><span class="stock__fill" style="width:68%"></span></div>
+          <div class="stock__meta mono"><span>41 kg remaining</span><span class="muted">of 60</span></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="origin origin--ii grid reveal">
+      <div class="origin__idx mono"><span>II</span><span class="muted">250 g — €15,00</span></div>
+      <h3 class="origin__name">Bombe<span class="origin__where">Ethiopia · Sidama · Bensa</span></h3>
+      <p class="origin__notes">Peach skin, jasmine, guava.</p>
+      <dl class="origin__data">
+        <dt>Producer</dt><dd>Tesfaye Bekele</dd>
+        <dt>Variety</dt><dd>Heirloom 74158</dd>
+        <dt>Process</dt><dd>Natural, 21 days</dd>
+        <dt>Altitude</dt><dd>2 150 m</dd>
+        <dt>Lot</dt><dd>45 kg</dd>
+      </dl>
+      <div class="origin__foot">
+        <div class="ruler">
+          <div class="ruler__bar"><span class="ruler__tick" style="left:12%"></span></div>
+          <div class="ruler__labels mono"><span class="muted">Filtro</span><span class="muted">Espresso</span></div>
+        </div>
+        <div class="stock">
+          <div class="stock__bar"><span class="stock__fill" style="width:62%"></span></div>
+          <div class="stock__meta mono"><span>28 kg remaining</span><span class="muted">of 45</span></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="origin origin--iii grid reveal">
+      <div class="origin__idx mono"><span>III</span><span class="muted">250 g — €12,50</span></div>
+      <h3 class="origin__name">El Rosal<span class="origin__where">Colombia · Huila · Pitalito</span></h3>
+      <p class="origin__notes">Lychee, cane sugar, bergamot.</p>
+      <dl class="origin__data">
+        <dt>Producer</dt><dd>Élver Cruz</dd>
+        <dt>Variety</dt><dd>Pink Bourbon</dd>
+        <dt>Process</dt><dd>Washed, 40 h ferment</dd>
+        <dt>Altitude</dt><dd>1 900 m</dd>
+        <dt>Lot</dt><dd>70 kg</dd>
+      </dl>
+      <div class="origin__foot">
+        <div class="ruler">
+          <div class="ruler__bar"><span class="ruler__tick" style="left:56%"></span></div>
+          <div class="ruler__labels mono"><span class="muted">Filtro</span><span class="muted">Espresso</span></div>
+        </div>
+        <div class="stock">
+          <div class="stock__bar"><span class="stock__fill" style="width:74%"></span></div>
+          <div class="stock__meta mono"><span>52 kg remaining</span><span class="muted">of 70</span></div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- ── marquee ────────────────────────────────────── -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track" id="marqueeTrack">
+      <div class="marquee__group">
+        <span>blackcurrant</span><span>rooibos</span><span>brown sugar</span><span>peach skin</span><span>jasmine</span><span>guava</span><span>lychee</span><span>cane sugar</span><span>bergamot</span>
+      </div>
+      <div class="marquee__group">
+        <span>blackcurrant</span><span>rooibos</span><span>brown sugar</span><span>peach skin</span><span>jasmine</span><span>guava</span><span>lychee</span><span>cane sugar</span><span>bergamot</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── first crack ────────────────────────────────── -->
+  <section class="crack wrap" id="crack" aria-labelledby="crackTitle">
+    <div class="crack__temp mono">
+      <span class="numeral serif" style="font-size:inherit;opacity:.45" aria-hidden="true">03</span>
+      <span>196 °C</span>
+      <span class="muted">08:12 no tempo</span>
+    </div>
+    <h2 class="crack__word" id="crackTitle">
+      <span class="w"><i class="r-line">First</i></span>
+      <span class="w"><i class="r-line em">crack</i></span>
+    </h2>
+    <div class="crack__body">
+      <div class="crack__stats">
+        <div class="crack__stat mono"><span class="muted">Charge</span><span>198 °C</span></div>
+        <div class="crack__stat mono"><span class="muted">Turnaround</span><span>01:34</span></div>
+        <div class="crack__stat mono"><span class="muted">Development</span><span>21,4 %</span></div>
+        <div class="crack__stat mono"><span class="muted">Drop</span><span>11:40 · 214 °C</span></div>
+      </div>
+      <p class="reveal">Around eight minutes the bean splits — loud, like rain on a tin roof. Almost everything that makes a coffee taste like that coffee happens in the ninety seconds after. We drop between 55 and 80 seconds past the crack. Nothing here goes dark; if you want burnt there are four places on this street.</p>
+    </div>
+  </section>
+
+  <!-- ── subscription ───────────────────────────────── -->
+  <section class="section plans wrap" id="assinatura" aria-labelledby="plansHead">
+    <div class="sechead">
+      <span class="numeral serif" aria-hidden="true">04</span>
+      <h2 class="mono muted" id="plansHead">Assinatura</h2>
+    </div>
+
+    <a class="plan reveal" href="#assinatura">
+      <span class="plan__fill" aria-hidden="true"></span>
+      <span class="plan__inner">
+        <span class="plan__idx mono">Um</span>
+        <span class="plan__name">One bag</span>
+        <span class="plan__price">€13,50<small>every 2 weeks</small></span>
+        <span class="plan__what">250 g of whichever origin you pick, or let us choose. Change the origin, skip a delivery, or stop, from one page.</span>
+      </span>
+    </a>
+
+    <a class="plan reveal" href="#assinatura">
+      <span class="plan__fill" aria-hidden="true"></span>
+      <span class="plan__inner">
+        <span class="plan__idx mono">Três</span>
+        <span class="plan__name">The whole shelf</span>
+        <span class="plan__price">€38,00<small>monthly</small></span>
+        <span class="plan__what">All three origins, 250 g each, once a month. When a lot ends mid-cycle you get the coffee that replaces it, with a note about why we bought it.</span>
+      </span>
+    </a>
+
+    <a class="plan reveal" href="#assinatura">
+      <span class="plan__fill" aria-hidden="true"></span>
+      <span class="plan__inner">
+        <span class="plan__idx mono">Balcão</span>
+        <span class="plan__name">One kilo</span>
+        <span class="plan__price">€46,00<small>monthly</small></span>
+        <span class="plan__what">A kilo of one origin, whole bean or ground to your grinder. For people who make coffee for other people.</span>
+      </span>
+    </a>
+    <div class="rule" style="opacity:.17"></div>
+
+    <div class="plans__foot">
+      <a class="cta" id="cta" href="#assinatura">Começar<span class="cta__arrow" aria-hidden="true">→</span></a>
+      <p>Roasted Monday, posted Tuesday, rested by the time it reaches you. Bicycle delivery inside Porto on Tuesday afternoons, no charge. Pause or cancel from your account — we won’t email you about it.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-foot" id="contactos">
+  <div class="wrap">
+    <div class="sechead">
+      <span class="numeral serif" aria-hidden="true">05</span>
+      <h2 class="mono muted">Contactos</h2>
+    </div>
+    <div class="foot__cols">
+      <div class="foot__col">
+        <span class="mono">Roastery</span>
+        <p>Rua do Bonjardim 402<br>4000-116 Porto, Portugal</p>
+        <p style="opacity:.55">Open Thursday to Saturday, 10—18.<br>Cupping on the last Saturday, 11h.</p>
+      </div>
+      <div class="foot__col">
+        <span class="mono">Talk to us</span>
+        <ul>
+          <li><a class="sweep" href="mailto:ola@marrow.pt">ola@marrow.pt</a></li>
+          <li><a class="sweep" href="tel:+351220000000">+351 220 000 000</a></li>
+          <li><a class="sweep" href="#contactos">Instagram — @marrow.pt</a></li>
+          <li><a class="sweep" href="#contactos">Wholesale &amp; cafés</a></li>
+        </ul>
+      </div>
+      <div class="foot__col">
+        <span class="mono">Right now</span>
+        <p class="mono num" style="letter-spacing:.1em"><span id="clock">--:--:--</span> — Porto</p>
+        <p style="opacity:.55">Giesen W6, six kilos a batch.<br>Roasting since 2021.<br>Lote 27 on the drum.</p>
+      </div>
+    </div>
+  </div>
+
+  <svg class="foot__wordmark" id="footMark" viewBox="0 5 249 70" role="img" aria-label="Marrow" preserveAspectRatio="xMidYMid meet">
+    <text id="footMarkText" x="0" y="75">Marrow</text>
+  </svg>
+
+  <div class="wrap">
+    <div class="foot__legal mono">
+      <span class="muted">© 2026 Marrow Torrefação, Lda.</span>
+      <span class="muted">Fictional roastery, built for a design test</span>
+      <span class="muted">Porto · 41.15° N</span>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hasGSAP = typeof window.gsap !== 'undefined';
+  var root = document.documentElement;
+
+  /* ── the roast ramp ─────────────────────────────── */
+  // The ink flips from dark to bone at r = INK_FLIP, where the ramp sits at the
+  // equal-contrast tone (#8E6A4A): both inks clear ~3.7:1 there and recover to
+  // 4.5:1 within a hair of scroll either side. By the time the crack section is
+  // centred (r = CRACK_R) the page is already deep enough for full contrast.
+  var STOPS = [
+    [0.00, [234, 227, 212]],
+    [0.22, [228, 218, 198]],
+    [0.34, [214, 192, 157]],
+    [0.41, [178, 138,  94]],
+    [0.44, [142, 106,  74]],
+    [0.50, [ 74,  46,  29]],
+    [0.62, [ 48,  29,  19]],
+    [0.80, [ 33,  20,  14]],
+    [1.00, [ 19,  14,   9]]
+  ];
+  var CRACK_R = 0.50;
+  var INK_FLIP = 0.44;
+  var roastbg = document.getElementById('roastbg');
+  var themeMeta = document.querySelector('meta[name="theme-color"]');
+  var lastStep = -1;
+
+  function ramp(r) {
+    var i = 0;
+    while (i < STOPS.length - 2 && r > STOPS[i + 1][0]) i++;
+    var a = STOPS[i], b = STOPS[i + 1];
+    var t = (r - a[0]) / (b[0] - a[0]);
+    t = t < 0 ? 0 : t > 1 ? 1 : t;
+    t = t * t * (3 - 2 * t);
+    return 'rgb(' +
+      Math.round(a[1][0] + (b[1][0] - a[1][0]) * t) + ',' +
+      Math.round(a[1][1] + (b[1][1] - a[1][1]) * t) + ',' +
+      Math.round(a[1][2] + (b[1][2] - a[1][2]) * t) + ')';
+  }
+
+  /* ── HUD ────────────────────────────────────────── */
+  var hud = document.getElementById('hud');
+  var hudTemp = document.getElementById('hudTemp');
+  var hudTime = document.getElementById('hudTime');
+  var hudPhase = document.getElementById('hudPhase');
+  var fahrenheit = false;
+  var lastTemp = 24;
+
+  var PHASES = [
+    [0.00, 'Secagem'],
+    [0.30, 'Maillard'],
+    [0.46, '1.ª fissura'],
+    [0.62, 'Desenvolvimento'],
+    [0.94, 'Drop']
+  ];
+
+  function paintTemp(c) {
+    lastTemp = c;
+    hudTemp.textContent = fahrenheit
+      ? Math.round(c * 9 / 5 + 32) + ' °F'
+      : Math.round(c) + ' °C';
+  }
+
+  if (hud) {
+    hud.addEventListener('click', function () {
+      fahrenheit = !fahrenheit;
+      paintTemp(lastTemp);
+    });
+  }
+
+  /* ── roast curve geometry ───────────────────────── */
+  var path = document.getElementById('roastPath');
+  var head = document.getElementById('roastHead');
+  var crackMark = document.getElementById('crackMark');
+  var pathLen = path ? path.getTotalLength() : 0;
+
+  /* ── the single scroll-linked value ─────────────── */
+  var crackSection = document.getElementById('crack');
+  var crackP = 0.62;
+  var cracking = false;
+
+  function placeCrackMark() {
+    if (!crackMark || !pathLen) return;
+    var cp = path.getPointAtLength(pathLen * crackP);
+    crackMark.setAttribute('cx', cp.x);
+    crackMark.setAttribute('cy', cp.y);
+  }
+
+  function measureCrack() {
+    var docH = document.documentElement.scrollHeight - window.innerHeight;
+    if (docH <= 0 || !crackSection) return;
+    var rect = crackSection.getBoundingClientRect();
+    var top = rect.top + window.scrollY;
+    var centre = top + rect.height / 2 - window.innerHeight / 2;
+    crackP = Math.min(0.92, Math.max(0.15, centre / docH));
+    placeCrackMark();
+  }
+
+  if (path && pathLen) {
+    path.style.strokeDasharray = pathLen;
+    path.style.strokeDashoffset = reduce ? 0 : pathLen;
+    placeCrackMark();
+    if (reduce) {
+      var hp = path.getPointAtLength(pathLen);
+      head.setAttribute('cx', hp.x);
+      head.setAttribute('cy', hp.y);
+    }
+  }
+
+  // ScrollTrigger can update more than once per frame (Lenis raf + native
+  // scroll); coalesce every DOM write into a single rAF so the full-viewport
+  // background and curve repaint at most once per frame.
+  var pendingP = 0, queued = false;
+  function setRoast(p) {
+    pendingP = p;
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(function () { queued = false; paintRoast(pendingP); });
+  }
+
+  function paintRoast(p) {
+    p = p < 0 ? 0 : p > 1 ? 1 : p;
+
+    // remap raw scroll so the crack lands exactly on the crack section
+    var r = p < crackP
+      ? (p / crackP) * CRACK_R
+      : CRACK_R + ((p - crackP) / (1 - crackP)) * (1 - CRACK_R);
+
+    if (reduce) r = Math.round(r * 5) / 5;
+
+    var tone = ramp(r);
+    roastbg.style.backgroundColor = tone;
+    root.style.setProperty('--tone', tone);
+    // body only repaints on coarse steps — it sits under an opaque layer and
+    // is there for overscroll bounce, not for the frame-by-frame ramp
+    var step = Math.round(r * 24);
+    if (step !== lastStep) {
+      lastStep = step;
+      document.body.style.backgroundColor = tone;
+      if (themeMeta) themeMeta.setAttribute('content', tone);
+    }
+    root.classList.toggle('roasted', r >= INK_FLIP);
+
+    if (path && pathLen && !reduce) {
+      path.style.strokeDashoffset = pathLen * (1 - p);
+      var pt = path.getPointAtLength(pathLen * p);
+      head.setAttribute('cx', pt.x);
+      head.setAttribute('cy', pt.y);
+    }
+
+    // temperature: fast rise, then flattening — 196 °C exactly at first crack
+    var c = r < CRACK_R
+      ? 24 + (196 - 24) * Math.pow(r / CRACK_R, 0.62)
+      : 196 + (214 - 196) * ((r - CRACK_R) / (1 - CRACK_R));
+    paintTemp(c);
+
+    var secs = Math.round(r * 700);
+    hudTime.textContent =
+      String(Math.floor(secs / 60)).padStart(2, '0') + ':' +
+      String(secs % 60).padStart(2, '0');
+
+    var ph = PHASES[0][1];
+    for (var i = 0; i < PHASES.length; i++) if (r >= PHASES[i][0]) ph = PHASES[i][1];
+    if (hudPhase.textContent !== ph) hudPhase.textContent = ph;
+
+    var isCrack = r >= 0.46 && r < 0.62;
+    if (isCrack !== cracking) {
+      cracking = isCrack;
+      hud.classList.toggle('is-crack', isCrack);
+    }
+  }
+
+  function scrollProgress() {
+    var docH = document.documentElement.scrollHeight - window.innerHeight;
+    return docH > 0 ? window.scrollY / docH : 0;
+  }
+
+  /* ── fallback path: no GSAP (offline CDN) ───────── */
+  if (!hasGSAP) {
+    document.querySelectorAll('.reveal, .r-line').forEach(function (el) {
+      el.style.opacity = 1;
+      el.style.transform = 'none';
+    });
+    measureCrack();
+    paintRoast(scrollProgress());
+    window.addEventListener('scroll', function () { setRoast(scrollProgress()); }, { passive: true });
+    window.addEventListener('resize', function () { measureCrack(); setRoast(scrollProgress()); });
+    startClock();
+    return;
+  }
+
+  gsap.registerPlugin(ScrollTrigger);
+  if (window.SplitText) gsap.registerPlugin(SplitText);
+
+  /* ── smooth scroll ──────────────────────────────── */
+  if (!reduce && typeof window.Lenis !== 'undefined') {
+    var lenis = new Lenis({ lerp: 0.09, smoothWheel: true, syncTouch: false, autoRaf: false, anchors: true });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  /* ── drive the roast ────────────────────────────── */
+  measureCrack();
+  var masthead = document.querySelector('.masthead');
+  ScrollTrigger.create({
+    start: 0, end: 'max',
+    onUpdate: function (self) {
+      setRoast(self.progress);
+      if (!reduce && masthead) {
+        masthead.classList.toggle('is-hidden', self.direction === 1 && self.scroll() > 260);
+      }
+    },
+    onRefresh: function (self) { measureCrack(); paintRoast(self.progress); }
+  });
+  paintRoast(scrollProgress());
+
+  /* ── reveals ────────────────────────────────────── */
+  function revealAll() {
+    gsap.set('.reveal, .r-line', { autoAlpha: 1, y: 0, clearProps: 'transform' });
+  }
+
+  if (reduce) {
+    revealAll();
+  } else {
+    ScrollTrigger.batch('.reveal', {
+      start: 'clamp(top 88%)',
+      once: true,
+      onEnter: function (batch) {
+        gsap.to(batch, {
+          autoAlpha: 1, y: 0, duration: .95, stagger: .085,
+          ease: 'power3.out', overwrite: true
+        });
+      }
+    });
+
+    /* hero + display type */
+    var heroTitle = document.getElementById('heroTitle');
+    document.fonts.ready.then(function () {
+      if (window.SplitText && heroTitle) {
+        SplitText.create(heroTitle, {
+          type: 'lines', mask: 'lines', autoSplit: true, aria: 'auto',
+          onSplit: function (self) {
+            return gsap.from(self.lines, {
+              yPercent: 110, duration: 1.25, stagger: .085, ease: 'expo.out', delay: .1
+            });
+          }
+        });
+      } else if (heroTitle) {
+        gsap.from(heroTitle, { autoAlpha: 0, y: 30, duration: 1.1, ease: 'expo.out' });
+      }
+      gsap.from('.hero__meta > *', { autoAlpha: 0, y: 12, duration: .8, stagger: .07, ease: 'power3.out', delay: .25 });
+      gsap.from('.masthead > *', { autoAlpha: 0, y: -10, duration: .9, stagger: .08, ease: 'power3.out', delay: .45 });
+      gsap.from('.scrollcue__line', { scaleX: 0, duration: 1, ease: 'expo.out', delay: .9 });
+      ScrollTrigger.refresh();
+    });
+
+    /* "First crack" — the payoff, scrubbed against its own section */
+    gsap.set('.crack__word .r-line', { yPercent: 108 });
+    ScrollTrigger.create({
+      trigger: '.crack',
+      start: 'top 72%',
+      once: true,
+      onEnter: function () {
+        gsap.to('.crack__word .r-line', {
+          yPercent: 0, duration: 1.15, stagger: .09, ease: 'expo.out'
+        });
+        gsap.fromTo('.crack__stat',
+          { autoAlpha: 0, x: -14 },
+          { autoAlpha: 1, x: 0, duration: .8, stagger: .07, ease: 'power3.out', delay: .2 });
+      }
+    });
+
+    /* section numerals drift */
+    gsap.utils.toArray('.sechead .numeral').forEach(function (el) {
+      gsap.to(el, {
+        yPercent: -20, ease: 'none',
+        scrollTrigger: { trigger: el.closest('.sechead'), start: 'top bottom', end: 'bottom top', scrub: 1 }
+      });
+    });
+
+    /* stock + roast-level bars fill in place */
+    gsap.utils.toArray('.stock__fill').forEach(function (el) {
+      gsap.from(el, {
+        scaleX: 0, transformOrigin: 'left center', duration: 1.1, ease: 'expo.out',
+        scrollTrigger: { trigger: el, start: 'top 92%', once: true }
+      });
+    });
+
+    /* marquee, reversing with scroll direction */
+    var track = document.getElementById('marqueeTrack');
+    if (track) {
+      var loop = gsap.to(track, {
+        xPercent: -50, duration: 34, ease: 'none', repeat: -1
+      });
+      ScrollTrigger.create({
+        start: 0, end: 'max',
+        onUpdate: function (self) {
+          var dir = self.direction || 1;
+          gsap.to(loop, { timeScale: dir, duration: .5, overwrite: true });
+        }
+      });
+    }
+
+    /* magnetic CTA, desktop pointers only */
+    var mm = gsap.matchMedia();
+    mm.add('(min-width: 900px) and (hover: hover) and (pointer: fine)', function () {
+      var cta = document.getElementById('cta');
+      if (!cta) return;
+      var qx = gsap.quickTo(cta, 'x', { duration: .45, ease: 'power3.out' });
+      var qy = gsap.quickTo(cta, 'y', { duration: .45, ease: 'power3.out' });
+      function move(e) {
+        var b = cta.getBoundingClientRect();
+        var dx = e.clientX - (b.left + b.width / 2);
+        var dy = e.clientY - (b.top + b.height / 2);
+        qx(gsap.utils.clamp(-12, 12, dx * 0.32));
+        qy(gsap.utils.clamp(-10, 10, dy * 0.4));
+      }
+      function leave() { qx(0); qy(0); }
+      cta.addEventListener('pointermove', move);
+      cta.addEventListener('pointerleave', leave);
+      return function () {
+        cta.removeEventListener('pointermove', move);
+        cta.removeEventListener('pointerleave', leave);
+        gsap.set(cta, { x: 0, y: 0 });
+      };
+    });
+  }
+
+  /* safety net — nothing may stay invisible */
+  window.addEventListener('load', function () {
+    ScrollTrigger.refresh();
+    setTimeout(function () {
+      document.querySelectorAll('.reveal').forEach(function (el) {
+        var s = getComputedStyle(el);
+        if (parseFloat(s.opacity) < 0.05 && el.getBoundingClientRect().top < window.innerHeight) {
+          gsap.set(el, { autoAlpha: 1, y: 0 });
+        }
+      });
+    }, 1200);
+  });
+
+  document.fonts.ready.then(function () { ScrollTrigger.refresh(); });
+
+  /* ── footer wordmark: fit the viewBox to the real ink box ── */
+  function fitWordmark() {
+    var svg = document.getElementById('footMark');
+    var txt = document.getElementById('footMarkText');
+    if (!svg || !txt || !txt.getBBox) return;
+    try {
+      // getBBox on <text> returns the em box, so take the width from it (it
+      // includes the tracking) and the true ink height from canvas metrics
+      var b = txt.getBBox();
+      var ctx2d = document.createElement('canvas').getContext('2d');
+      ctx2d.font = '100px ' + getComputedStyle(txt).fontFamily;
+      var m = ctx2d.measureText(txt.textContent);
+      var asc = m.actualBoundingBoxAscent, desc = m.actualBoundingBoxDescent;
+      if (b.width > 0 && asc > 0) {
+        svg.setAttribute('viewBox',
+          '0 ' + (75 - asc).toFixed(2) + ' ' +
+          b.width.toFixed(2) + ' ' + (asc + Math.max(0, desc)).toFixed(2));
+      }
+    } catch (e) { /* keep the static viewBox */ }
+  }
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(fitWordmark);
+  } else {
+    fitWordmark();
+  }
+
+  /* ── live Porto clock ───────────────────────────── */
+  function startClock() {
+    var el = document.getElementById('clock');
+    if (!el) return;
+    var fmt;
+    try {
+      fmt = new Intl.DateTimeFormat('pt-PT', {
+        timeZone: 'Europe/Lisbon', hour: '2-digit', minute: '2-digit',
+        second: '2-digit', hour12: false
+      });
+    } catch (e) { fmt = null; }
+    function tick() {
+      var d = new Date();
+      el.textContent = fmt ? fmt.format(d) : d.toTimeString().slice(0, 8);
+    }
+    tick();
+    setInterval(tick, 1000);
+  }
+  startClock();
+})();
+</script>
+</body>
+</html>
