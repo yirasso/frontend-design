@@ -1,22 +1,23 @@
-# Frontend Design — With-Skill vs Without-Skill
+# Frontend Design — v1 vs v2
 
-Six single-file landing pages. Three design briefs, each built twice: once with a
-design skill guiding the generation, once without it.
+Six single-file landing pages. Three design briefs, each built twice: once with
+a design skill guiding the generation, once without it.
 
 The point is not that any one page is the best it could be. The point is what
-changes between the two columns when the only variable is the guidance.
+changes between the two versions when the only variable is the guidance.
 
-`COM` and `SEM` are Portuguese for *with* and *without*.
+> **v1** — built **with** the design skill
+> **v2** — built **without** it
 
 ---
 
 ## The pages
 
-| Brief | Subject | With skill | Without skill |
+| Brief | Subject | v1 (with skill) | v2 (without skill) |
 |---|---|---|---|
-| 1 | **Portfolio** — an independent interface designer | [`1-portfolio-COM-skill.html`](1-portfolio-COM-skill.html) | [`1-portfolio-SEM-skill.html`](1-portfolio-SEM-skill.html) |
-| 2 | **Marrow** — a two-person speciality coffee roastery in Porto | [`2-marrow-COM-skill.html`](2-marrow-COM-skill.html) | [`2-marrow-SEM-skill.html`](2-marrow-SEM-skill.html) |
-| 3 | **Hearth** — a generative audio engine | [`3-hearth-COM-skill.html`](3-hearth-COM-skill.html) | [`3-hearth-SEM-skill.html`](3-hearth-SEM-skill.html) |
+| 1 | **Portfolio** — an independent interface designer | [`1-portfolio-v1.html`](1-portfolio-v1.html) | [`1-portfolio-v2.html`](1-portfolio-v2.html) |
+| 2 | **Marrow** — a two-person speciality coffee roastery in Porto | [`2-marrow-v1.html`](2-marrow-v1.html) | [`2-marrow-v2.html`](2-marrow-v2.html) |
+| 3 | **Hearth** — a generative audio engine | [`3-hearth-v1.html`](3-hearth-v1.html) | [`3-hearth-v2.html`](3-hearth-v2.html) |
 
 Every page is one self-contained `.html` file — markup, tokens, styles and
 behaviour in a single document. No build step, no package manager, no server.
@@ -29,21 +30,21 @@ Measured across the six files:
 
 | File | Size | Lines | CDN deps | Libraries |
 |---|---|---|---|---|
-| `1-portfolio-COM-skill` | 49.4 KB | 1073 | 8 | Three.js, GSAP, Lenis |
-| `1-portfolio-SEM-skill` | 71.0 KB | 1457 | 3 | Three.js, GSAP |
-| `2-marrow-COM-skill` | 49.6 KB | 1244 | 5 | GSAP, Lenis |
-| `2-marrow-SEM-skill` | 63.4 KB | 1446 | 0 | — |
-| `3-hearth-COM-skill` | 34.0 KB | 822 | 7 | Three.js, GSAP, Lenis |
-| `3-hearth-SEM-skill` | 44.2 KB | 1176 | 0 | Web Audio API |
+| `1-portfolio-v1` | 49.4 KB | 1073 | 8 | Three.js, GSAP, Lenis |
+| `1-portfolio-v2` | 71.0 KB | 1457 | 3 | Three.js, GSAP |
+| `2-marrow-v1` | 49.6 KB | 1244 | 5 | GSAP, Lenis |
+| `2-marrow-v2` | 63.4 KB | 1446 | 0 | — |
+| `3-hearth-v1` | 34.0 KB | 822 | 7 | Three.js, GSAP, Lenis |
+| `3-hearth-v2` | 44.2 KB | 1176 | 0 | Web Audio API |
 
 Two patterns hold across all three briefs:
 
-- **The guided pages are smaller.** Every `COM` file is 22–30% shorter than its
-  `SEM` counterpart for the same brief. Less hand-rolled scaffolding.
-- **The guided pages lean on libraries; the unguided ones reinvent.** `COM`
-  reaches for GSAP and Lenis for motion and smooth scroll. `SEM` writes its own
-  — `2-marrow-SEM` and `3-hearth-SEM` ship with zero external dependencies and
-  pay for it in volume.
+- **v1 is smaller.** Every guided page is 22–30% shorter than its unguided
+  counterpart for the same brief. Less hand-rolled scaffolding.
+- **v1 leans on libraries; v2 reinvents.** The guided pages reach for GSAP and
+  Lenis for motion and smooth scroll. The unguided ones write their own —
+  `2-marrow-v2` and `3-hearth-v2` ship with zero external dependencies and pay
+  for it in volume.
 
 Which trade you prefer is the interesting question. Fewer dependencies is a real
 virtue; so is not rewriting an easing library. The comparison is here to be
@@ -53,7 +54,7 @@ looked at, not to declare a winner.
 
 ## Shared ground
 
-Both columns converged on the same broad house style, which suggests it comes
+Both versions converged on the same broad house style, which suggests it comes
 from the briefs rather than the guidance:
 
 - Design tokens declared as CSS custom properties in a `:root` block
@@ -70,12 +71,12 @@ from the briefs rather than the guidance:
 Open any file directly in a browser:
 
 ```bash
-start 1-portfolio-COM-skill.html
+start 1-portfolio-v1.html
 ```
 
 The pages fetch fonts and libraries from CDNs, so a network connection is needed
-for the full effect. `2-marrow-SEM-skill.html` and `3-hearth-SEM-skill.html` have
-no CDN dependencies at all beyond fonts.
+for the full effect. `2-marrow-v2.html` and `3-hearth-v2.html` have no CDN
+dependencies at all beyond fonts.
 
 To serve the whole set over HTTP instead:
 
@@ -95,7 +96,7 @@ jsDelivr at fixed versions:
 - [Three.js](https://threejs.org/) `0.185.1` — WebGL scenes
 - [GSAP](https://gsap.com/) `3.15.0` — animation, `ScrollTrigger`, `SplitText`, `CustomEase`
 - [Lenis](https://lenis.darkroom.engineering/) `1.3.26` — smooth scrolling
-- Web Audio API — used directly in `3-hearth-SEM-skill.html`
+- Web Audio API — used directly in `3-hearth-v2.html`
 
 ---
 
