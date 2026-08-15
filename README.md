@@ -1,13 +1,13 @@
 # Frontend Design
 
-A showcase of six single-file landing pages — three briefs, each interpreted
-twice. Every page is one self-contained `.html` document: markup, design tokens,
-styles and behaviour in a single file. No build step, no package manager, no
-server.
+Landing pages taken from brief to something that actually runs — typography,
+motion, WebGL and the code underneath. Each one is a complete concept: a brand,
+a voice, and an interface idea carried all the way through, built as a single
+self-contained document with no framework and no build step.
 
-Each brief was designed twice, `v1` and `v2`, as two independent takes on the
-same problem. They are not drafts of each other — they are different designs
-that happen to share a client.
+Every brief here was answered twice. `v1` and `v2` are independent designs
+rather than drafts of each other — same client, same problem, two different
+opinions about what the page should be. The pairs are the interesting part.
 
 ---
 
@@ -15,7 +15,7 @@ that happen to share a client.
 
 ### `v1` · Noor Abadi, Rotterdam
 
-[![Noor Abadi portfolio](screenshots/1-portfolio-v1.jpg)](1-portfolio-v1.html)
+[![Noor Abadi portfolio](screenshots/1-noor-abadi-v1.jpg)](1-noor-abadi-v1.html)
 
 A designer's portfolio built like a technical drawing. After the headline
 animates in, JavaScript measures the real bounding boxes of the type and draws
@@ -32,7 +32,7 @@ overlays a 12-column grid and stamps measured dimensions onto elements.
 
 ### `v2` · Solenne Riva, Lisbon
 
-[![Solenne Riva portfolio](screenshots/1-portfolio-v2.jpg)](1-portfolio-v2.html)
+[![Solenne Riva portfolio](screenshots/1-solenne-riva-v2.jpg)](1-solenne-riva-v2.html)
 
 A dark gallery portfolio. Case studies are `position: sticky` cards that
 physically recede into a deck — as the next card rises, ScrollTrigger scrubs the
@@ -129,8 +129,8 @@ looking at on their own, but the pairs are also a rough comparison:
 
 | File | Size | Lines | CDN deps | Libraries |
 |---|---|---|---|---|
-| `1-portfolio-v1` | 49.4 KB | 1073 | 8 | Three.js, GSAP, Lenis |
-| `1-portfolio-v2` | 71.0 KB | 1457 | 3 | Three.js, GSAP |
+| `1-noor-abadi-v1` | 49.4 KB | 1073 | 8 | Three.js, GSAP, Lenis |
+| `1-solenne-riva-v2` | 71.0 KB | 1457 | 3 | Three.js, GSAP |
 | `2-marrow-v1` | 49.6 KB | 1244 | 5 | GSAP, Lenis |
 | `2-marrow-v2` | 63.4 KB | 1446 | 0 | — |
 | `3-hearth-v1` | 34.0 KB | 822 | 7 | Three.js, GSAP, Lenis |
@@ -144,27 +144,6 @@ library.
 
 ---
 
-## Running them
-
-Open any file directly in a browser:
-
-```bash
-start 1-portfolio-v1.html
-```
-
-Or serve the set over HTTP:
-
-```bash
-python -m http.server 8000
-```
-
-Most pages pull fonts and libraries from CDNs, so a network connection is needed
-for the full effect. `2-marrow-v2.html` and `3-hearth-v2.html` have no external
-JavaScript, and `3-hearth-v2.html` uses no webfonts either — it renders
-completely offline.
-
----
-
 ## Stack
 
 Plain HTML, CSS and JavaScript. Where libraries appear they are pinned:
@@ -173,6 +152,9 @@ Plain HTML, CSS and JavaScript. Where libraries appear they are pinned:
 - [GSAP](https://gsap.com/) — animation, `ScrollTrigger`, `SplitText`, `CustomEase`
 - [Lenis](https://lenis.darkroom.engineering/) — smooth scrolling
 - Web Audio API — real synthesis in `3-hearth-v2.html`
+
+Most pages pull fonts and libraries from a CDN. `3-hearth-v2.html` uses neither
+— it renders complete and offline.
 
 Screenshots in [`screenshots/`](screenshots) were captured at 1440×900 with
 headless Chrome.
