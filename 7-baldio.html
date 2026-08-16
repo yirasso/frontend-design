@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Baldio — a variable face in five axes. Vazio, Lisboa.</title>
+<meta name="description" content="Baldio is a five-axis variable typeface from Vazio, Lisboa. Weight, casual, slant, mono and cursive. This whole page is set in it, and nothing else.">
+<meta name="theme-color" content="#0A0A0A">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Baldio — a variable face in five axes">
+<meta property="og:description" content="Move the cursor. That is the specimen.">
+<meta property="og:locale" content="en_GB">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.css">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js"></script>
+
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   BALDIO — one family, every role
+   ink #0A0A0A · bone #EDEDE8 · acid #C8FF00
+   The entire page is set in the face it is selling. Labels are not
+   a second family, they are MONO 1 of the same one.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root{
+  --ink:#0A0A0A;
+  --ink-2:#131313;
+  --bone:#EDEDE8;
+  --bone-62:rgba(237,237,232,.62);
+  --bone-38:rgba(237,237,232,.38);
+  --bone-16:rgba(237,237,232,.16);
+  --bone-08:rgba(237,237,232,.08);
+  --acid:#C8FF00;
+
+  --face:"Recursive",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+
+  --s-00:clamp(.66rem,.63rem + .13vw,.75rem);
+  --s-0:clamp(1rem,.96rem + .22vw,1.1rem);
+  --s-1:clamp(1.18rem,1.06rem + .5vw,1.45rem);
+  --s-2:clamp(1.6rem,1.3rem + 1.4vw,2.5rem);
+  --s-3:clamp(2.2rem,1.6rem + 2.8vw,4rem);
+
+  --gut:clamp(1.15rem,4.2vw,3.4rem);
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+html,body{overflow-x:clip;margin:0;padding:0}
+body{
+  background:var(--ink);color:var(--bone);
+  font-family:var(--face);
+  font-variation-settings:"wght" 400,"CASL" 0,"slnt" 0,"MONO" 0,"CRSV" 0;
+  font-size:var(--s-0);line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,p{margin:0}
+ul,ol{margin:0;padding:0;list-style:none}
+a{color:inherit}
+button,input{font:inherit;color:inherit;background:none;border:0}
+::selection{background:var(--acid);color:var(--ink)}
+
+:focus{outline:none}
+:focus-visible{outline:2px solid var(--acid);outline-offset:3px}
+
+.skip{
+  position:absolute;left:var(--gut);top:-120px;z-index:300;
+  background:var(--acid);color:var(--ink);padding:.7rem 1rem;text-decoration:none;
+  font-variation-settings:"MONO" 1,"wght" 600;font-size:var(--s-00);
+  letter-spacing:.1em;text-transform:uppercase;transition:top .2s var(--ease);
+}
+.skip:focus-visible{top:1rem}
+
+/* MONO 1 is the label role — same family, different axis */
+.lab{
+  font-variation-settings:"MONO" 1,"wght" 500,"CASL" 0;
+  font-size:var(--s-00);letter-spacing:.11em;text-transform:uppercase;
+  font-variant-numeric:tabular-nums;
+}
+.num{font-variation-settings:"MONO" 1,"wght" 450;font-variant-numeric:tabular-nums}
+
+/* ── chrome ─────────────────────────────────────────────────── */
+.bar{
+  position:fixed;inset:0 0 auto 0;z-index:140;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  padding:.75rem var(--gut);
+  border-bottom:1px solid transparent;transition:background-color .35s var(--ease),border-color .35s var(--ease);
+}
+.bar.set{background:rgba(10,10,10,.86);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom-color:var(--bone-08)}
+.bar__mark{
+  text-decoration:none;font-size:1.1rem;
+  font-variation-settings:"wght" 700,"CASL" .5;letter-spacing:-.02em;
+  display:inline-flex;align-items:center;min-height:40px;
+}
+.bar__mark b{color:var(--acid);font-weight:inherit}
+.bar__nav{display:flex;gap:1.5rem}
+.bar__nav a{text-decoration:none;opacity:.55;transition:opacity .25s var(--ease);display:inline-flex;align-items:center;min-height:40px}
+.bar__nav a:hover{opacity:1}
+.bar__buy{
+  border:1px solid var(--bone-16);padding:.45rem .95rem;min-height:40px;
+  display:inline-flex;align-items:center;text-decoration:none;
+  transition:background-color .3s var(--ease),color .3s var(--ease),border-color .3s var(--ease);
+}
+.bar__buy:hover{background:var(--acid);color:var(--ink);border-color:var(--acid)}
+@media(max-width:900px){ .bar__nav{display:none} }
+
+/* ── 01 the live specimen — signature ───────────────────────── */
+.spec{
+  min-height:100svh;position:relative;
+  display:flex;flex-direction:column;justify-content:space-between;
+  padding:clamp(4.6rem,9vh,6.4rem) var(--gut) clamp(1.2rem,3vh,2rem);
+  cursor:crosshair;
+}
+.spec__top{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;color:var(--bone-38)}
+.spec__top .on{color:var(--acid)}
+
+.spec__stage{
+  flex:1 1 auto;display:flex;align-items:center;justify-content:flex-start;
+  min-height:0;padding:clamp(1rem,4vh,3rem) 0;
+}
+h1.word{
+  font-size:clamp(4.4rem,27.5vw,26rem);
+  line-height:.78;letter-spacing:-.055em;
+  font-variation-settings:"wght" 620,"CASL" .35,"slnt" 0,"MONO" 0,"CRSV" 0;
+  white-space:nowrap;user-select:none;
+  will-change:font-variation-settings;
+}
+h1.word .k{color:var(--acid)}
+
+.spec__foot{
+  display:grid;grid-template-columns:minmax(0,30ch) 1fr auto;
+  gap:1rem clamp(1.2rem,4vw,3rem);align-items:end;
+  padding-top:1.1rem;border-top:1px solid var(--bone-08);
+}
+.spec__hint{color:var(--bone-38);max-width:30ch;line-height:1.5}
+.spec__hint b{color:var(--bone);font-variation-settings:"wght" 600}
+
+/* the live axis readout */
+.axes{display:flex;gap:clamp(.9rem,2.4vw,2rem);flex-wrap:wrap}
+.axis{display:flex;flex-direction:column;gap:.2rem;min-width:5.6rem}
+.axis__k{color:var(--bone-38)}
+.axis__v{font-variation-settings:"MONO" 1,"wght" 550;font-size:var(--s-1);font-variant-numeric:tabular-nums}
+.axis__v.hot{color:var(--acid)}
+.axis__track{height:2px;background:var(--bone-08);margin-top:.35rem;position:relative}
+.axis__track i{position:absolute;inset:0 auto 0 0;background:var(--acid);width:0}
+
+.stamp{
+  border:1px solid var(--bone-16);padding:.6rem 1.1rem;min-height:44px;
+  cursor:pointer;white-space:nowrap;
+  transition:background-color .25s var(--ease),color .25s var(--ease),border-color .25s var(--ease);
+}
+.stamp:hover{background:var(--acid);color:var(--ink);border-color:var(--acid)}
+
+@media(max-width:900px){
+  .spec{cursor:auto}
+  .spec__foot{grid-template-columns:1fr;align-items:start}
+  h1.word{font-size:clamp(3.4rem,22vw,9rem)}
+}
+
+/* ── 02 the cuts ────────────────────────────────────────────── */
+.cuts{border-top:1px solid var(--bone-08)}
+.cuts__head{
+  display:flex;justify-content:space-between;align-items:baseline;gap:1rem;
+  padding:.9rem var(--gut);border-bottom:1px solid var(--bone-08);color:var(--bone-38);
+}
+.cut{
+  display:grid;grid-template-columns:3.4rem minmax(0,1fr) auto;
+  gap:1rem clamp(1rem,3vw,2.4rem);align-items:center;
+  padding:clamp(.8rem,2vh,1.3rem) var(--gut);
+  border-bottom:1px solid var(--bone-08);
+}
+.cut__no{color:var(--bone-38)}
+.cut__word{
+  font-size:clamp(1.7rem,5.4vw,3.4rem);line-height:1;letter-spacing:-.03em;
+  white-space:nowrap;overflow:hidden;text-overflow:clip;
+}
+.cut__spec{color:var(--bone-38);white-space:nowrap;text-align:right}
+.cut.is-new{background:rgba(200,255,0,.05)}
+@media(max-width:640px){
+  .cut{grid-template-columns:2.6rem 1fr;row-gap:.4rem}
+  .cut__spec{grid-column:2;text-align:left}
+}
+
+/* ── 03 the axes, demonstrated ──────────────────────────────── */
+.demo{padding:clamp(4.4rem,11vh,8rem) 0 clamp(2rem,5vh,3rem)}
+.demo__head{padding:0 var(--gut);margin-bottom:clamp(2.2rem,5vh,3.4rem);display:grid;grid-template-columns:repeat(12,1fr);gap:1.2rem}
+.demo__head .lab{grid-column:1/3;color:var(--bone-38)}
+.demo__head h2{
+  grid-column:3/12;font-size:var(--s-3);line-height:1.02;letter-spacing:-.03em;
+  font-variation-settings:"wght" 480,"CASL" .2;text-wrap:balance;
+}
+.demo__head h2 em{font-style:normal;color:var(--acid);font-variation-settings:"wght" 700,"CASL" 1}
+@media(max-width:900px){ .demo__head .lab,.demo__head h2{grid-column:1/13} }
+
+.ax{
+  display:grid;grid-template-columns:9rem minmax(0,1fr);
+  gap:.6rem clamp(1.2rem,3vw,2.4rem);align-items:baseline;
+  padding:clamp(1.1rem,2.8vh,1.9rem) var(--gut);border-top:1px solid var(--bone-08);
+}
+.ax__k{color:var(--acid)}
+.ax__k small{display:block;color:var(--bone-38);margin-top:.3rem;font-variation-settings:"MONO" 1,"wght" 400;letter-spacing:.06em}
+.ax__line{font-size:clamp(1.5rem,4.4vw,2.9rem);line-height:1.1;letter-spacing:-.025em;text-wrap:balance}
+.ax__note{grid-column:2;color:var(--bone-38);max-width:52ch;line-height:1.55;font-size:var(--s-0)}
+@media(max-width:640px){
+  .ax{grid-template-columns:1fr}
+  .ax__note{grid-column:1}
+}
+
+/* per-axis settings — the line demonstrates the axis it names */
+.ax--wght .ax__line{font-variation-settings:"wght" 850}
+.ax--casl .ax__line{font-variation-settings:"wght" 480,"CASL" 1}
+.ax--slnt .ax__line{font-variation-settings:"wght" 480,"slnt" -15}
+.ax--mono .ax__line{font-variation-settings:"wght" 480,"MONO" 1}
+.ax--crsv .ax__line{font-variation-settings:"wght" 480,"CASL" 1,"CRSV" 1,"slnt" -8}
+
+/* ── 04 in text ─────────────────────────────────────────────── */
+.text{
+  border-top:1px solid var(--bone-08);
+  display:grid;grid-template-columns:1fr 1.35fr;
+}
+.text__l{padding:clamp(3.4rem,8vh,5.4rem) clamp(1.4rem,3vw,2.6rem) clamp(3.4rem,8vh,5.4rem) var(--gut);border-right:1px solid var(--bone-08)}
+.text__l h2{font-size:var(--s-2);line-height:1.05;letter-spacing:-.028em;margin-top:1.2rem;font-variation-settings:"wght" 520;max-width:16ch}
+.ladder{margin-top:2rem}
+.ladder li{
+  display:flex;align-items:baseline;gap:1rem;justify-content:space-between;
+  padding:.55rem 0;border-top:1px solid var(--bone-08);
+}
+.ladder li:first-child{border-top:0}
+.ladder .sz{color:var(--bone-38);flex:0 0 auto}
+.ladder .sm{white-space:nowrap;overflow:hidden;text-align:right;font-variation-settings:"wght" 450}
+.text__r{
+  background:var(--bone);color:var(--ink);
+  padding:clamp(3.4rem,8vh,5.4rem) var(--gut) clamp(3.4rem,8vh,5.4rem) clamp(1.4rem,3vw,2.6rem);
+}
+.text__r .lab{color:rgba(10,10,10,.5)}
+.text__r p{
+  margin-top:1.3rem;font-size:var(--s-1);line-height:1.52;max-width:46ch;
+  font-variation-settings:"wght" 420,"CASL" .15;
+}
+.text__r p + p{margin-top:1rem}
+.text__r p em{font-style:normal;font-variation-settings:"wght" 700,"CASL" .6}
+@media(max-width:900px){
+  .text{grid-template-columns:1fr}
+  .text__l{border-right:0;border-bottom:1px solid var(--bone-08);padding:clamp(3rem,8vw,4rem) var(--gut)}
+  .text__r{padding:clamp(3rem,8vw,4rem) var(--gut)}
+}
+
+/* ── 05 licence ─────────────────────────────────────────────── */
+.lic{padding:clamp(4.4rem,11vh,8rem) var(--gut) clamp(3rem,7vh,4.4rem);border-top:1px solid var(--bone-08)}
+.lic h2{font-size:var(--s-3);line-height:1.02;letter-spacing:-.03em;margin-top:1.2rem;max-width:18ch;font-variation-settings:"wght" 480;text-wrap:balance}
+.lic h2 em{font-style:normal;color:var(--acid)}
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);margin-top:clamp(2.4rem,6vh,4rem);border-top:1px solid var(--bone-16)}
+.tier{padding:1.6rem clamp(1rem,2vw,1.8rem) 1.6rem 0;border-right:1px solid var(--bone-08)}
+.tier:last-child{border-right:0;padding-right:0}
+.tier b{
+  display:block;font-size:clamp(1.9rem,4vw,3rem);line-height:1;letter-spacing:-.035em;
+  margin-top:.7rem;font-variation-settings:"wght" 600;font-variant-numeric:tabular-nums;
+}
+.tier p{margin-top:.8rem;color:var(--bone-38);font-size:var(--s-0);line-height:1.5;max-width:26ch}
+@media(max-width:760px){
+  .tiers{grid-template-columns:1fr}
+  .tier{border-right:0;border-bottom:1px solid var(--bone-08);padding:1.3rem 0}
+  .tier:last-child{border-bottom:0}
+}
+
+/* ── footer ─────────────────────────────────────────────────── */
+.foot{padding:0 var(--gut) 1.3rem;border-top:1px solid var(--bone-08);overflow:hidden}
+.foot__word{
+  font-size:clamp(4.6rem,27vw,26rem);line-height:.76;letter-spacing:-.06em;
+  margin:.5rem 0 0;color:var(--acid);white-space:nowrap;user-select:none;
+  font-variation-settings:"wght" 780,"CASL" .8;
+}
+.foot__end{
+  display:flex;flex-wrap:wrap;justify-content:space-between;gap:.5rem 1.5rem;
+  padding-top:1.1rem;border-top:1px solid var(--bone-08);color:var(--bone-38);
+}
+
+/* ── reveal base ────────────────────────────────────────────── */
+.rv{opacity:0;visibility:hidden;transform:translateY(16px)}
+.is-ready .rv{opacity:1;visibility:visible;transform:none}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms!important;animation-iteration-count:1!important;
+    transition-duration:.001ms!important;scroll-behavior:auto!important;
+  }
+  .rv{opacity:1!important;visibility:visible!important;transform:none!important}
+  /* designed static state: the specimen settles on the release cut */
+  h1.word{font-variation-settings:"wght" 700,"CASL" .5,"slnt" 0}
+  .spec{cursor:auto}
+}
+</style>
+</head>
+<body>
+
+<a class="skip" href="#specimen">Skip to the specimen</a>
+
+<header class="bar" id="bar">
+  <a class="bar__mark" href="#top">Vazio<b>.</b></a>
+  <nav class="bar__nav lab" aria-label="Sections">
+    <a href="#cuts">Cuts</a>
+    <a href="#axes">Axes</a>
+    <a href="#intext">In text</a>
+    <a href="#licence">Licence</a>
+  </nav>
+  <a class="bar__buy lab" href="#licence">Licence — from €90</a>
+</header>
+
+<main id="top">
+
+  <!-- ══ 01 LIVE SPECIMEN — signature ═════════════════════════ -->
+  <section class="spec" id="specimen" aria-labelledby="h1">
+    <div class="spec__top lab">
+      <span>Vazio — Lisboa</span>
+      <span class="on">Baldio · release 1.0 · five axes</span>
+      <span>September 2026</span>
+    </div>
+
+    <div class="spec__stage" id="stage">
+      <h1 class="word" id="word">Baldi<span class="k">o</span></h1>
+    </div>
+
+    <div class="spec__foot">
+      <p class="spec__hint lab">
+        <b>Move the cursor.</b> Across sets casual, up and down sets weight.
+        Click anywhere to keep the cut.
+      </p>
+
+      <div class="axes" aria-hidden="true">
+        <div class="axis">
+          <span class="axis__k lab">wght</span>
+          <span class="axis__v hot" id="vWght">620</span>
+          <span class="axis__track"><i id="tWght"></i></span>
+        </div>
+        <div class="axis">
+          <span class="axis__k lab">CASL</span>
+          <span class="axis__v" id="vCasl">0.35</span>
+          <span class="axis__track"><i id="tCasl"></i></span>
+        </div>
+        <div class="axis">
+          <span class="axis__k lab">slnt</span>
+          <span class="axis__v" id="vSlnt">0</span>
+          <span class="axis__track"><i id="tSlnt"></i></span>
+        </div>
+      </div>
+
+      <button class="stamp lab" id="stampBtn" type="button">Keep this cut</button>
+    </div>
+  </section>
+
+  <!-- ══ 02 THE CUTS ══════════════════════════════════════════ -->
+  <section class="cuts" id="cuts" aria-labelledby="cuts-h">
+    <div class="cuts__head lab">
+      <span id="cuts-h">02 — Cuts kept this session</span>
+      <span class="num" id="cutCount">03 kept</span>
+    </div>
+    <ol id="cutList">
+      <li class="cut">
+        <span class="cut__no lab num">01</span>
+        <span class="cut__word" style="font-variation-settings:'wght' 300,'CASL' 0,'slnt' 0">Vacant lot, Anjos</span>
+        <span class="cut__spec lab num">wght 300 · CASL 0.00 · slnt 0</span>
+      </li>
+      <li class="cut">
+        <span class="cut__no lab num">02</span>
+        <span class="cut__word" style="font-variation-settings:'wght' 640,'CASL' 1,'slnt' -9">Vacant lot, Anjos</span>
+        <span class="cut__spec lab num">wght 640 · CASL 1.00 · slnt −9</span>
+      </li>
+      <li class="cut">
+        <span class="cut__no lab num">03</span>
+        <span class="cut__word" style="font-variation-settings:'wght' 1000,'CASL' .25,'slnt' 0">Vacant lot, Anjos</span>
+        <span class="cut__spec lab num">wght 1000 · CASL 0.25 · slnt 0</span>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ══ 03 THE AXES ══════════════════════════════════════════ -->
+  <section class="demo" id="axes" aria-labelledby="axes-h">
+    <div class="demo__head">
+      <span class="lab" id="axes-h">03 — The axes</span>
+      <h2 class="rv">Five axes, and every one of them <em>does something you can see</em> at reading size. Nothing here is a slider for its own sake.</h2>
+    </div>
+
+    <div class="ax ax--wght rv">
+      <span class="ax__k lab">wght<small>300 → 1000</small></span>
+      <p class="ax__line">Thin enough to disappear at 8pt, heavy enough to be a hoarding.</p>
+      <p class="ax__note">The full range is drawn, not interpolated from two masters at the ends. The 300 and the 1000 were both cut by hand and the middle was fitted to them.</p>
+    </div>
+
+    <div class="ax ax--casl rv">
+      <span class="ax__k lab">CASL<small>0 → 1</small></span>
+      <p class="ax__line">At one, the letters loosen and stop behaving in public.</p>
+      <p class="ax__note">Casual redraws the terminals and opens the apertures. It is not a weight and it is not an italic — it is the difference between a sign painted by a company and a sign painted by the owner.</p>
+    </div>
+
+    <div class="ax ax--slnt rv">
+      <span class="ax__k lab">slnt<small>0 → −15</small></span>
+      <p class="ax__line">A true slant, not an oblique applied by the renderer.</p>
+      <p class="ax__note">Every glyph is corrected at the extremes: the o narrows, the diagonals are redrawn, the s is rebalanced. Software shearing gets none of that and it shows on the round letters.</p>
+    </div>
+
+    <div class="ax ax--mono rv">
+      <span class="ax__k lab">MONO<small>0 → 1</small></span>
+      <p class="ax__line">01234 · lIl1 · O0 — the labels on this page are MONO 1.</p>
+      <p class="ax__note">Duplexed to a fixed advance without collapsing the design. This is why the page needs no second family: the eyebrows, the numbers and the axis readouts are all Baldio with one axis pushed over.</p>
+    </div>
+
+    <div class="ax ax--crsv rv">
+      <span class="ax__k lab">CRSV<small>0 → 1</small></span>
+      <p class="ax__line">The a, the e, the g and the l change their minds entirely.</p>
+      <p class="ax__note">Cursive swaps in single-storey forms. Set it to 0.5 and the renderer picks per glyph, which is either a feature or a small act of chaos depending on the sentence.</p>
+    </div>
+  </section>
+
+  <!-- ══ 04 IN TEXT ═══════════════════════════════════════════ -->
+  <section class="text" id="intext" aria-labelledby="text-h">
+    <div class="text__l">
+      <span class="lab" id="text-h" style="color:var(--bone-38)">04 — At size</span>
+      <h2 class="rv">Most variable faces fall apart under 14 pixels.</h2>
+      <ul class="ladder rv">
+        <li><span class="sz lab num">64</span><span class="sm" style="font-size:clamp(1.4rem,3.4vw,2.4rem)">Baldio</span></li>
+        <li><span class="sz lab num">40</span><span class="sm" style="font-size:1.6rem">Baldio Regular</span></li>
+        <li><span class="sz lab num">24</span><span class="sm" style="font-size:1.1rem">Baldio at twenty-four</span></li>
+        <li><span class="sz lab num">16</span><span class="sm" style="font-size:.92rem">Baldio at sixteen, still open</span></li>
+        <li><span class="sz lab num">11</span><span class="sm" style="font-size:.72rem">Baldio at eleven, footnote grade</span></li>
+      </ul>
+    </div>
+    <div class="text__r">
+      <span class="lab">Specimen text</span>
+      <p>Baldio is Portuguese for a vacant lot — the piece of ground between two buildings that nobody has decided about yet. <em>We drew it for those.</em> Municipal notices, fly-posted gig listings, the hand-painted sign on a garage that has been a garage for forty years.</p>
+      <p>It began as a commission for a Lisbon council that wanted one face for street signage, tax letters and the website, and could not afford three. That constraint is the whole design. Five axes because five roles, and not one axis more.</p>
+      <p>Two years, one designer, and about nine hundred glyphs. Latin Extended, full European coverage, and the Portuguese ordinals nobody else bothers to draw.</p>
+    </div>
+  </section>
+
+  <!-- ══ 05 LICENCE ═══════════════════════════════════════════ -->
+  <section class="lic" id="licence" aria-labelledby="lic-h">
+    <span class="lab" id="lic-h" style="color:var(--bone-38)">05 — Licence</span>
+    <h2 class="rv">One file. Buy it once, and <em>we do not phone home.</em></h2>
+
+    <div class="tiers">
+      <div class="tier rv">
+        <span class="lab">Desktop — 3 users</span>
+        <b class="num">€90</b>
+        <p>The variable file plus five static instances, in case your printer is from 2009.</p>
+      </div>
+      <div class="tier rv">
+        <span class="lab">Web — 250k views / month</span>
+        <b class="num">€140</b>
+        <p>Self-hosted woff2. No script, no subdomain to allow-list, no counting.</p>
+      </div>
+      <div class="tier rv">
+        <span class="lab">Everything, forever</span>
+        <b class="num">€380</b>
+        <p>Desktop, web, app and broadcast, for one organisation, with no renewal.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <p class="foot__word" aria-hidden="true">Baldio</p>
+  <div class="foot__end lab">
+    <span>Vazio — type foundry, Lisboa</span>
+    <span class="num" id="clock">--:--:--</span>
+    <span>Trial licence on request</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var coarse = matchMedia("(pointer: coarse)").matches;
+  var hasGSAP = typeof window.gsap !== "undefined";
+
+  var word   = document.getElementById("word");
+  var stage  = document.getElementById("stage");
+  var vWght  = document.getElementById("vWght"),
+      vCasl  = document.getElementById("vCasl"),
+      vSlnt  = document.getElementById("vSlnt");
+  var tWght  = document.getElementById("tWght"),
+      tCasl  = document.getElementById("tCasl"),
+      tSlnt  = document.getElementById("tSlnt");
+
+  /* current + target axis state, lerped every frame */
+  var cur = { w:620, c:.35, s:0 };
+  var tgt = { w:620, c:.35, s:0 };
+
+  function applyAxes(){
+    if (!word) return;
+    word.style.fontVariationSettings =
+      '"wght" ' + cur.w.toFixed(0) +
+      ', "CASL" ' + cur.c.toFixed(3) +
+      ', "slnt" ' + cur.s.toFixed(1) +
+      ', "MONO" 0, "CRSV" 0';
+
+    if (vWght) vWght.textContent = cur.w.toFixed(0);
+    if (vCasl) vCasl.textContent = cur.c.toFixed(2);
+    if (vSlnt) vSlnt.textContent = cur.s <= -0.5 ? "−" + Math.abs(cur.s).toFixed(0) : "0";
+
+    if (tWght) tWght.style.width = ((cur.w - 300) / 700 * 100).toFixed(1) + "%";
+    if (tCasl) tCasl.style.width = (cur.c * 100).toFixed(1) + "%";
+    if (tSlnt) tSlnt.style.width = (Math.abs(cur.s) / 15 * 100).toFixed(1) + "%";
+  }
+
+  /* pointer drives the axes on fine pointers; scroll does it on touch */
+  if (!reduce && !coarse && stage){
+    stage.parentElement.addEventListener("pointermove", function(e){
+      var r = stage.getBoundingClientRect();
+      var x = Math.max(0, Math.min(1, (e.clientX - r.left) / Math.max(1, r.width)));
+      var y = Math.max(0, Math.min(1, (e.clientY - r.top)  / Math.max(1, r.height)));
+      tgt.c = x;
+      tgt.w = 300 + (1 - y) * 700;
+      tgt.s = -15 * x * (1 - y) * 0.55;
+    }, { passive:true });
+  }
+
+  if (!reduce && coarse){
+    addEventListener("scroll", function(){
+      var p = Math.max(0, Math.min(1, scrollY / Math.max(1, innerHeight)));
+      tgt.c = p;
+      tgt.w = 300 + (1 - p) * 700;
+      tgt.s = -15 * p * 0.5;
+    }, { passive:true });
+  }
+
+  var raf = null;
+  function loop(){
+    var k = 0.12;
+    cur.w += (tgt.w - cur.w) * k;
+    cur.c += (tgt.c - cur.c) * k;
+    cur.s += (tgt.s - cur.s) * k;
+    applyAxes();
+    raf = requestAnimationFrame(loop);
+  }
+
+  applyAxes();
+  if (!reduce){
+    loop();
+    document.addEventListener("visibilitychange", function(){
+      if (document.hidden){ if (raf) cancelAnimationFrame(raf); raf = null; }
+      else if (!raf) loop();
+    });
+  }
+
+  /* ── stamping a cut ──────────────────────────────────────── */
+  var list = document.getElementById("cutList");
+  var count = document.getElementById("cutCount");
+  var n = 3;
+
+  function pad(v){ return v < 10 ? "0" + v : String(v); }
+
+  function keepCut(){
+    if (!list) return;
+    n += 1;
+    var w = cur.w.toFixed(0), c = cur.c.toFixed(2);
+    var s = cur.s <= -0.5 ? "−" + Math.abs(cur.s).toFixed(0) : "0";
+
+    var li = document.createElement("li");
+    li.className = "cut is-new";
+    li.innerHTML =
+      '<span class="cut__no lab num">' + pad(n) + '</span>' +
+      '<span class="cut__word">Vacant lot, Anjos</span>' +
+      '<span class="cut__spec lab num">wght ' + w + ' · CASL ' + c + ' · slnt ' + s + '</span>';
+    li.querySelector(".cut__word").style.fontVariationSettings =
+      '"wght" ' + w + ', "CASL" ' + c + ', "slnt" ' + cur.s.toFixed(1);
+
+    list.appendChild(li);
+    if (count) count.textContent = pad(n) + " kept";
+
+    if (hasGSAP && !reduce){
+      gsap.from(li, { height:0, autoAlpha:0, duration:.55, ease:"power3.out",
+        onComplete:function(){ gsap.set(li, { clearProps:"height" }); } });
+      gsap.to(li, { backgroundColor:"rgba(200,255,0,0)", duration:1.4, delay:.5,
+        onComplete:function(){ li.classList.remove("is-new"); gsap.set(li,{clearProps:"backgroundColor"}); } });
+    } else {
+      setTimeout(function(){ li.classList.remove("is-new"); }, 1200);
+    }
+  }
+
+  var stampBtn = document.getElementById("stampBtn");
+  if (stampBtn) stampBtn.addEventListener("click", function(e){ e.stopPropagation(); keepCut(); });
+  if (!coarse && !reduce){
+    var specSec = document.getElementById("specimen");
+    if (specSec) specSec.addEventListener("click", function(e){
+      if (e.target.closest("a,button")) return;
+      keepCut();
+    });
+  }
+
+  /* ── clock ───────────────────────────────────────────────── */
+  var clock = document.getElementById("clock");
+  function tick(){
+    if (!clock) return;
+    var t;
+    try{
+      t = new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/Lisbon",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}).format(new Date());
+    }catch(e){ t = new Date().toTimeString().slice(0,8); }
+    clock.textContent = t;
+  }
+  tick(); setInterval(tick, 1000);
+
+  /* ── header state ────────────────────────────────────────── */
+  var bar = document.getElementById("bar");
+  addEventListener("scroll", function(){
+    if (bar) bar.classList.toggle("set", scrollY > 40);
+  }, { passive:true });
+
+  /* ── reveals ─────────────────────────────────────────────── */
+  function settle(){ document.body.classList.add("is-ready"); }
+
+  if (!hasGSAP){ settle(); return; }
+  gsap.registerPlugin(ScrollTrigger);
+
+  if (reduce){
+    settle();
+    gsap.set(".rv", { clearProps:"all" });
+  } else {
+    if (typeof Lenis !== "undefined"){
+      var lenis = new Lenis({ lerp:.09, smoothWheel:true, syncTouch:false, autoRaf:false, anchors:true });
+      lenis.on("scroll", ScrollTrigger.update);
+      gsap.ticker.add(function(t){ lenis.raf(t * 1000); });
+      gsap.ticker.lagSmoothing(0);
+    }
+
+    ScrollTrigger.batch(".rv", {
+      start:"clamp(top 88%)", once:true,
+      onEnter:function(b){
+        gsap.to(b, { autoAlpha:1, y:0, duration:.85, stagger:.08, ease:"power3.out", overwrite:true });
+      }
+    });
+
+    document.fonts.ready.then(function(){
+      gsap.from(".foot__word", {
+        yPercent:26, duration:1.3, ease:"expo.out",
+        scrollTrigger:{ trigger:".foot", start:"top 82%", once:true }
+      });
+      ScrollTrigger.refresh();
+    });
+  }
+
+  addEventListener("load", function(){
+    settle();
+    gsap.set(".rv", { autoAlpha:1, y:0, clearProps:"transform,opacity,visibility" });
+    ScrollTrigger.refresh();
+  });
+  setTimeout(function(){ settle(); gsap.set(".rv", { autoAlpha:1, y:0 }); }, 2600);
+})();
+</script>
+</body>
+</html>

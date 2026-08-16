@@ -5,9 +5,10 @@ motion, WebGL and the code underneath. Each one is a complete concept: a brand,
 a voice, and an interface idea carried all the way through, built as a single
 self-contained document with no framework and no build step.
 
-Every brief here was answered twice. `v1` and `v2` are independent designs
-rather than drafts of each other — same client, same problem, two different
-opinions about what the page should be. The pairs are the interesting part.
+Some of the briefs were answered twice. Where a page carries a `v1` or `v2`
+mark there is a companion answering the same brief a different way —
+independent designs rather than drafts of each other, and the pairs are the
+interesting part. The rest stand on their own.
 
 ---
 
@@ -161,11 +162,53 @@ reading `de 07` and admits `o oitavo lugar fica vazio`.
 
 ---
 
+## 6 — Firn, an ice-core archive in Greenland
+
+[![Firn](screenshots/6-firn.jpg)](6-firn.html)
+
+The page *is* the core sample. A pinned column of Greenland ice runs behind a
+fixed cut line, and scrolling drills: depth climbs toward 3,040 m, the year at
+the cut runs backwards past 89,000 BCE, and the CO₂ in the trapped air follows
+the glacial saw-tooth down with it. The ice is drawn, not photographed —
+annual layers start a fingernail thick and compress to hairlines under their
+own weight, going from pale firn to dense blue as the depth-to-age curve steepens.
+Dated markers travel up past the cut as you go: Tambora 1815, the 1963 weapons
+fallout, Roman smelting lead, Thera.
+
+- **Signature** — one continuous column, one scrub; the readouts are computed from the depth rather than keyframed
+- **Palette** — `#0B0F0E` ink, `#E3EBED` ice, Klein blue `#1B1BFF` — the first page here with no warm accent at all
+- **Type** — Newsreader for display, Archivo for text, IBM Plex Mono for the instrument readouts
+- **Craft** — depth→age is a fourth-power curve, so a metre near the surface is two years and a metre near the bed is several thousand; reduced motion unpins the core and stands it up as a static specimen column rather than freezing it
+- **No WebGL** — the whole core is `hsl()` bands generated from a seeded PRNG
+
+---
+
+## 7 — Baldio, a variable typeface from Vazio
+
+[![Baldio](screenshots/7-baldio.jpg)](7-baldio.html)
+
+A foundry release page set entirely in the face it is selling — no second
+family anywhere. The eyebrows, the axis readouts and the tabular numbers are
+the same typeface with its `MONO` axis pushed to 1, which is both the cheapest
+possible proof that the axis works and the reason the page needs nothing else.
+The specimen word tracks the cursor on two axes at once: across sets `CASL`,
+up and down sets `wght`, with the live coordinates printed beneath. Click and
+the current cut is stamped into a running spec sheet below.
+
+- **Signature** — the cursor is the axis slider, and the page keeps a record of every cut you liked
+- **Palette** — `#0A0A0A` ink, `#EDEDE8` bone, acid lime `#C8FF00`
+- **Type** — one family, five axes, every role derived from it
+- **Craft** — axes are lerped toward a target each frame rather than set directly, so the word settles instead of snapping; touch devices get the axes driven by scroll instead of a cursor they do not have; reduced motion parks the specimen on the release cut
+- **Copy** — the licence is a flat price with no renewal and no phone-home, which is the actual argument the page is making
+
+---
+
 ## The v1 / v2 split
 
-The two versions of each brief were produced under different conditions — `v1`
-with a design skill guiding the work, `v2` without it. The pages are worth
-looking at on their own, but the pairs are also a rough comparison:
+Briefs 1–5 were each produced twice under different conditions — `v1` with a
+design skill guiding the work, `v2` without it. Firn and Baldio are not part of
+that and are absent from the table below. The pages are worth looking at on
+their own, but the pairs are also a rough comparison:
 
 | File | Size | Lines | CDN deps | Libraries |
 |---|---|---|---|---|
@@ -215,7 +258,10 @@ permission first — ask, and it will probably be yes. Learning the techniques
 and writing your own version needs no permission at all.
 
 Every person and business on these pages is invented. Noor Abadi, Solenne Riva,
-Marrow, Hearth, Sétima and its bookseller Inês Mourão are not real, and the
-addresses, prices and credentials are fiction written to make the briefs
-concrete. The books on Sétima's shelf are real books; nothing else about the
-shop is.
+Marrow, Hearth, Sétima and its bookseller Inês Mourão, Firn and the Vazio
+foundry are not real, and the addresses, prices and credentials are fiction
+written to make the briefs concrete. Some of the material inside them is not:
+the books on Sétima's shelf are real books, and the eruptions, fallout layers
+and Roman lead in Firn are real markers that real ice cores actually record.
+Firn's own holdings are made up. Baldio is set in Recursive, standing in for a
+typeface that does not exist.

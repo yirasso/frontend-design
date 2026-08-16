@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Firn — ice-core archive, Kangerlussuaq</title>
+<meta name="description" content="Firn is a cold archive in Kangerlussuaq, Greenland. Forty-one kilometres of ice, cut into metre sections, held at minus thirty-two. The air in it has not been breathed since it fell.">
+<meta name="theme-color" content="#0B0F0E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Firn — ice-core archive, Kangerlussuaq">
+<meta property="og:description" content="Every winter since the last ice age, still in order.">
+<meta property="og:locale" content="en_GB">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..700;1,6..72,200..500&family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.css">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js"></script>
+
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   FIRN — ice-core archive
+   ink #0B0F0E · ice #E3EBED · Klein #1B1BFF
+   ═══════════════════════════════════════════════════════════════ */
+
+:root{
+  --ink:#0B0F0E;
+  --ink-2:#111716;
+  --ink-3:#18201F;
+  --ice:#E3EBED;
+  --ice-70:rgba(227,235,237,.68);
+  --ice-45:rgba(227,235,237,.44);
+  --ice-22:rgba(227,235,237,.22);
+  --ice-12:rgba(227,235,237,.12);
+  --klein:#1B1BFF;
+  --klein-lift:#5B5BFF;
+
+  --display:"Newsreader",Georgia,"Times New Roman",serif;
+  --sans:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+
+  --s-00:clamp(.66rem,.63rem + .12vw,.74rem);
+  --s-0:clamp(1rem,.96rem + .2vw,1.09rem);
+  --s-1:clamp(1.16rem,1.06rem + .44vw,1.4rem);
+  --s-2:clamp(1.5rem,1.26rem + 1.1vw,2.2rem);
+  --s-3:clamp(2rem,1.5rem + 2.4vw,3.5rem);
+  --d-1:clamp(2.6rem,1.3rem + 6.4vw,7.4rem);
+
+  --gut:clamp(1.15rem,4.2vw,3.4rem);
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+html,body{overflow-x:clip;margin:0;padding:0}
+body{
+  background:var(--ink);
+  color:var(--ice);
+  font-family:var(--sans);
+  font-variation-settings:"wdth" 100,"wght" 400;
+  font-size:var(--s-0);
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+h1,h2,h3,p,figure,blockquote{margin:0}
+ul,ol,dl{margin:0;padding:0;list-style:none}
+a{color:inherit}
+button,input{font:inherit;color:inherit}
+::selection{background:var(--klein);color:#fff}
+
+:focus{outline:none}
+:focus-visible{outline:2px solid var(--klein-lift);outline-offset:3px;border-radius:1px}
+
+.skip{
+  position:absolute;left:var(--gut);top:-120px;z-index:300;
+  background:var(--klein);color:#fff;padding:.7rem 1rem;
+  font-family:var(--mono);font-size:var(--s-00);letter-spacing:.11em;
+  text-transform:uppercase;text-decoration:none;transition:top .2s var(--ease);
+}
+.skip:focus-visible{top:1rem}
+
+.grain{
+  position:fixed;inset:-6%;z-index:200;pointer-events:none;
+  opacity:.05;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>");
+}
+
+.lab{
+  font-family:var(--mono);font-size:var(--s-00);
+  letter-spacing:.13em;text-transform:uppercase;font-weight:400;
+  font-feature-settings:"tnum" 1;
+}
+.num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+.disp{
+  font-family:var(--display);font-weight:300;
+  line-height:.94;letter-spacing:-.032em;text-wrap:balance;
+}
+p{text-wrap:pretty}
+
+/* ── chrome ─────────────────────────────────────────────────── */
+.bar{
+  position:fixed;inset:0 0 auto 0;z-index:120;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  padding:.8rem var(--gut);
+  border-bottom:1px solid transparent;
+  transition:background-color .4s var(--ease),border-color .4s var(--ease);
+}
+.bar.set{
+  background:rgba(11,15,14,.82);
+  backdrop-filter:blur(9px) saturate(130%);
+  -webkit-backdrop-filter:blur(9px) saturate(130%);
+  border-bottom-color:var(--ice-12);
+}
+.bar__mark{
+  font-family:var(--display);font-size:1.06rem;font-weight:400;
+  letter-spacing:.02em;text-decoration:none;
+  display:inline-flex;align-items:center;gap:.5rem;min-height:40px;
+}
+.bar__mark i{width:7px;height:7px;background:var(--klein);display:block;flex:none}
+.bar__nav{display:flex;gap:1.5rem}
+.bar__nav a{text-decoration:none;opacity:.6;transition:opacity .25s var(--ease);display:inline-flex;align-items:center;min-height:40px}
+.bar__nav a:hover{opacity:1}
+.bar__depth{color:var(--ice-45)}
+.bar__depth b{color:var(--ice);font-weight:400}
+@media(max-width:900px){ .bar__nav{display:none} }
+
+/* ── 01 masthead ────────────────────────────────────────────── */
+.mast{
+  min-height:100svh;padding:clamp(5rem,10vh,7rem) var(--gut) clamp(1.4rem,3vh,2.2rem);
+  display:grid;grid-template-columns:repeat(12,1fr);
+  grid-template-rows:auto 1fr auto;
+  column-gap:clamp(.6rem,1.5vw,1.3rem);row-gap:clamp(1.6rem,4vh,2.8rem);
+  position:relative;
+}
+.mast__meta{grid-column:1/8;grid-row:1;display:flex;flex-wrap:wrap;gap:.3rem 1.4rem;align-items:baseline;color:var(--ice-45)}
+.mast__meta .on{color:var(--klein-lift)}
+.mast__temp{grid-column:9/13;grid-row:1;text-align:right;color:var(--ice-45)}
+.mast__temp b{
+  display:block;font-family:var(--display);font-weight:300;
+  font-size:clamp(2.2rem,4.6vw,3.8rem);line-height:.86;letter-spacing:-.04em;
+  color:var(--ice);margin-top:.3rem;font-variant-numeric:tabular-nums;
+}
+h1.mast__line{
+  grid-column:1/12;grid-row:2;align-self:center;
+  font-family:var(--display);font-weight:300;
+  font-size:var(--d-1);line-height:.92;letter-spacing:-.04em;
+  text-wrap:balance;
+}
+h1.mast__line em{font-style:italic;color:var(--klein-lift);font-weight:200}
+h1.mast__line .ln{display:block}
+.mast__foot{
+  grid-column:1/13;grid-row:3;display:grid;
+  grid-template-columns:minmax(0,38ch) 1fr auto;
+  gap:clamp(1.1rem,4vw,3rem);align-items:end;
+}
+.mast__foot p{font-size:var(--s-1);line-height:1.46;max-width:38ch}
+.mast__foot p .dim{color:var(--ice-70)}
+.mast__cue{text-align:right;white-space:nowrap;color:var(--ice-45);align-self:end}
+
+/* the depth scale in the masthead — 10 marks, deepest lit */
+.scale{display:flex;align-items:flex-end;gap:7px;height:36px;min-width:120px}
+.scale i{display:block;width:1px;height:10px;background:var(--ice-22);transform-origin:bottom}
+.scale i.on{height:30px;background:var(--klein);width:2px}
+
+@media(max-width:900px){
+  .mast{grid-template-columns:repeat(6,1fr)}
+  .mast__meta{grid-column:1/7}
+  .mast__temp{grid-column:1/7;grid-row:auto;text-align:left;display:flex;align-items:baseline;gap:.8rem}
+  .mast__temp b{font-size:2.1rem;margin-top:0}
+  h1.mast__line{grid-column:1/7;grid-row:auto}
+  .mast__foot{grid-column:1/7;grid-row:auto;grid-template-columns:1fr;align-items:start;gap:1.4rem}
+  .mast__cue{text-align:left}
+}
+
+/* ── 02 THE CORE — signature ────────────────────────────────── */
+#core{position:relative}
+.core__stage{
+  height:100svh;display:grid;
+  grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
+  align-items:stretch;overflow:hidden;
+}
+.core__side{
+  padding:clamp(4.6rem,9vh,6rem) clamp(1rem,2.6vw,2.4rem) clamp(1.4rem,3vh,2rem) var(--gut);
+  display:flex;flex-direction:column;justify-content:space-between;gap:1.4rem;min-width:0;
+}
+.core__side--r{
+  padding-left:clamp(1rem,2.6vw,2.4rem);padding-right:var(--gut);
+  align-items:flex-end;text-align:right;
+}
+.core__title{font-family:var(--display);font-weight:300;font-size:var(--s-2);letter-spacing:-.028em;line-height:1.02;max-width:16ch}
+.core__blurb{color:var(--ice-45);font-size:var(--s-00);line-height:1.65;max-width:30ch;font-family:var(--mono);letter-spacing:.02em;text-transform:none}
+
+/* the readout stack */
+.read{display:flex;flex-direction:column;gap:1.1rem;width:100%;align-items:inherit}
+.read__row{display:flex;flex-direction:column;gap:.15rem}
+.read__k{color:var(--ice-45)}
+.read__v{
+  font-family:var(--display);font-weight:300;
+  font-size:clamp(1.9rem,3.5vw,3.1rem);line-height:.9;letter-spacing:-.04em;
+  font-variant-numeric:tabular-nums;
+}
+.read__v small{font-size:.42em;letter-spacing:.02em;color:var(--ice-45);margin-left:.28em}
+.read__v.is-klein{color:var(--klein-lift)}
+
+/* the core window */
+.core__well{
+  position:relative;width:clamp(120px,17vw,254px);
+  border-left:1px solid var(--ice-12);border-right:1px solid var(--ice-12);
+  overflow:hidden;background:var(--ink-2);
+}
+.core__strip{position:absolute;inset:0 0 auto 0;will-change:transform}
+.core__band{display:block;width:100%}
+/* the cut line — where the readouts are measured */
+.core__cut{
+  position:absolute;left:-14px;right:-14px;top:50%;height:0;
+  border-top:1px solid var(--klein);z-index:3;pointer-events:none;
+}
+.core__cut::before,.core__cut::after{
+  content:"";position:absolute;top:-3px;width:5px;height:5px;background:var(--klein);
+}
+.core__cut::before{left:0}
+.core__cut::after{right:0}
+.core__vig{
+  position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:linear-gradient(180deg,var(--ink) 0%,transparent 22%,transparent 78%,var(--ink) 100%);
+}
+
+/* markers travelling with the ice */
+.core__marks{position:absolute;inset:0 0 auto 0;z-index:4;pointer-events:none;will-change:transform}
+.mark{position:absolute;left:0;width:100%;height:0}
+.mark i{position:absolute;left:0;right:0;top:0;height:1px;background:var(--ice);opacity:.5}
+.mark.is-ash i{background:#0a0c0c;opacity:1;height:2px}
+.mark span{
+  position:absolute;left:calc(100% + 12px);top:-.72em;white-space:nowrap;
+  font-family:var(--mono);font-size:var(--s-00);letter-spacing:.09em;
+  color:var(--ice-45);text-transform:uppercase;
+}
+.mark.is-ash span{color:var(--klein-lift)}
+@media(max-width:900px){ .mark span{display:none} }
+
+.core__progress{
+  position:absolute;left:var(--gut);right:var(--gut);bottom:clamp(1rem,2.4vh,1.6rem);
+  height:1px;background:var(--ice-12);z-index:5;
+}
+.core__progress i{display:block;height:100%;width:0;background:var(--klein)}
+
+@media(max-width:900px){
+  .core__stage{grid-template-columns:1fr auto;grid-template-rows:auto 1fr}
+  .core__side{grid-column:1;grid-row:2;padding-bottom:clamp(2.4rem,6vh,3rem);justify-content:flex-end}
+  .core__side--r{
+    grid-column:1;grid-row:1;align-items:flex-start;text-align:left;
+    padding:clamp(4.6rem,9vh,6rem) var(--gut) 0;justify-content:flex-start;
+  }
+  .core__well{grid-column:2;grid-row:1/3;width:clamp(74px,22vw,110px)}
+  .read{flex-direction:row;gap:1.6rem;flex-wrap:wrap}
+}
+
+/* ── 03 what the ice remembers ──────────────────────────────── */
+.rem{padding:clamp(5rem,13vh,9rem) var(--gut);border-top:1px solid var(--ice-12)}
+.rem__head{display:grid;grid-template-columns:repeat(12,1fr);column-gap:clamp(.6rem,1.5vw,1.3rem);row-gap:1.6rem;margin-bottom:clamp(2.6rem,6vh,4.4rem)}
+.rem__head .lab{grid-column:1/3;color:var(--ice-45)}
+.rem__head h2{
+  grid-column:3/12;font-family:var(--display);font-weight:300;
+  font-size:var(--s-3);letter-spacing:-.03em;line-height:1.04;text-wrap:balance;
+}
+.rem__head h2 em{font-style:italic;color:var(--klein-lift)}
+@media(max-width:900px){ .rem__head .lab,.rem__head h2{grid-column:1/13} }
+
+.sig{border-top:1px solid var(--ice-12)}
+.sig__row{
+  display:grid;grid-template-columns:4.5rem minmax(0,15ch) minmax(0,1fr) auto;
+  gap:.4rem clamp(1rem,3vw,2.6rem);align-items:baseline;
+  padding:clamp(1.3rem,3.4vh,2.1rem) 0;border-bottom:1px solid var(--ice-12);
+}
+.sig__no{color:var(--ice-45)}
+.sig__name{font-family:var(--display);font-weight:300;font-size:var(--s-2);letter-spacing:-.028em;line-height:1}
+.sig__what{color:var(--ice-70);font-size:var(--s-0);line-height:1.55;max-width:52ch}
+.sig__unit{color:var(--klein-lift);white-space:nowrap}
+@media(max-width:900px){
+  .sig__row{grid-template-columns:3.2rem 1fr;row-gap:.5rem}
+  .sig__what{grid-column:2}
+  .sig__unit{grid-column:2}
+}
+
+/* ── 04 the vault ───────────────────────────────────────────── */
+.vault{display:grid;grid-template-columns:1.05fr 1fr;border-top:1px solid var(--ice-12)}
+.vault__l{padding:clamp(3.4rem,8vh,5.4rem) clamp(1.4rem,3vw,2.6rem) clamp(3.4rem,8vh,5.4rem) var(--gut);border-right:1px solid var(--ice-12)}
+.vault__l h2{font-family:var(--display);font-weight:300;font-size:var(--s-3);letter-spacing:-.03em;line-height:1.02;margin-top:1.4rem;max-width:15ch;text-wrap:balance}
+.vault__l p{margin-top:1.4rem;color:var(--ice-70);max-width:44ch;font-size:var(--s-1);line-height:1.5}
+.vault__r{background:var(--ice);color:var(--ink);padding:clamp(3.4rem,8vh,5.4rem) var(--gut) clamp(3.4rem,8vh,5.4rem) clamp(1.4rem,3vw,2.6rem)}
+.vault__r .lab{color:rgba(11,15,14,.5)}
+.facts{margin-top:1.6rem}
+.facts li{
+  display:flex;justify-content:space-between;gap:1rem;align-items:baseline;
+  padding:.85rem 0;border-top:1px solid rgba(11,15,14,.14);
+}
+.facts li:first-child{border-top:0}
+.facts span{color:rgba(11,15,14,.55)}
+.facts b{
+  font-family:var(--display);font-weight:300;font-size:var(--s-2);
+  letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1;
+}
+.facts b small{font-size:.44em;color:rgba(11,15,14,.5);margin-left:.3em;letter-spacing:.02em}
+@media(max-width:900px){
+  .vault{grid-template-columns:1fr}
+  .vault__l{border-right:0;border-bottom:1px solid var(--ice-12);padding:clamp(3rem,8vw,4rem) var(--gut)}
+  .vault__r{padding:clamp(3rem,8vw,4rem) var(--gut)}
+}
+
+/* ── 05 access ──────────────────────────────────────────────── */
+.acc{padding:clamp(5rem,13vh,9rem) var(--gut) clamp(3rem,7vh,4.4rem);border-top:1px solid var(--ice-12)}
+.acc__grid{display:grid;grid-template-columns:1.15fr 1fr;gap:clamp(2.2rem,6vw,5rem);align-items:start}
+.acc h2{font-family:var(--display);font-weight:300;font-size:var(--s-3);letter-spacing:-.03em;line-height:1.02;margin-top:1.3rem;max-width:17ch;text-wrap:balance}
+.acc h2 em{font-style:italic;color:var(--klein-lift)}
+.acc p{margin-top:1.3rem;color:var(--ice-70);max-width:44ch;line-height:1.6}
+.req{display:flex;border-bottom:1px solid var(--ice-22);margin-top:2rem;max-width:30rem}
+.req input{
+  flex:1 1 auto;min-width:0;background:transparent;border:0;
+  font-family:var(--sans);font-size:var(--s-0);padding:.9rem .1rem;color:var(--ice);
+}
+.req input::placeholder{color:var(--ice-45)}
+.req button{
+  flex:0 0 auto;background:transparent;border:0;cursor:pointer;color:var(--klein-lift);
+  font-family:var(--mono);font-size:var(--s-00);letter-spacing:.13em;text-transform:uppercase;
+  padding:.9rem .2rem .9rem 1rem;min-height:44px;
+  transition:color .25s var(--ease);
+}
+.req button:hover{color:var(--ice)}
+.req__note{margin-top:.8rem;font-family:var(--mono);font-size:var(--s-00);letter-spacing:.09em;color:var(--klein-lift);min-height:1.2em}
+.terms li{display:grid;grid-template-columns:2.6rem 1fr;gap:.9rem;padding:.95rem 0;border-top:1px solid var(--ice-12);align-items:baseline}
+.terms li:first-child{border-top:0}
+.terms .n{color:var(--ice-45);font-family:var(--mono);font-size:var(--s-00);letter-spacing:.1em}
+.terms p{margin:0;color:var(--ice-70);font-size:var(--s-0);line-height:1.5;max-width:40ch}
+@media(max-width:900px){ .acc__grid{grid-template-columns:1fr} }
+
+/* ── footer ─────────────────────────────────────────────────── */
+.foot{padding:0 var(--gut) 1.4rem;border-top:1px solid var(--ice-12);overflow:hidden}
+.foot__word{
+  font-family:var(--display);font-weight:200;font-size:clamp(5rem,27vw,26rem);
+  line-height:.78;letter-spacing:-.055em;margin:.4rem 0 0;
+  color:transparent;-webkit-text-stroke:1px var(--ice-22);
+  user-select:none;white-space:nowrap;
+}
+.foot__end{
+  display:flex;flex-wrap:wrap;justify-content:space-between;gap:.5rem 1.6rem;
+  padding-top:1.2rem;border-top:1px solid var(--ice-12);color:var(--ice-45);
+}
+
+/* ── reveal base ────────────────────────────────────────────── */
+.rv{opacity:0;visibility:hidden;transform:translateY(18px)}
+.is-ready .rv,.no-js .rv{opacity:1;visibility:visible;transform:none}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms!important;animation-iteration-count:1!important;
+    transition-duration:.001ms!important;scroll-behavior:auto!important;
+  }
+  .rv{opacity:1!important;visibility:visible!important;transform:none!important}
+  /* designed static state: the core becomes a tall specimen column, unpinned */
+  .core__stage{height:auto;grid-template-columns:1fr auto;grid-template-rows:auto auto}
+  .core__side{grid-column:1;grid-row:2;padding-bottom:3rem}
+  .core__side--r{grid-column:1;grid-row:1;align-items:flex-start;text-align:left;padding:5rem var(--gut) 0}
+  .core__well{grid-column:2;grid-row:1/3;height:150vh;width:clamp(90px,18vw,150px)}
+  .core__cut{display:none}
+  .core__progress{display:none}
+  .read{flex-direction:row;flex-wrap:wrap;gap:1.6rem}
+}
+</style>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+<a class="skip" href="#core">Skip to the core</a>
+
+<header class="bar" id="bar">
+  <a class="bar__mark" href="#top"><i aria-hidden="true"></i>Firn</a>
+  <nav class="bar__nav lab" aria-label="Sections">
+    <a href="#core">The core</a>
+    <a href="#remembers">What it records</a>
+    <a href="#vault">The vault</a>
+    <a href="#access">Access</a>
+  </nav>
+  <div class="bar__depth lab num">Drilling <b id="barDepth">2 148</b> m</div>
+</header>
+
+<main id="top">
+
+  <!-- ══ 01 MASTHEAD ══════════════════════════════════════════ -->
+  <section class="mast" aria-labelledby="h1">
+    <div class="mast__meta lab">
+      <span>Firn — ice-core archive</span>
+      <span class="on">Kangerlussuaq, 67.01°N</span>
+      <span>Est. 1994</span>
+    </div>
+
+    <div class="mast__temp lab">
+      <span>Vault temperature</span>
+      <b class="num">−32 °C</b>
+    </div>
+
+    <h1 class="mast__line" id="h1">
+      <span class="ln">Every winter since the</span>
+      <span class="ln">last ice age, <em>still in order.</em></span>
+    </h1>
+
+    <div class="mast__foot">
+      <p class="rv">Forty-one kilometres of Greenland ice, cut into metre sections.
+        <span class="dim">The air trapped in the deepest of it has not been breathed since a time before there was anybody to breathe it.</span></p>
+      <div class="scale rv" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="on"></i>
+      </div>
+      <div class="mast__cue lab rv">01 — Descend ↓</div>
+    </div>
+  </section>
+
+  <!-- ══ 02 THE CORE — signature ══════════════════════════════ -->
+  <section id="core" aria-labelledby="core-h">
+    <div class="core__stage" id="coreStage">
+
+      <div class="core__side">
+        <div>
+          <span class="lab" id="core-h" style="color:var(--ice-45)">02 — The core</span>
+          <h2 class="core__title" style="margin-top:1rem">One continuous column, drilled in 1996.</h2>
+        </div>
+        <p class="core__blurb">Annual layers near the surface are the
+          thickness of a fingernail. By nine hundred metres the same year is
+          thinner than this line of text. Nothing is lost — it is only pressed.</p>
+      </div>
+
+      <div class="core__well" id="coreWell">
+        <div class="core__strip" id="coreStrip" aria-hidden="true"></div>
+        <div class="core__marks" id="coreMarks" aria-hidden="true"></div>
+        <div class="core__vig" aria-hidden="true"></div>
+        <div class="core__cut" aria-hidden="true"></div>
+      </div>
+
+      <div class="core__side core__side--r">
+        <div class="read">
+          <div class="read__row">
+            <span class="read__k lab">Depth</span>
+            <span class="read__v num" id="rDepth">0<small>m</small></span>
+          </div>
+          <div class="read__row">
+            <span class="read__k lab">Year at the cut</span>
+            <span class="read__v num is-klein" id="rYear">2026</span>
+          </div>
+          <div class="read__row">
+            <span class="read__k lab">CO₂ in the trapped air</span>
+            <span class="read__v num" id="rCo2">421<small>ppm</small></span>
+          </div>
+        </div>
+        <p class="core__blurb" id="rPhase">Surface snow — not yet ice.</p>
+      </div>
+
+      <div class="core__progress" aria-hidden="true"><i id="coreBar"></i></div>
+    </div>
+  </section>
+
+  <!-- ══ 03 WHAT THE ICE REMEMBERS ════════════════════════════ -->
+  <section class="rem" id="remembers" aria-labelledby="rem-h">
+    <div class="rem__head">
+      <span class="lab" id="rem-h">03 — What it records</span>
+      <h2 class="rv">Ice is not a metaphor for memory. It is <em>a physical recording medium</em>, and it holds four channels at once.</h2>
+    </div>
+
+    <ol class="sig">
+      <li class="sig__row rv">
+        <span class="sig__no lab num">01</span>
+        <h3 class="sig__name">Trapped air</h3>
+        <p class="sig__what">Bubbles sealed when the snow closed over. Not a proxy, not a model — the actual atmosphere of that year, measurable by the same instruments we point at today's.</p>
+        <span class="sig__unit lab">ppm CO₂ / CH₄</span>
+      </li>
+      <li class="sig__row rv">
+        <span class="sig__no lab num">02</span>
+        <h3 class="sig__name">Oxygen isotopes</h3>
+        <p class="sig__what">The ratio of ¹⁸O to ¹⁶O in the water itself falls with the temperature of the cloud it fell from. Winter and summer alternate visibly, which is what makes counting years possible at all.</p>
+        <span class="sig__unit lab">δ¹⁸O ‰</span>
+      </li>
+      <li class="sig__row rv">
+        <span class="sig__no lab num">03</span>
+        <h3 class="sig__name">Ash and dust</h3>
+        <p class="sig__what">Every large eruption leaves a dark band with a chemical fingerprint. These are the fixed points — a layer matched to Laki dates everything above and below it.</p>
+        <span class="sig__unit lab">particles / mL</span>
+      </li>
+      <li class="sig__row rv">
+        <span class="sig__no lab num">04</span>
+        <h3 class="sig__name">What we put there</h3>
+        <p class="sig__what">Lead from Roman smelting. Fallout from atmospheric weapons testing, sharpest in 1963. Sulphates that climb from 1850 and fall again after 1990. The record does not editorialise.</p>
+        <span class="sig__unit lab">ng / kg</span>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ══ 04 THE VAULT ═════════════════════════════════════════ -->
+  <section class="vault" id="vault" aria-labelledby="vault-h">
+    <div class="vault__l">
+      <span class="lab" id="vault-h" style="color:var(--ice-45)">04 — The vault</span>
+      <h2 class="rv">A freezer is a library with one very strict rule.</h2>
+      <p class="rv">Sections are stacked in aluminium trays, by depth, in the order they came out of the ground. There is no reshelving and no reordering — the sequence <em>is</em> the data. Lose it and the ice becomes ordinary frozen water.</p>
+      <p class="rv">Two staff are inside at any time, in twenty-minute shifts. The building has never lost power for longer than nine minutes.</p>
+    </div>
+    <div class="vault__r">
+      <span class="lab">Holdings, January 2026</span>
+      <ul class="facts">
+        <li><span>Ice held</span><b class="num">41.2<small>km</small></b></li>
+        <li><span>Deepest section</span><b class="num">3 040<small>m</small></b></li>
+        <li><span>Oldest ice</span><b class="num">128 000<small>yr</small></b></li>
+        <li><span>Sections catalogued</span><b class="num">41 208</b></li>
+        <li><span>Vault temperature</span><b class="num">−32<small>°C</small></b></li>
+        <li><span>Longest outage</span><b class="num">9<small>min</small></b></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ══ 05 ACCESS ════════════════════════════════════════════ -->
+  <section class="acc" id="access" aria-labelledby="acc-h">
+    <div class="acc__grid">
+      <div>
+        <span class="lab" id="acc-h" style="color:var(--ice-45)">05 — Access</span>
+        <h2 class="rv">We will cut you a piece, and then it is <em>gone forever.</em></h2>
+        <p class="rv">Every analysis destroys the sample. That is not a caveat, it is the whole difficulty: the archive is finite and shrinks each time it is useful. Requests are read four times a year.</p>
+        <form class="req rv" id="reqForm" novalidate>
+          <label class="skip" for="reqEmail">Institutional email</label>
+          <input id="reqEmail" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@institution.edu" required>
+          <button type="submit">Request</button>
+        </form>
+        <p class="req__note lab" id="reqNote" role="status"></p>
+      </div>
+
+      <ol class="terms rv">
+        <li><span class="n num">01</span><p>Institutional affiliation, or a named collaborator who has one.</p></li>
+        <li><span class="n num">02</span><p>A method that cannot be run on ice we have already melted and archived as water.</p></li>
+        <li><span class="n num">03</span><p>Depths, in metres, with a tolerance. "Around the Younger Dryas" is not a depth.</p></li>
+        <li><span class="n num">04</span><p>Agreement to publish the null result if that is what you get.</p></li>
+      </ol>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <p class="foot__word" aria-hidden="true">Firn</p>
+  <div class="foot__end lab">
+    <span>Firn — ice-core archive, Kangerlussuaq</span>
+    <span class="num" id="clock">--:--:-- WGST</span>
+    <span>Independent since 1994</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var hasGSAP = typeof window.gsap !== "undefined";
+
+  /* ── the core model ──────────────────────────────────────────
+     Depth → age is strongly non-linear: near the surface a metre is
+     a couple of years, near the bed a metre is several thousand.   */
+  var MAX_DEPTH = 3040;          // metres
+  var NOW_YEAR  = 2026;
+
+  function ageAt(d){                       // metres → years before 2026
+    var f = d / MAX_DEPTH;
+    return Math.round(128000 * Math.pow(f, 4.35));
+  }
+  function co2At(yrBP){
+    // industrial rise, then the glacial/interglacial saw-tooth
+    if (yrBP < 280) return Math.round(421 - (421 - 278) * (yrBP / 280));
+    if (yrBP < 11700) return Math.round(265 + 15 * Math.cos(yrBP / 2600));
+    if (yrBP < 20000) return Math.round(190 + 60 * (20000 - yrBP) / 8300);
+    if (yrBP < 115000) return Math.round(200 + 32 * Math.sin(yrBP / 9000));
+    return Math.round(255 + 20 * Math.sin(yrBP / 4000));
+  }
+  function phaseAt(d){
+    if (d < 70)     return "Firn — snow still turning to ice. The air is not sealed yet.";
+    if (d < 800)    return "Holocene ice. Annual layers still countable by eye under a lamp.";
+    if (d < 1600)   return "Layers below the resolution of the naked eye. Counted by conductivity.";
+    if (d < 2100)   return "Last glacial. Dustier, colder, and the layers thin fast now.";
+    if (d < 2800)   return "Ice deposited before the last interglacial. Flow has begun to fold it.";
+    return "Basal ice. Folded and partly melted from below. Dates here are argued about.";
+  }
+
+  var MARKS = [
+    { d:3,    t:"Eyjafjallajökull, 2010", ash:true  },
+    { d:11,   t:"Weapons-test fallout, 1963", ash:false },
+    { d:44,   t:"Tambora, 1815", ash:true },
+    { d:48,   t:"Laki, 1783", ash:true },
+    { d:110,  t:"Samalas, 1257", ash:true },
+    { d:180,  t:"Roman lead, 100 BCE — 200 CE", ash:false },
+    { d:290,  t:"Thera, c. 1620 BCE", ash:true },
+    { d:1600, t:"Younger Dryas begins", ash:false },
+    { d:1950, t:"Last glacial maximum", ash:false },
+    { d:2990, t:"Eemian interglacial", ash:false }
+  ];
+
+  /* ── build the strip ─────────────────────────────────────── */
+  var STRIP_PX = 9600;                      // total drawn height of the core
+  var strip = document.getElementById("coreStrip");
+  var marksEl = document.getElementById("coreMarks");
+
+  function mulberry32(a){
+    return function(){
+      a |= 0; a = a + 0x6D2B79F5 | 0;
+      var t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+
+  (function buildStrip(){
+    if (!strip) return;
+    var rnd = mulberry32(20260816);
+    var html = "", y = 0;
+    while (y < STRIP_PX){
+      var f = y / STRIP_PX;
+      // annual layers compress with depth: a fingernail at the top, a hair at the bed
+      var h = Math.max(0.7, 34 * Math.pow(1 - f, 2.4) + 0.9);
+      // ice gets denser, bluer and darker with depth; jitter is what makes it read as layered
+      var L = 88 - 44 * f - rnd() * 15;
+      var S = 7 + 22 * f;
+      var H = 197 - 9 * f;
+      // dust-rich winter bands — the thing that makes a year countable by eye
+      if (rnd() < 0.15) L -= 20 + rnd() * 14;
+      html += '<i class="core__band" style="height:' + h.toFixed(2) + 'px;background:hsl(' + H.toFixed(0) + ' ' + S.toFixed(0) + '% ' + Math.max(6, L).toFixed(0) + '%)"></i>';
+      y += h;
+    }
+    strip.style.height = STRIP_PX + "px";
+    strip.innerHTML = html;
+  })();
+
+  (function buildMarks(){
+    if (!marksEl) return;
+    var html = "";
+    for (var i = 0; i < MARKS.length; i++){
+      var m = MARKS[i];
+      // depth maps onto the strip with the same 1/4-power compression
+      var top = Math.pow(m.d / MAX_DEPTH, 1 / 1.35) * STRIP_PX;
+      html += '<div class="mark' + (m.ash ? " is-ash" : "") + '" style="top:' + top.toFixed(1) + 'px">' +
+              '<i></i><span>' + m.t + '</span></div>';
+    }
+    marksEl.style.height = STRIP_PX + "px";
+    marksEl.innerHTML = html;
+  })();
+
+  /* ── readouts ────────────────────────────────────────────── */
+  var rDepth = document.getElementById("rDepth"),
+      rYear  = document.getElementById("rYear"),
+      rCo2   = document.getElementById("rCo2"),
+      rPhase = document.getElementById("rPhase"),
+      barDepth = document.getElementById("barDepth"),
+      coreBar = document.getElementById("coreBar");
+
+  var lastPhase = "";
+  function group(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " "); }
+
+  function paint(p){
+    p = Math.max(0, Math.min(1, p));
+    var depth = Math.pow(p, 1.35) * MAX_DEPTH;
+    var yrBP  = ageAt(depth);
+    var year  = NOW_YEAR - yrBP;
+
+    if (rDepth) rDepth.innerHTML = group(Math.round(depth)) + "<small>m</small>";
+    if (rYear)  rYear.textContent = year >= 0
+      ? group(year)
+      : group(Math.abs(year)) + " BCE";
+    if (rCo2)   rCo2.innerHTML = co2At(yrBP) + "<small>ppm</small>";
+    if (barDepth) barDepth.textContent = group(Math.round(depth));
+    if (coreBar) coreBar.style.width = (p * 100).toFixed(2) + "%";
+
+    var ph = phaseAt(depth);
+    if (ph !== lastPhase && rPhase){ rPhase.textContent = ph; lastPhase = ph; }
+  }
+
+  /* ── clock ───────────────────────────────────────────────── */
+  var clock = document.getElementById("clock");
+  function tick(){
+    if (!clock) return;
+    var t;
+    try{
+      t = new Intl.DateTimeFormat("en-GB",{timeZone:"America/Nuuk",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}).format(new Date());
+    }catch(e){ t = new Date().toTimeString().slice(0,8); }
+    clock.textContent = t + " WGST";
+  }
+  tick(); setInterval(tick, 1000);
+
+  /* ── request form ────────────────────────────────────────── */
+  var form = document.getElementById("reqForm"), note = document.getElementById("reqNote");
+  if (form) form.addEventListener("submit", function(e){
+    e.preventDefault();
+    var v = document.getElementById("reqEmail").value.trim();
+    note.textContent = /.+@.+\..+/.test(v)
+      ? "Logged. The panel next reads requests on 4 March."
+      : "That is not an address we can reply to.";
+  });
+
+  /* ── header state ────────────────────────────────────────── */
+  var bar = document.getElementById("bar");
+  addEventListener("scroll", function(){
+    if (bar) bar.classList.toggle("set", scrollY > 40);
+  }, {passive:true});
+
+  /* ── no GSAP, or reduced motion: static designed state ───── */
+  function settle(){ document.body.classList.add("is-ready"); }
+
+  if (!hasGSAP){ settle(); paint(0.34); return; }
+
+  gsap.registerPlugin(ScrollTrigger, SplitText);
+
+  if (reduce){
+    settle();
+    paint(0.34);
+    gsap.set(".rv", { clearProps:"all" });
+  } else {
+    if (typeof Lenis !== "undefined"){
+      var lenis = new Lenis({ lerp:0.09, smoothWheel:true, syncTouch:false, autoRaf:false, anchors:true });
+      lenis.on("scroll", ScrollTrigger.update);
+      gsap.ticker.add(function(t){ lenis.raf(t * 1000); });
+      gsap.ticker.lagSmoothing(0);
+    }
+
+    ScrollTrigger.batch(".rv", {
+      start:"clamp(top 88%)", once:true,
+      onEnter:function(b){
+        gsap.to(b, { autoAlpha:1, y:0, duration:.9, stagger:.08, ease:"power3.out", overwrite:true });
+      }
+    });
+
+    var mm = gsap.matchMedia();
+
+    mm.add({ isDesktop:"(min-width: 901px)", isMobile:"(max-width: 900px)" }, function(){
+      var stage = document.getElementById("coreStage");
+      var well  = document.getElementById("coreWell");
+      if (!stage || !well || !strip) return;
+
+      var travel = function(){ return STRIP_PX - well.clientHeight; };
+
+      var st = ScrollTrigger.create({
+        trigger:"#core",
+        start:"top top",
+        end:"+=460%",
+        pin:stage,
+        pinSpacing:true,
+        anticipatePin:1,
+        invalidateOnRefresh:true,
+        onUpdate:function(self){
+          var y = -travel() * self.progress;
+          gsap.set([strip, marksEl], { y:y });
+          paint(self.progress);
+        }
+      });
+
+      paint(0);
+      return function(){ st.kill(); gsap.set([strip, marksEl], { clearProps:"transform" }); };
+    });
+
+    document.fonts.ready.then(function(){
+      SplitText.create("#h1", {
+        type:"lines", mask:"lines", autoSplit:true, aria:"auto",
+        onSplit:function(self){
+          return gsap.from(self.lines, { yPercent:112, duration:1.25, stagger:.09, ease:"expo.out" });
+        }
+      });
+      gsap.from(".scale i", { scaleY:0, transformOrigin:"bottom", duration:.6, stagger:.045, ease:"power3.out", delay:.5 });
+      gsap.from(".foot__word", {
+        yPercent:24, duration:1.3, ease:"expo.out",
+        scrollTrigger:{ trigger:".foot", start:"top 82%", once:true }
+      });
+      ScrollTrigger.refresh();
+    });
+  }
+
+  /* ── safety nets: nothing may stay invisible ─────────────── */
+  addEventListener("load", function(){
+    settle();
+    gsap.set(".rv", { autoAlpha:1, y:0, clearProps:"transform,opacity,visibility" });
+    ScrollTrigger.refresh();
+  });
+  setTimeout(function(){
+    settle();
+    gsap.set(".rv", { autoAlpha:1, y:0 });
+  }, 2600);
+})();
+</script>
+</body>
+</html>
