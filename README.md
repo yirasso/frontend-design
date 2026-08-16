@@ -11,9 +11,7 @@ opinions about what the page should be. The pairs are the interesting part.
 
 ---
 
-## 1 — Portfolio
-
-### `v1` · Noor Abadi, Rotterdam
+## 1 — Noor Abadi, Rotterdam · `v1`
 
 [![Noor Abadi portfolio](screenshots/1-noor-abadi-v1.jpg)](1-noor-abadi-v1.html)
 
@@ -30,15 +28,18 @@ overlays a 12-column grid and stamps measured dimensions onto elements.
 - **Type** — Bricolage Grotesque driven hard through `font-variation-settings`, Instrument Sans for body, DM Mono for labels
 - **Craft** — three separate reduced-motion paths, a 4.5s failsafe plus a `window.error` listener so nothing can stay invisible, live Europe/Amsterdam clock
 
-### `v2` · Solenne Riva, Lisbon
+---
 
-[![Solenne Riva portfolio](screenshots/1-solenne-riva-v2.jpg)](1-solenne-riva-v2.html)
+## 2 — Solenne Riva, Lisbon · `v2`
 
-A dark gallery portfolio. Case studies are `position: sticky` cards that
-physically recede into a deck — as the next card rises, ScrollTrigger scrubs the
-outgoing one to `scale: .92` and `brightness(.55)`. The marquee reads scroll
-velocity and applies a live `skewX`, so the type leans into the direction
-you're scrolling.
+[![Solenne Riva portfolio](screenshots/2-solenne-riva-v2.jpg)](2-solenne-riva-v2.html)
+
+A dark gallery portfolio, and the companion piece to Noor Abadi above — same
+brief, answered without the design skill guiding the work. Case studies are
+`position: sticky` cards that physically recede into a deck — as the next card
+rises, ScrollTrigger scrubs the outgoing one to `scale: .92` and
+`brightness(.55)`. The marquee reads scroll velocity and applies a live
+`skewX`, so the type leans into the direction you're scrolling.
 
 - **Signature** — the sticky card deck, and velocity-driven skew on the marquee
 - **Hero** — a simplex-displaced sphere with a Fresnel rim and 1,100 additive shader points; pointer *and* `deviceorientation` drive the rotation
@@ -48,11 +49,11 @@ you're scrolling.
 
 ---
 
-## 2 — Marrow, a coffee roastery in Porto
+## 3 — Marrow, a coffee roastery in Porto
 
 ### `v1` · Roasts as you scroll
 
-[![Marrow v1](screenshots/2-marrow-v1.jpg)](2-marrow-v1.html)
+[![Marrow v1](screenshots/3-marrow-v1.jpg)](3-marrow-v1.html)
 
 The page is the roast. A single ScrollTrigger interpolates a nine-stop colour
 ramp from bone to near-black and writes it into a `--tone` variable that drives
@@ -69,7 +70,7 @@ phase in Portuguese: *Secagem, Maillard, 1.ª fissura, Desenvolvimento, Drop*.
 
 ### `v2` · Retinted by origin
 
-[![Marrow v2](screenshots/2-marrow-v2.jpg)](2-marrow-v2.html)
+[![Marrow v2](screenshots/3-marrow-v2.jpg)](3-marrow-v2.html)
 
 Editorial and paper-first, with a dark section that changes colour depending on
 which coffee you're looking at. Selecting an origin rewrites `--accent` to that
@@ -86,11 +87,11 @@ smoothing, labelled with growing altitude.
 
 ---
 
-## 3 — Hearth, a generative audio engine
+## 4 — Hearth, a generative audio engine
 
 ### `v1` · A fire that is also a spectrogram
 
-[![Hearth v1](screenshots/3-hearth-v1.jpg)](3-hearth-v1.html)
+[![Hearth v1](screenshots/4-hearth-v1.jpg)](4-hearth-v1.html)
 
 Near-black, with a full-viewport ember field. The shader stretches its simplex
 noise by `vec2(0.58, 2.30)` and multiplies it by a high-frequency sine term, so
@@ -106,7 +107,7 @@ both sinks and cools it.
 
 ### `v2` · The ember actually listens
 
-[![Hearth v2](screenshots/3-hearth-v2.jpg)](3-hearth-v2.html)
+[![Hearth v2](screenshots/4-hearth-v2.jpg)](4-hearth-v2.html)
 
 The one page that makes real sound. Nine oscillators sit on an A natural-minor
 field between 110 and 440 Hz, detuned ±0.5%, through a lowpass modulated by a
@@ -121,7 +122,7 @@ shader's `uLevel` uniform — the fire breathes with the pad it is playing.
 
 ---
 
-## 4 — Sétima, a bookshop in Lisbon
+## 5 — Sétima, a bookshop in Lisbon
 
 A shop that stocks seven titles and empties the shelf every month. Both versions
 found the same terracotta (`#C4562E`) and the same Fraunces display face without
@@ -129,7 +130,7 @@ being told to, and both invented an eighth book that is never for sale.
 
 ### `v1` · The shelf opens like a book
 
-[![Sétima v1](screenshots/4-setima-v1.jpg)](4-setima-v1.html)
+[![Sétima v1](screenshots/5-setima-v1.jpg)](5-setima-v1.html)
 
 Seven vertical spines fill the viewport, titles set in `writing-mode: vertical-rl`.
 Scrolling a pinned section drives one spine from 7.6% to 54.4% width while the
@@ -145,7 +146,7 @@ panels toggling. It wipes in on `clip-path` with the copy staggered behind it.
 
 ### `v2` · Seven cards and a deliberate gap
 
-[![Sétima v2](screenshots/4-setima-v2.jpg)](4-setima-v2.html)
+[![Sétima v2](screenshots/5-setima-v2.jpg)](5-setima-v2.html)
 
 Written in Portuguese, and warmer — an outlined `VII` sits behind the masthead
 and the shelf runs as a horizontal scrub through eight cards. The eighth is a
@@ -169,13 +170,13 @@ looking at on their own, but the pairs are also a rough comparison:
 | File | Size | Lines | CDN deps | Libraries |
 |---|---|---|---|---|
 | `1-noor-abadi-v1` | 49.4 KB | 1073 | 8 | Three.js, GSAP, Lenis |
-| `1-solenne-riva-v2` | 71.0 KB | 1457 | 3 | Three.js, GSAP |
-| `2-marrow-v1` | 49.6 KB | 1244 | 5 | GSAP, Lenis |
-| `2-marrow-v2` | 63.4 KB | 1446 | 0 | — |
-| `3-hearth-v1` | 34.0 KB | 822 | 7 | Three.js, GSAP, Lenis |
-| `3-hearth-v2` | 44.2 KB | 1176 | 0 | Web Audio API |
-| `4-setima-v1` | 42.2 KB | 1057 | 6 | GSAP, Lenis |
-| `4-setima-v2` | 38.4 KB | 900 | 5 | GSAP, Lenis |
+| `2-solenne-riva-v2` | 71.0 KB | 1457 | 3 | Three.js, GSAP |
+| `3-marrow-v1` | 49.6 KB | 1244 | 5 | GSAP, Lenis |
+| `3-marrow-v2` | 63.4 KB | 1446 | 0 | — |
+| `4-hearth-v1` | 34.0 KB | 822 | 7 | Three.js, GSAP, Lenis |
+| `4-hearth-v2` | 44.2 KB | 1176 | 0 | Web Audio API |
+| `5-setima-v1` | 42.2 KB | 1057 | 6 | GSAP, Lenis |
+| `5-setima-v2` | 38.4 KB | 900 | 5 | GSAP, Lenis |
 
 For the first three briefs the pattern was clean: `v1` came out 22–30% shorter
 and leaned on GSAP and Lenis, while `v2` hand-rolled the same behaviour and
@@ -194,9 +195,9 @@ Plain HTML, CSS and JavaScript. Where libraries appear they are pinned:
 - [Three.js](https://threejs.org/) — WebGL shader backgrounds
 - [GSAP](https://gsap.com/) — animation, `ScrollTrigger`, `SplitText`, `CustomEase`
 - [Lenis](https://lenis.darkroom.engineering/) — smooth scrolling
-- Web Audio API — real synthesis in `3-hearth-v2.html`
+- Web Audio API — real synthesis in `4-hearth-v2.html`
 
-Most pages pull fonts and libraries from a CDN. `3-hearth-v2.html` uses neither
+Most pages pull fonts and libraries from a CDN. `4-hearth-v2.html` uses neither
 — it renders complete and offline.
 
 Screenshots in [`screenshots/`](screenshots) were captured at 1440×900 with
