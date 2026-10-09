@@ -250,12 +250,7 @@ headless Chrome.
 
 ## License
 
-**All rights reserved** © 2026 Tomás Girão — full terms in [LICENSE](LICENSE).
-
-The source is here to be read and studied, not reused. Copying these pages,
-adapting them, or putting them into client or commercial work needs written
-permission first — ask, and it will probably be yes. Learning the techniques
-and writing your own version needs no permission at all.
+**MIT** © 2026 Tomás Girão — see [LICENSE](LICENSE). Anyone may use, copy, modify and share these pages freely.
 
 Every person and business on these pages is invented. Noor Abadi, Solenne Riva,
 Marrow, Hearth, Sétima and its bookseller Inês Mourão, Firn and the Vazio

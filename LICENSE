@@ -1,49 +1,21 @@
-Copyright (c) 2026 Tomás Girão. All rights reserved.
+MIT License
 
-This repository is published as a portfolio. The source is visible so that it
-can be read and studied. It is not open source, and no licence to reuse it is
-granted by the fact that it is published here.
+Copyright (c) 2026 Tomás Girão
 
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-PERMITTED WITHOUT ASKING
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-  - Viewing and reading the source.
-  - Studying how it works and learning the techniques it uses.
-  - Quoting short excerpts for commentary, review, teaching or criticism,
-    with attribution.
-
-  No claim is made over techniques, layout ideas or general approaches.
-  Copyright covers this particular expression of them, not the ideas
-  themselves. Anyone is free to learn from this work and write their own.
-
-
-NOT PERMITTED WITHOUT PRIOR WRITTEN PERMISSION
-
-  - Copying, reproducing or republishing these pages, in whole or in
-    substantial part.
-  - Modifying or adapting them, or creating derivative works from them.
-  - Using them, in whole or in substantial part, in any client, commercial
-    or production project.
-  - Selling, licensing, sublicensing or redistributing them, including as
-    part of a template, theme, course or asset pack.
-  - Using the contents of this repository as training data for machine
-    learning models.
-
-  Permission is not hard to get. Ask first: github.com/yirasso
-
-
-THIRD-PARTY COMPONENTS
-
-  These pages load third-party libraries and typefaces — among them Three.js,
-  GSAP, Lenis, and fonts served by Google Fonts. Those components are governed
-  by their own licences and are not covered by this notice, which neither
-  grants nor restricts any right in them.
-
-
-NO WARRANTY
-
-  This work is provided "as is", without warranty of any kind, express or
-  implied, including but not limited to the warranties of merchantability and
-  fitness for a particular purpose. The copyright holder shall not be liable
-  for any claim, damages or other liability arising from or in connection with
-  this work or its use.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
